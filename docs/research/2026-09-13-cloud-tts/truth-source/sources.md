@@ -28,5 +28,5 @@
 - 本地 TTS 脚本：`scripts/tts_local.py`
 - 本地 TTS 实测日志：`output/local-fallback.log`
 - 本地 TTS 调研稿日志：`output/research-synth.log`
-- 旧本地 TTS 调研：`<本地 TTS 调研目录>/generated/本地TTS调研报告-2026-09-10.md`
+- 旧本地 TTS 调研：`<VoxCPM2 引擎目录>/generated/本地TTS调研报告-2026-09-10.md`
 

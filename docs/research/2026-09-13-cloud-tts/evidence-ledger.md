@@ -22,9 +22,9 @@
 | Q04 | Qwen3-TTS-Flash、Instruct、VC、VD 等 TTS 模型常见免费额度为 1 万字符/模型，90 天 | 千问/百炼模型价格表 | https://help.aliyun.com/zh/model-studio/model-pricing?disableWebsiteRedirect=true | A | 不同模型额度独立，不互通；控制台权益页最终为准 |
 | Q05 | CosyVoice 系列多款模型也有 1 万字符/模型的免费额度 | 千问/百炼模型价格表 | https://help.aliyun.com/zh/model-studio/model-pricing?disableWebsiteRedirect=true | A | v3.5-flash 0.8 元/万字符，v3.5-plus 1.5 元/万字符等 |
 | Q06 | MiniMax 接入千问平台时，HD 3.5 元/万字符，Turbo 2 元/万字符，免费额度为无 | 千问/百炼模型价格表 | https://help.aliyun.com/zh/model-studio/model-pricing?disableWebsiteRedirect=true | A | 平台可接 MiniMax，但不算千问自研 TTS 免费额度 |
-| Q07 | 用户权益页实际有 `qwen-audio-3.0-tts-plus`、`qwen-audio-3.0-tts-flash` 各 10K chars | 用户截图 | `<本地截图> 21.36.51.png` | A | 两者为当前账号可直接使用的 Qwen-Audio-TTS 额度 |
-| Q08 | 用户权益页有 `cosyvoice-v1`、`cosyvoice-clone-v1` 各 10K chars，且显示永不过期 | 用户截图 | `<本地截图> 21.36.48.png` | A | 适合做免费系统音和免费克隆路线 |
-| Q09 | 两个 `qwen-audio-3.0-realtime` 模型各 1M tokens | 用户截图 | `<本地截图> 21.36.48.png` | A | 更适合实时语音交互，不按普通长稿 TTS 直接折算 |
+| Q07 | 用户权益页实际有 `qwen-audio-3.0-tts-plus`、`qwen-audio-3.0-tts-flash` 各 10K chars | 用户截图 | `<本地截图>2026-09-13 21.36.51.png` | A | 两者为当前账号可直接使用的 Qwen-Audio-TTS 额度 |
+| Q08 | 用户权益页有 `cosyvoice-v1`、`cosyvoice-clone-v1` 各 10K chars，且显示永不过期 | 用户截图 | `<本地截图>2026-09-13 21.36.48.png` | A | 适合做免费系统音和免费克隆路线 |
+| Q09 | 两个 `qwen-audio-3.0-realtime` 模型各 1M tokens | 用户截图 | `<本地截图>2026-09-13 21.36.48.png` | A | 更适合实时语音交互，不按普通长稿 TTS 直接折算 |
 | Q10 | `cosyvoice-v1 / longyuan` 试听基频中位数 164.4 Hz，与现役 `podcast-voice.wav` 相同 | 官方试听 + 本机分析 | https://platform.qianwenai.com/docs/developer-guides/speech/voice-list/cosyvoice | A | 候选系统音里最接近现役参考音 |
 
 ## 腾讯
@@ -48,9 +48,9 @@
 | V05 | Agent Plan 中 `doubao-seed-tts-2.0` 抵扣系数为 1350 AFP/万字符 | Agent Plan 套餐内 AFP 抵扣规则 | https://docs.volcengine.com/docs/82379/2516283?lang=zh | A | 计算公式为“文本字符数 / 10000 × 1350” |
 | V06 | Agent Plan 个人版 Small 为 40 元/月、20000 AFP；Medium 200 元/月、100000 AFP；Large 500 元/月、250000 AFP；Max 1000 元/月、500000 AFP | Agent Plan 套餐概览/活动页 | https://www.volcengine.com/activity/agentplan ; https://docs.volcengine.com/docs/82379/2366394 | B | 若 AFP 全部用于 TTS，等效约 2.7 元/万字符；现实中会被其他模型共享 |
 | V07 | 豆包语音合成当前活动页出现 16.8 元/10 万字符的限时首购价 | 火山引擎 AI 普惠季活动页 | https://www.volcengine.com/activity/ai618 | B | 限时活动，不能当长期标准价 |
-| V08 | 用户 Agent Plan Medium：5 小时额度 0/1 万 AFP；周额度 3.5 万/3.5 万，已用 99.68%；月额度 7 万/10 万，已用 70.25% | 用户截图 | `<本地截图> 21.49.50.png` | A | 周剩余约 112 AFP，月剩余 3 万 AFP |
-| V09 | Agent Plan TTS HTTP URL 为 `/api/v3/plan/tts/unidirectional`，Resource ID 为 `seed-tts-2.0` | 用户截图 | `<本地截图> 21.50.09.png` | A | 不使用普通 Ark `/api/v3`，避免额外费用 |
-| V10 | `doubao-seed-tts-2.0` 每万字符扣 1350 AFP | 用户截图/官方 AFP 规则 | `<本地截图> 21.50.49.png` | A | 8500 汉字一期约扣 1147.5 AFP |
+| V08 | 用户 Agent Plan Medium：5 小时额度 0/1 万 AFP；周额度 3.5 万/3.5 万，已用 99.68%；月额度 7 万/10 万，已用 70.25% | 用户截图 | `<本地截图>2026-09-13 21.49.50.png` | A | 周剩余约 112 AFP，月剩余 3 万 AFP |
+| V09 | Agent Plan TTS HTTP URL 为 `/api/v3/plan/tts/unidirectional`，Resource ID 为 `seed-tts-2.0` | 用户截图 | `<本地截图>2026-09-13 21.50.09.png` | A | 不使用普通 Ark `/api/v3`，避免额外费用 |
+| V10 | `doubao-seed-tts-2.0` 每万字符扣 1350 AFP | 用户截图/官方 AFP 规则 | `<本地截图>2026-09-13 21.50.49.png` | A | 8500 汉字一期约扣 1147.5 AFP |
 | V11 | 语音模型、Harness 没有 5 小时限额与周限额；开启超额后付费后仅在触达月限额时切换 | 官方超额后付费规则 | https://docs.volcengine.com/docs/82379/2516284 | A | 周额度耗尽不应直接拦 Agent Plan TTS |
 | V12 | 独立豆包语音新版统一使用 `/api/v3/tts/unidirectional`，TTS 1.0/2.0/ICL 2.0 分别用 `seed-tts-1.0`、`seed-tts-2.0`、`seed-icl-2.0` | 官方新版 HTTP 文档 | https://docs.volcengine.com/docs/DoubaoVoice/unidirectional-streaming-text-to-speech-http?lang=zh | A | 与 Agent Plan 的 `/plan/` 路径不同，Key 也独立 |
 | V13 | 音色设计入口为 `/api/v3/tts/voice_design` | 官方音色设计 HTTP 文档 | https://www.volcengine.com/docs/6561/2277844?lang=zh | A | 只做音色设计，不直接合成成品音频 |

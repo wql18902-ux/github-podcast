@@ -175,14 +175,14 @@ def run_episode(date: str, upto: str | None = None) -> EpisodeState:
 | **独立会话** | review 必须新开会话，不复用 draft 的会话 | 复用了就是自己审自己，产出的是自我辩护，不是挑错 |
 | **只挑错不重写** | prompt 禁止输出改写后的正文，只输出结构化问题列表 | 一旦允许它改，它就会「顺手重写」，变成第二个写稿的：额度翻倍、责任不清 |
 | **最多一轮** | `max_review_rounds: 1`。第二轮 draft 改完直接 verify → handoff | 跟「宁可短也别当天没稿」同一条原则：改稿不能把出稿卡死 |
-| **复用同一份规范** | 审稿判据 = `write-episode-prompt.md` + skill `podcast-depth-writing`，**不另写一套** | 两份规范必然漂移，等于自己给自己再造一个「口径对不上」 |
+| **复用同一份规范** | 审稿判据 = `write-episode-prompt.md` + `skills/podcast-depth-writing/SKILL.md`，**不另写一套** | 两份规范必然漂移，等于自己给自己再造一个「口径对不上」 |
 
 **审稿审什么**（全部可判定，不评品味）：
 
 | 审点 | 判据来源 |
 |---|---|
 | 每个设计点有没有说「解决什么问题 + 不做会怎样」 | prompt 的「禁 what without why」 |
-| 每个设计点是不是四句话结构（怎么做 / 为什么必须这么做 / 代价是什么 / 换成默认做法会怎样） | skill `podcast-depth-writing` |
+| 每个设计点是不是四句话结构（怎么做 / 为什么必须这么做 / 代价是什么 / 换成默认做法会怎样） | `skills/podcast-depth-writing/SKILL.md` |
 | 有没有翻案腔（「你以为…其实…」） | 项目红线 |
 | 有没有注水（同一设计点换说法、抽象演绎、比喻填字） | prompt 的「绝对禁止」 |
 | 有没有复述上一期讲过的内容 | `output/episodes.log` + 上一期稿子 |

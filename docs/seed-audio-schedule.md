@@ -7,7 +7,7 @@
 
 | 套 | 谁 | 时间 | 干什么 |
 |---|---|---|---|
-| 套1 | **WorkBuddy** 自动化「AI播客拆解写稿」（也支持手动 `bash scripts/daily-prepare.sh`） | 22:00 | fetch → 选料 → 拆解写稿（深度规范照 skill `podcast-depth-writing`）→ `scripts/verify-episode.sh` 验收 → 写状态 |
+| 套1 | **WorkBuddy** 自动化「AI播客拆解写稿」（也支持手动 `bash scripts/daily-prepare.sh`） | 22:00 | fetch → 选料 → 拆解写稿（深度规范照 `skills/podcast-depth-writing/SKILL.md`）→ `scripts/verify-episode.sh` 验收 → 写状态 |
 | 套2 | **豆包** App 定时任务「播客合成传网易云」——**就是本文这份指令** | 02:00 | 过两道闸 → 读 `latest-script.md` → seed-audio 合成 → 上传网易云 |
 
 写稿可能跑 2-4 小时（clone 源码 + 拆最多 3 个项目 + 写长稿），22:00 起跑正好给豆包 02:00 留出窗口。

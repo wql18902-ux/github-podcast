@@ -9,7 +9,7 @@
 
 ## 开工第一件事
 
-读 `config/audience.md`（没有就 `cp config/audience.example.md config/audience.md`）——讲给谁听、他的现实约束、类比从哪里取、什么话题避开，全在里面。
+读 `config/audience.md`——讲给谁听、他的现实约束、类比从哪里取、什么话题避开，全在里面。
 再读 `skills/podcast-depth-writing/SKILL.md`（深度写稿规范，与 `scripts/write-episode-prompt.md` 同一份）。
 按顺序执行，不要跳过。
 
@@ -108,7 +108,6 @@
 ```
 python3 scripts/check_prose.py <稿子路径>
 ```
-
 硬禁类（硬禁词 / 黑话 / 翻案句）命中必须清零；「建议改」类看得过来的就改，改不动不拦。
 冒号和破折号是口播稿的断句工具，本项目口径**忽略**，所以默认不查；想看要加 `--punct`。
 

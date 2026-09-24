@@ -11,7 +11,7 @@
 
 ## 写稿规范真相源（开工第一件事，读三份）
 
-1. **听众画像** → `config/audience.md`（没有就 `cp config/audience.example.md config/audience.md`）
+1. **听众画像** → `config/audience.md`
    整期稿子讲给谁听、他的现实约束是什么、类比只能从哪里取、什么话题要避开，**全在这一份里**。
    prompt 里不再写死任何个人信息；每次要「落回他的现实约束」时，回来读这个文件。
 2. **深度写稿规范** → `skills/podcast-depth-writing/SKILL.md`
@@ -178,7 +178,7 @@ README → 目录结构 → 入口文件 → 核心模块（**6-10 个**关键�
 
 ## 5. 写播客稿
 
-**规范照 skill `podcast-depth-writing` 执行**（本文件开头已要求先读它）。段落骨架仍用 DESIGN.md 第四节 7 段：
+**规范照 `skills/podcast-depth-writing/SKILL.md` 执行**（本文件开头已要求先读它）。段落骨架仍用 DESIGN.md 第四节 7 段：
 
 1. 开场从**最反直觉的具体事实**切入（skill 的「e」形结构），再回头交代项目是什么——不要用「这项目是什么」开场
 2. 这项目是什么 + 为什么值得听

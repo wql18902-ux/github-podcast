@@ -12,7 +12,7 @@ agent_created: true
 # podcast-agent · 播客内环
 
 > **单一真相源**：写稿规范原文在 `<项目根目录>/scripts/write-episode-prompt.md`，
-> 深度框架在 skill `podcast-depth-writing`。本 skill 是**跨 Agent 的入口与契约说明**
+> 深度框架在 `skills/podcast-depth-writing/SKILL.md`。本 skill 是**跨 Agent 的入口与契约说明**
 > （任何认 `~/.claude/skills` 的 Agent 通用：Claude Code / Codex / WorkBuddy 同一份）。
 > 冲突时以那两份为准。
 
@@ -52,7 +52,7 @@ cat <项目根目录>/agent/request.json
 ### 1. 按规范全文执行
 
 读并**全文执行** `scripts/write-episode-prompt.md`（那是执行手册，不要只扫标题）。
-深度标准照 skill `podcast-depth-writing`：一个设计点 = 四句话
+深度标准照 `skills/podcast-depth-writing/SKILL.md`：一个设计点 = 四句话
 （具体怎么做带值 → 为什么必须这么做 → 代价是什么 → 换成默认做法会怎样）。
 
 `request.json` 的 `brief` 里有：当日清单摘要、今天排期上写的选题、本期仓库、拼盘要求。
@@ -127,7 +127,7 @@ cd <项目根目录> && python3 -m agent.cli resume
 | 审点 | 判据来源 |
 |---|---|
 | 每个设计点有没有说「解决什么问题 + 不做会怎样」 | prompt 的「禁 what without why」 |
-| 每个设计点是不是四句话结构 | skill `podcast-depth-writing` |
+| 每个设计点是不是四句话结构 | `skills/podcast-depth-writing/SKILL.md` |
 | 有没有翻案腔（「你以为…其实…」） | 项目红线 |
 | 有没有注水（同一设计点换说法、抽象演绎、比喻填字） | prompt 的「绝对禁止」 |
 | 有没有复述上一期讲过的内容 | `output/episodes.log` + 上一期稿子 |
