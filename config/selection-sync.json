@@ -1,0 +1,25 @@
+{
+  "_note": "选题表同步配置。填好下面两个值才能用 scripts/feishu_sync.py；只填自己的表，别提交真 token。",
+  "base_token": "YOUR_BASE_TOKEN_HERE",
+  "table_id": "YOUR_TABLE_ID_HERE",
+  "table_name": "选题",
+  "views": [
+    "灵感收件箱",
+    "本周候选",
+    "已讲",
+    "归档"
+  ],
+  "fields": [
+    "标题",
+    "类型",
+    "项目名",
+    "链接",
+    "一句话说明",
+    "为什么值得讲",
+    "状态",
+    "优先级",
+    "来源",
+    "本地ID",
+    "更新时间"
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "_readme": [
+    "全部口径的唯一真相源。改行为改这里，不改代码（设计稿 §2）。",
+    "两类字段要分清：",
+    "  - 生效：外环 agent/ 真读它（闸门判据、预算、超时、审稿开关、合成路线）。",
+    "  - 文档镜像：只记录现状，改它不生效（schedule.draft_at 真正生效在 WorkBuddy 自动化面板）。",
+    "带 _note 的键是给人看的注释，代码不读。"
+  ],
+  "version": 1,
+  "project_root": ".",
+
+  "host": {
+    "_note": "谁在唤醒外环。只影响日志与提示文案，不改任何行为——换宿主不改这一份流程。",
+    "current": "workbuddy",
+    "known": ["workbuddy", "hermes", "claude-code", "codex"]
+  },
+
+  "schedule": {
+    "_note": "文档镜像：真正的定时在各家自动化面板里。这里只用于算 synth_expect_by 与兜底窗口。",
+    "draft_at": "00:34",
+    "synth_expect_by": "02:40",
+    "fallback_at": "03:00"
+  },
+
+  "models": {
+    "drafting": "deepseek-v4.1-flash",
+    "review": "deepseek-v4.1-flash",
+    "allow_switch": false,
+    "_note_allow_switch": "false = 不许自动换模型。设计稿 §12.1 第 2 条：自动化能否锁定模型无文档，只能在 prompt 里写死要求。"
+  },
+
+  "budget": {
+    "max_tokens_per_episode": 120000,
+    "_note_tokens": "查不到「一积分 = 多少 token」的公开口径（§12.1 第 1 条）。所以这个值只记账、不硬拦：agent_runs.est_tokens 先攒实测值，攒够几期再决定要不要当硬阈值。",
+    "max_attempts_draft": 2,
+    "max_synth_attempts": 2,
+    "max_projects_per_episode": 3,
+    "_note_projects": "设计稿 §12.1 第 3 条：从 3 降到 2 会掉进 6500-8500 的 SHORT 区（实测三项目拼盘 9910 汉字 / 单项目 3600-4025）。先保 3，省额度优先省在「读文件更省着读」上。",
+    "min_files_read": 6
+  },
+
+  "timeouts_s": {
+    "prepare": 1200,
+    "draft": 10800,
+    "verify": 120,
+    "review": 1800,
+    "handoff": 300,
+    "await_synth": 5400,
+    "fallback": 7200,
+    "publish": 600
+  },
+
+  "gates": {
+    "breakdown": {
+      "min_fields": 10,
+      "min_bytes": 8000,
+      "min_value_lines": 20,
+      "require_one_of_sections": ["二次深读", "取证台账", "取舍台账"],
+      "_note_sections": "只要求「至少一节」：好样本 rev.2 只有「取证台账」，硬卡某一节会把它判死（verify-episode.sh 里有同样的注释）。"
+    },
+    "script": {
+      "require_info_deadline": true,
+      "blacklist_file": "scripts/blacklist-projects.txt",
+      "blacklist_head_lines": 8,
+      "_note_head_lines": "只看稿子开头 8 行：讲现役拆解时项目名一定出现在标题区；正文里顺带对比是允许的。"
+    },
+    "length": {
+      "min_chars": 8500,
+      "fail_below_chars": 6500,
+      "chars_per_minute": 168,
+      "_note_speed": "168 是**跟着闸门脚本走**的值（verify-episode.sh 用 ÷168 印预估分钟），目的是让 DB 里的数和 latest-status.txt 里的数完全一致，漂移检测才有意义。写稿 prompt §0.5 主张改按 170-185 估——那处没裁决前不要单方面改这里，否则就是又造一个「口径对不上」。裁决后只改这一个数。",
+      "duration_ratio_accept": [0.8, 1.2]
+    },
+    "product": {
+      "_note": "pre_upload 钩子用：拦「上传半截文件」。豆包那班可见性为零（§12.2），它跑一半失败留下半截文件时，外环只能靠这两条降噪，治不了根。",
+      "min_bytes": 1000000,
+      "min_minutes": 20
+    }
+  },
+
+  "review": {
+    "enabled": true,
+    "max_rounds": 1,
+    "trigger_severity": "high",
+    "allow_rewrite": false,
+    "_note_allow_rewrite": "冗余但必要的双保险：prompt 里已禁重写，配置里再声明一次，防 prompt 被改动后失去约束（§6.4）。",
+    "checks": ["what_without_why", "water", "echo_prev", "no_source", "flip_tone", "news_dup"],
+    "report_path": "output/{date}-review.md",
+    "_note_budget": "它是新增的额度消耗方。头 3 期实测积分，超预算的收窄顺序：先砍 checks 到 [what_without_why, water]，再不行才关 enabled。"
+  },
+
+  "synth": {
+    "primary": "doubao_app",
+    "fallback": "local_voxcpm2",
+    "pace": 4.0,
+    "segment_target_chars": 480,
+    "denoise": "deesser",
+    "poll_interval_s": 60,
+    "script_max_age_h": 12,
+    "_note_script_max_age": "兜底合成只认 12 小时内的稿子——跟豆包那班闸 b 同一条规矩。超龄还合成 = 把上一期重录一遍，这正是文档里记过的事故。",
+    "_note_product_detect": "判「豆包出成品了没」用 mtime 比 latest-script.md 新，**不许按文件名日期前缀判**——豆包产物叫「项目名-播客完整版-NNmin.m4a」，不带日期（scripts/local-fallback.sh 的 ls output/audio/${TODAY}* 就是踩了这个坑，永远匹配不到）。"
+  },
+
+  "upload": {
+    "target": "netease_cloud",
+    "cli": "ncm-cli",
+    "_note_double_upload": "只有本地兜底那条线由外环上传；豆包那条线自己会上传（docs/seed-audio-schedule.md 第 3 步），外环只做产物校验，不重复传。"
+  },
+
+  "notify": {
+    "feishu": true,
+    "channel": "lark_im_self",
+    "on": ["draft_failed", "no_audio", "upload_failed", "doubao_login_expired"],
+    "_note_channel": "走 lark-cli im 发自己，**不用 selection_push.py**：那个脚本是往选题库写一条记录再同步飞书，拿它当告警通道会在选题库里堆一行行假选题。"
+  }
+}

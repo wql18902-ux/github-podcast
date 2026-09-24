@@ -1,0 +1,39 @@
+# 大文件 / 克隆仓（cache/ 是 GB 级的项目源码缓存，随时可重建）
+cache/
+
+# 合成产物（音频不进库）
+output/audio/
+output/tts-console/
+output/tts-audition/
+output/probe/
+output/research/audio/
+
+# 运行时数据库（fetch.py 每天重建）
+*.db
+*.db.*
+
+# 运行日志（服务/launchd 输出，不是产物）
+output/*.log
+output/**/*.log
+
+# 听众画像：填好的那份默认忽略。
+# 它是整套定制化的入口，装的是你的私事（设备、主线、日常）。
+# 进库的只有模板 config/audience.example.md；你填的那份永远本地。
+config/audience.md
+
+# 本地参考音色（克隆模式用，是本人生声，不该公开）
+voices/*.wav
+voices/*.mp3
+
+# 系统与工具目录
+.DS_Store
+.claude/
+.hermes/
+.workbuddy/
+.zcode/
+.playwright-cli/
+.playwright-mcp/
+
+# Python 字节码缓存
+__pycache__/
+*.pyc

@@ -1,0 +1,10 @@
+# 项目黑名单 —— 已被官方继任 / 停服 / 消费级下线，不许当成本期主角
+#
+# 格式：一行一个匹配串（大小写不敏感，子串匹配）。以 # 开头的是注释。
+# 用法：scripts/verify-episode.sh 检查稿子开头（标题 + 前 8 行）是否把它当本期主题。
+#       正文里顺带提到它做对比，是允许的；拆解笔记里附录留档，也是允许的。
+# 维护：加一条就必须在行尾写明官方口径与日期，不许凭印象加。
+
+google-gemini/gemini-cli	# 官方 2026-05-19 宣布由 Antigravity CLI（agy，Go，不开源）接替；2026-06-18 消费级停服
+Gemini CLI	# 同上，产品名形式
+gitleaks	# README 顶部官方警告（2026-09-19 读取）：「Gitleaks is feature complete. I'm not merging new features… Future releases will be security patches only. I'm shifting my focus to Betterleaks」；继任者 betterleaks/betterleaks（⭐1976，建仓 2026-02-03，push 2026-09-18）。注意：此条比 gemini-cli 轻一档（仍在出安全补丁），若你认为功能冻结不算「被继任」，删掉本行即可

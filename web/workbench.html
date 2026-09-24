@@ -1,0 +1,1524 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>播客选题台</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#F7F6F4;
+  --ink-900:#16181D; --ink-700:#3B3F47; --ink-600:#5A5F68;
+  --ink-500:#6C727C; --ink-400:#949AA4; --ink-300:#B7BCC4;
+  --hair:rgba(22,24,29,.09);
+  --hair-soft:rgba(22,24,29,.07);
+  --hair-strong:rgba(22,24,29,.12);
+  --hair-stronger:rgba(22,24,29,.13);
+  --glass:rgba(255,255,255,.5);
+  --glass-mid:rgba(255,255,255,.62);
+  --glass-high:rgba(255,255,255,.8);
+  --glass-card:rgba(255,255,255,.85);
+  --r-card:14px; --r-idea:18px; --r-btn:10px; --r-chip:15px; --r-tag:7px;
+  --sh-card:0 8px 20px -6px rgba(22,24,29,.07);
+  --sh-idea:0 10px 28px -6px rgba(22,24,29,.09);
+  --sh-btn:0 4px 12px -2px rgba(22,24,29,.2);
+  --green:#2A6B49; --green-raw:#3F9C6B;
+  --blue:#2C5C9E; --amber:#8A6420;
+  --mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{margin:0;background:var(--bg);color:var(--ink-900);font:14px/1.55 var(--sans);-webkit-font-smoothing:antialiased;}
+button,input,select,textarea{font:inherit;color:inherit;}
+button{cursor:pointer;}
+::selection{background:rgba(22,24,29,.12);}
+
+/* ---------- 背景光晕（毛玻璃的折射底） ---------- */
+.glow{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
+.glow-warm{width:1020px;height:1020px;left:-260px;top:-420px;
+  background:radial-gradient(circle,rgba(246,215,178,.85) 0%,rgba(246,215,178,.16) 55%,rgba(246,215,178,0) 100%);}
+.glow-cool{width:1120px;height:1120px;right:-300px;bottom:-500px;
+  background:radial-gradient(circle,rgba(186,207,237,.8) 0%,rgba(186,207,237,.15) 55%,rgba(186,207,237,0) 100%);}
+
+/* ---------- 骨架 ---------- */
+.app{position:relative;z-index:1;display:flex;height:100vh;overflow:hidden;}
+.sidebar{flex:0 0 280px;width:280px;display:flex;flex-direction:column;
+  background:var(--glass);border-right:1px solid var(--hair);
+  -webkit-backdrop-filter:blur(36px) saturate(150%);backdrop-filter:blur(36px) saturate(150%);}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ---------- 侧栏 ---------- */
+.side-head{height:64px;padding:0 18px;display:flex;align-items:center;gap:10px;}
+.brand{font-size:14px;font-weight:600;letter-spacing:-.01em;}
+.side-nav{display:flex;flex-direction:column;gap:2px;padding:0 12px;}
+.nav-item{height:38px;padding:0 10px;border-radius:9px;border:1px solid transparent;background:transparent;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
+  color:var(--ink-700);font-size:13px;transition:background .12s ease;}
+.nav-item:hover{background:rgba(255,255,255,.45);}
+.nav-item.active{background:rgba(255,255,255,.92);border-color:var(--hair-strong);
+  box-shadow:0 1px 3px rgba(22,24,29,.07);color:var(--ink-900);font-weight:500;}
+.nav-l{display:flex;align-items:center;gap:10px;min-width:0;}
+.nav-l svg{flex:0 0 auto;}
+.nav-c{font:400 11px/1 var(--mono);color:var(--ink-300);flex:0 0 auto;}
+.side-div{height:1px;background:var(--hair-soft);margin:10px 14px;}
+.side-foot{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 12px 12px;}
+.side-spacer{flex:1;}
+.sync-card{border-radius:12px;background:rgba(255,255,255,.78);border:1px solid rgba(22,24,29,.11);
+  padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 12px -4px rgba(22,24,29,.06);}
+.sync-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.sync-left{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;color:var(--ink-700);}
+.sync-time{font:400 10.5px/1 var(--mono);color:var(--ink-400);}
+.sync-btns{display:flex;gap:8px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green-raw);flex:0 0 auto;display:inline-block;}
+.dot.bad{background:#D14343;}
+
+/* ---------- 页头 ---------- */
+.page-head{height:70px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex:0 0 auto;}
+.page-title{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0;}
+.page-sub{font-size:12px;color:var(--ink-400);margin:3px 0 0;}
+.head-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+.head-chip{height:30px;padding:0 13px;border-radius:var(--r-chip);border:1px solid rgba(22,24,29,.1);
+  background:rgba(255,255,255,.6);display:inline-flex;align-items:center;
+  font:400 11.5px/1 var(--mono);color:var(--ink-500);}
+.hairline{height:1px;background:var(--hair-soft);margin:0 32px;flex:0 0 auto;}
+
+/* ---------- 内容 ---------- */
+/* 用 flex 列布局：稿件索引页要占满高度，左右两栏各自独立滚动（其余页照常整页滚） */
+.content{flex:1;min-height:0;overflow:auto;padding:20px 32px 26px;display:flex;flex-direction:column;align-items:stretch;}
+#tab-selection,#tab-candidates,#tab-told,#tab-tts{flex:0 0 auto;}
+#tab-docs:not([hidden]){flex:1 1 auto;min-height:0;display:flex;overflow:hidden;}
+.content::-webkit-scrollbar{width:10px;}
+.content::-webkit-scrollbar-thumb{background:rgba(22,24,29,.1);border-radius:5px;border:3px solid transparent;background-clip:content-box;}
+.split{display:flex;gap:24px;align-items:flex-start;}
+.col-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:18px;}
+.col-rail{flex:0 0 320px;width:320px;display:flex;flex-direction:column;gap:14px;}
+
+/* ---------- 卡片 ---------- */
+/* 持久卡片不用 backdrop-filter：它们叠在近纯色底上，提高不透明度视觉几乎一样，
+   但滚动/重绘时省掉逐帧重采样（性能原则见 docs/工作台选题台.md） */
+.card{border-radius:var(--r-card);background:var(--glass-card);border:1px solid var(--hair-strong);
+  box-shadow:var(--sh-card);}
+.card-pad{padding:16px;}
+.list-card{border-radius:var(--r-card);background:rgba(255,255,255,.5);border:1px solid rgba(22,24,29,.11);
+  padding:2px 16px;}
+.rail-card{border-radius:var(--r-card);padding:16px;display:flex;flex-direction:column;gap:12px;
+  background:var(--glass-card);border:1px solid var(--hair-strong);box-shadow:var(--sh-card);}
+.rail-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.rail-title{font-size:12px;font-weight:500;color:var(--ink-500);letter-spacing:.02em;}
+.rail-desc{font-size:11.5px;line-height:18px;color:var(--ink-400);}
+.rail-rule{height:1px;background:var(--hair-soft);}
+
+/* ---------- 灵感输入卡 ---------- */
+.idea{border-radius:var(--r-idea);padding:14px 14px 12px;display:flex;flex-direction:column;gap:12px;
+  background:rgba(255,255,255,.8);border:1px solid var(--hair-stronger);
+  box-shadow:var(--sh-idea),inset 0 1px 1px rgba(255,255,255,.9);}
+.idea-top{padding:0 6px;display:flex;align-items:center;min-height:48px;}
+.idea-top input{border:0;background:transparent;outline:none;width:100%;font-size:14px;padding:0;color:var(--ink-900);}
+.idea-top input::placeholder{color:var(--ink-300);}
+.idea-extra{display:none;flex-direction:column;gap:10px;padding:0 6px;}
+.idea-extra.open{display:flex;}
+.field label{display:block;font-size:11.5px;color:var(--ink-400);margin:0 0 5px;}
+.field input,.field textarea{width:100%;border:1px solid var(--hair-strong);background:rgba(255,255,255,.82);
+  border-radius:10px;padding:9px 11px;font-size:12.5px;outline:none;transition:border-color .12s ease,box-shadow .12s ease;}
+.field textarea{min-height:64px;resize:vertical;line-height:19px;}
+.field input:focus,.field textarea:focus{border-color:rgba(22,24,29,.28);box-shadow:0 0 0 3px rgba(22,24,29,.05);}
+.idea-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+/* ---------- 按钮 / 胶囊 / 标签 ---------- */
+.btn{height:36px;padding:0 16px;border-radius:var(--r-btn);border:1px solid var(--hair-strong);
+  background:rgba(255,255,255,.7);color:var(--ink-700);font-size:12.5px;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;white-space:nowrap;
+  transition:background .12s ease,border-color .12s ease;}
+.btn:hover{background:rgba(255,255,255,.92);}
+.btn.primary{background:var(--ink-900);border-color:var(--ink-900);color:#fff;font-weight:500;box-shadow:var(--sh-btn);}
+.btn.primary:hover{background:#26282F;}
+.btn.sm{height:32px;padding:0 14px;border-radius:9px;font-size:12px;}
+.btn.block{width:100%;}
+.btn.icon{width:34px;padding:0;flex:0 0 34px;}
+.btn.icon.sm{width:26px;height:26px;flex:0 0 26px;border-radius:var(--r-tag);}
+.btn[disabled]{opacity:.45;cursor:not-allowed;}
+.chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.chip{height:30px;padding:0 12px;border-radius:var(--r-chip);border:1px solid rgba(22,24,29,.1);
+  background:rgba(255,255,255,.6);color:var(--ink-500);font-size:12px;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.chip:hover{background:rgba(255,255,255,.9);}
+.chip.on{background:var(--ink-900);border-color:var(--ink-900);color:#fff;font-weight:500;}
+.tag{height:24px;padding:0 9px;border-radius:var(--r-tag);font-size:11px;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;}
+.tag.sched-date{background:rgba(62,109,181,.12);color:#3E6DB5;font-weight:500;}
+.tag.pending{background:#FAF0DB;color:var(--amber);}
+.tag.active{background:#EBF2FC;color:var(--blue);}
+.tag.done{background:#EAF5EE;color:var(--green);}
+.pill{height:26px;padding:0 10px;border-radius:var(--r-tag);font-size:11.5px;display:inline-flex;align-items:center;
+  border:1px solid rgba(22,24,29,.1);background:rgba(255,255,255,.72);color:var(--ink-500);
+  text-decoration:none;white-space:nowrap;}
+.pill:hover{background:rgba(255,255,255,.95);}
+.pill.audio{background:rgba(63,156,107,.1);border-color:rgba(63,156,107,.22);color:var(--green);font-weight:500;}
+.pill.none{background:rgba(22,24,29,.04);border-color:rgba(22,24,29,.08);color:var(--ink-300);}
+.pill.wait{background:#FAF0DB;border-color:rgba(200,138,63,.25);color:var(--amber);font-weight:500;}
+
+/* ---------- 分组 / 列表项 ---------- */
+.group{display:flex;flex-direction:column;}
+.group-head{height:32px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.group-title{font-size:12px;font-weight:500;color:var(--ink-500);letter-spacing:.02em;}
+.group-count{font:400 11px/1 var(--mono);color:var(--ink-300);}
+.group-rule{height:1px;background:var(--hair-soft);}
+.item{padding:14px 0 0;display:flex;flex-direction:column;gap:7px;}
+.item-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.item-title{font-size:13.5px;font-weight:500;color:var(--ink-900);flex:1;min-width:0;overflow-wrap:anywhere;}
+.item-desc{font-size:12px;line-height:19px;color:var(--ink-500);overflow-wrap:anywhere;}
+.item-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.item-meta{font-size:11px;color:var(--ink-400);min-width:0;overflow-wrap:anywhere;}
+.item-acts{display:flex;gap:6px;flex:0 0 auto;}
+.item-rule{height:1px;background:var(--hair-soft);}
+.empty{padding:22px 0;text-align:center;color:var(--ink-300);font-size:12.5px;}
+
+/* ---------- 统计行 ---------- */
+.stat-row{height:30px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--ink-700);}
+.stat-l{display:flex;align-items:center;gap:8px;min-width:0;}
+.stat-b{width:7px;height:7px;border-radius:50%;flex:0 0 auto;}
+.stat-v{font:500 12px/1 var(--mono);color:var(--ink-900);}
+.kv{height:30px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--ink-500);}
+.kv b{font:500 12px/1 var(--mono);color:var(--ink-900);}
+
+/* ---------- 候选池 ---------- */
+.filter-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.filter-bar .chips{flex:1 1 auto;min-width:0;}
+.search{width:300px;max-width:100%;height:40px;border-radius:var(--r-btn);padding:0 12px;
+  background:rgba(255,255,255,.72);border:1px solid var(--hair-strong);display:flex;align-items:center;gap:8px;}
+.search input{border:0;background:transparent;outline:none;flex:1;min-width:0;font-size:12.5px;}
+.search input::placeholder{color:var(--ink-300);}
+.cand{padding:13px 0 0;display:flex;flex-direction:column;gap:6px;}
+.cand-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.cand-name{font:500 13px/1.4 var(--mono);color:var(--ink-900);flex:1;min-width:0;overflow-wrap:anywhere;text-decoration:none;}
+a.cand-name:hover{text-decoration:underline;}
+.cand-meta{font-size:11px;color:var(--ink-400);}
+.cand-desc{font-size:11.5px;line-height:18px;color:var(--ink-500);overflow-wrap:anywhere;}
+.more-row{padding:16px 0 14px;}
+
+/* ---------- 已讲 ---------- */
+.ep{padding:14px 0 0;display:flex;flex-direction:column;gap:7px;}
+.ep-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.ep-l{display:flex;align-items:center;gap:10px;min-width:0;}
+.ep-no{font:400 11px/1 var(--mono);color:var(--ink-400);flex:0 0 auto;}
+.ep-title{font-size:13px;font-weight:500;color:var(--ink-900);overflow-wrap:anywhere;}
+.ep-date{font:400 11px/1 var(--mono);color:var(--ink-400);flex:0 0 auto;}
+.ep-repos{font-size:11px;color:var(--ink-400);overflow-wrap:anywhere;}
+.ep-acts{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* ---------- 稿件索引 ---------- */
+/* 占满剩余高度；左右两栏各自滚动，滚动稿件正文时左列表不动 */
+.docs-split{flex:1 1 auto;min-height:0;display:flex;gap:24px;align-items:stretch;}
+.docs-left{flex:0 0 340px;width:340px;display:flex;flex-direction:column;gap:12px;min-height:0;}
+.doc-list{flex:1 1 auto;min-height:0;overflow:auto;border-radius:12px;padding:4px;background:rgba(255,255,255,.5);border:1px solid rgba(22,24,29,.11);}
+.doc-list::-webkit-scrollbar{width:8px;}
+.doc-list::-webkit-scrollbar-thumb{background:rgba(22,24,29,.1);border-radius:4px;border:2px solid transparent;background-clip:content-box;}
+.docs-right{flex:1 1 auto;min-width:0;min-height:0;overflow:auto;padding-bottom:8px;}
+.docs-right::-webkit-scrollbar{width:10px;}
+.docs-right::-webkit-scrollbar-thumb{background:rgba(22,24,29,.1);border-radius:5px;border:3px solid transparent;background-clip:content-box;}
+.doc-link{display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;
+  border-radius:9px;padding:10px 11px;transition:background .12s ease;}
+.doc-link:hover{background:rgba(255,255,255,.6);}
+.doc-link.on{background:rgba(255,255,255,.92);border-color:var(--hair-strong);}
+.doc-link b{display:block;font-size:12.5px;font-weight:500;color:var(--ink-700);overflow-wrap:anywhere;}
+.doc-link.on b{color:var(--ink-900);}
+.doc-link span{display:block;font-size:10.5px;color:var(--ink-400);margin-top:3px;}
+.reader{border-radius:var(--r-card);padding:26px 28px;min-height:420px;
+  background:rgba(255,255,255,.85);border:1px solid var(--hair-strong);box-shadow:var(--sh-card);}
+/* 阅读器内嵌音频条 */
+.doc-audio{display:flex;align-items:center;gap:12px;margin:14px 0 0;padding:10px 12px;
+  border-radius:12px;background:rgba(63,156,107,.07);border:1px solid rgba(63,156,107,.18);}
+.doc-audio audio{flex:1;min-width:0;height:36px;}
+.doc-audio-label{font-size:11px;font-weight:500;color:var(--green);white-space:nowrap;flex:0 0 auto;}
+.doc-toc{margin:14px 0 0;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.55);border:1px solid var(--hair-soft);}
+.doc-toc-title{font-size:11px;font-weight:500;color:var(--ink-400);letter-spacing:.06em;margin:0 0 8px;}
+.doc-toc a{display:block;font-size:12px;line-height:1.9;color:var(--ink-600);text-decoration:none;overflow-wrap:anywhere;}
+.doc-toc a:hover{color:var(--ink-900);}
+.doc-toc a.lv2{padding-left:14px;}
+.doc-toc a.lv3,.doc-toc a.lv4,.doc-toc a.lv5,.doc-toc a.lv6{padding-left:28px;font-size:11.5px;color:var(--ink-400);}
+.doc-repos{margin:12px 0 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.doc-repos .rp-label{font-size:11px;color:var(--ink-400);flex:0 0 auto;}
+.repo-pill{height:26px;padding:0 10px;border-radius:var(--r-tag);font-size:11.5px;display:inline-flex;align-items:center;gap:5px;
+  border:1px solid rgba(44,92,158,.22);background:rgba(44,92,158,.07);color:var(--blue);
+  text-decoration:none;font:500 11.5px/1 var(--mono);white-space:nowrap;}
+.repo-pill:hover{background:rgba(44,92,158,.14);}
+/* 点击目录跳转时给目标标题一点高亮反馈 */
+.article h1:target,.article h2:target,.article h3:target,.article h4:target{animation:tocFlash 1.6s ease;}
+@keyframes tocFlash{0%{background:rgba(63,156,107,.22);}100%{background:transparent;}}
+.reader-title{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0;}
+.reader-meta{font-size:11px;color:var(--ink-400);margin:8px 0 0;overflow-wrap:anywhere;}
+.plain{margin:16px 0 0;border-radius:10px;background:#FCF7EC;border:1px solid rgba(200,138,63,.18);
+  padding:16px;display:flex;flex-direction:column;gap:10px;}
+.plain-h{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--amber);}
+.plain-b{font-size:12.5px;line-height:21px;color:var(--ink-600);}
+.reader-rule{height:1px;background:var(--hair-soft);margin:20px 0 16px;}
+.reader-sec{font-size:11px;font-weight:500;color:var(--ink-400);letter-spacing:.06em;margin:0 0 12px;}
+/* 技术拆解原文默认折叠（见 docs/工作台选题台.md「拆解稿显示」） */
+details.tech > summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;margin:0;user-select:none;}
+details.tech > summary::-webkit-details-marker{display:none;}
+details.tech > summary::before{content:'';width:5px;height:5px;flex:0 0 auto;
+  border-right:1.4px solid var(--ink-400);border-bottom:1.4px solid var(--ink-400);
+  transform:rotate(-45deg);transition:transform .15s ease;}
+details.tech[open] > summary::before{transform:rotate(45deg);}
+details.tech[open] > summary{margin-bottom:14px;}
+
+/* ---------- Markdown 渲染 ---------- */
+.article{font-size:13px;line-height:1.75;color:var(--ink-700);}
+.article h1,.article h2,.article h3{line-height:1.35;letter-spacing:-.01em;color:var(--ink-900);}
+.article h1{font-size:19px;margin:0 0 14px;}
+.article > h1:first-child{display:none;}   /* 正文首标题与阅读器标题重复，隐掉 */
+.article h2{font-size:16px;margin:26px 0 10px;}
+.article h3{font-size:14px;margin:20px 0 8px;}
+.article p{margin:0 0 12px;}
+.article ul,.article ol{margin:0 0 12px;padding-left:22px;}
+.article li{margin:3px 0;}
+.article pre.code{overflow:auto;padding:14px;border-radius:10px;background:rgba(22,24,29,.04);
+  border:1px solid var(--hair-soft);font:12px/1.6 var(--mono);color:var(--ink-700);}
+.article code{font:90% var(--mono);background:rgba(22,24,29,.05);padding:1px 4px;border-radius:4px;}
+.article table{width:100%;border-collapse:collapse;margin:0 0 14px;font-size:12px;}
+.article th,.article td{border:1px solid var(--hair);padding:7px 9px;vertical-align:top;text-align:left;}
+.article th{background:rgba(22,24,29,.03);font-weight:500;}
+.article blockquote{margin:0 0 12px;padding:0 14px;color:var(--ink-500);border-left:2px solid var(--hair-strong);}
+.article a{color:var(--blue);}
+.article hr{border:0;height:1px;background:var(--hair);margin:20px 0;}
+
+/* ---------- 抽屉 / 弹窗 / 提示 ---------- */
+.drawer{position:fixed;inset:0;z-index:60;display:none;}
+.drawer.open{display:block;}
+.drawer-mask{position:absolute;inset:0;background:rgba(22,24,29,.32);}
+.drawer-body{position:absolute;top:0;right:0;height:100%;width:min(680px,100%);overflow:auto;
+  background:rgba(252,251,250,.92);-webkit-backdrop-filter:blur(40px) saturate(160%);backdrop-filter:blur(40px) saturate(160%);
+  border-left:1px solid var(--hair-strong);padding:26px 26px 34px;box-shadow:-20px 0 60px -20px rgba(22,24,29,.18);}
+.drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;}
+.modal{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(22,24,29,.38);padding:20px;}
+.modal.open{display:grid;}
+.modal-card{width:min(620px,100%);max-height:86vh;overflow:auto;border-radius:16px;padding:24px;
+  background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(40px);backdrop-filter:blur(40px);
+  border:1px solid var(--hair-strong);box-shadow:0 30px 70px -20px rgba(22,24,29,.3);}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:90;
+  background:rgba(22,24,29,.92);color:#fff;padding:10px 16px;border-radius:10px;font-size:12.5px;
+  max-width:min(92vw,680px);display:none;box-shadow:0 12px 30px -8px rgba(22,24,29,.4);}
+.toast.error{background:#B91C1C;}
+.task-running{font-size:12.5px;color:var(--blue);display:flex;align-items:center;gap:8px;}
+.report{display:flex;flex-direction:column;gap:14px;margin-top:14px;}
+.report h4{margin:0 0 5px;font-size:12px;font-weight:500;color:var(--ink-500);letter-spacing:.02em;}
+.report .soft{background:rgba(22,24,29,.03);border:1px solid var(--hair-soft);border-radius:10px;padding:12px;}
+.report ol{margin:0;padding-left:20px;font-size:12.5px;line-height:1.7;color:var(--ink-700);}
+.report .v{font-size:12.5px;line-height:1.7;color:var(--ink-700);}
+.sr-label{display:block;font-size:11.5px;color:var(--ink-400);margin:14px 0 5px;}
+.sr-select,.sr-textarea{width:100%;border:1px solid var(--hair-strong);background:rgba(255,255,255,.85);
+  border-radius:10px;padding:9px 11px;font-size:12.5px;outline:none;}
+.sr-textarea{min-height:70px;resize:vertical;line-height:19px;}
+.sr-select:disabled{opacity:.6;cursor:not-allowed;}
+
+/* ---------- 合成接入 ---------- */
+.tts-split{display:flex;gap:24px;align-items:flex-start;}
+.tts-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:18px;}
+.tts-rail{flex:0 0 300px;width:300px;display:flex;flex-direction:column;gap:14px;}
+.tts-card{border-radius:var(--r-card);padding:16px;display:flex;flex-direction:column;gap:12px;
+  background:var(--glass-card);border:1px solid var(--hair-strong);box-shadow:var(--sh-card);}
+.tts-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.tts-card-title{font-size:12px;font-weight:500;color:var(--ink-500);letter-spacing:.02em;}
+.tts-cmd{font:11.5px/1.6 var(--mono);color:var(--ink-700);background:rgba(22,24,29,.04);
+  border:1px solid var(--hair-soft);border-radius:10px;padding:10px 12px;overflow-wrap:anywhere;}
+.tts-prow{padding:13px 0 0;display:flex;flex-direction:column;gap:6px;}
+.tts-prow-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.tts-prow-name{font-size:13.5px;font-weight:500;color:var(--ink-900);flex:1;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tts-prow-meta{font:11px/1.6 var(--mono);color:var(--ink-400);overflow-wrap:anywhere;}
+.tts-prow-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.tts-form{display:flex;flex-direction:column;gap:2px;}
+.tts-two{display:flex;gap:12px;}
+.tts-two > *{flex:1;min-width:0;}
+.tts-audiofile{display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;
+  border-radius:9px;padding:9px 11px;font-size:12.5px;color:var(--ink-700);overflow-wrap:anywhere;}
+.tts-audiofile:hover{background:rgba(255,255,255,.6);}
+.tts-audiofile.on{background:rgba(255,255,255,.92);border-color:var(--hair-strong);}
+.tts-audiofile span{display:block;font:400 10.5px/1 var(--mono);color:var(--ink-400);margin-top:3px;}
+audio#ttsPlayer{width:100%;margin-top:12px;}
+.tts-note{font-size:11px;color:var(--ink-400);line-height:17px;}
+.tts-adapter-row{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:17px;color:var(--ink-500);}
+.tts-adapter-row b{font:500 11px/1.6 var(--mono);color:var(--ink-700);flex:0 0 auto;}
+
+/* ---------- 三处折叠（P1f，状态落 localStorage wb.ui）---------- */
+.g-arrow{display:inline-block;width:15px;color:var(--ink-400);font-size:10px;}
+.group-head{cursor:pointer;user-select:none;}
+.docs-left-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.docs-expand{display:none;flex:0 0 30px;align-self:flex-start;}
+body.docs-left-collapsed .docs-left{display:none;}
+body.docs-left-collapsed .docs-expand{display:inline-flex;}
+/* 侧栏折叠只在桌面布局生效（窄屏侧栏本来就是顶栏） */
+@media (min-width:761px){
+  .side-toggle{flex:0 0 28px;margin-left:auto;}
+  body.side-collapsed .sidebar{flex:0 0 64px;width:64px;padding-left:8px;padding-right:8px;}
+  body.side-collapsed .side-toggle{margin-left:0;}
+  body.side-collapsed .side-toggle svg{transform:rotate(180deg);}
+  body.side-collapsed .brand,
+  body.side-collapsed .nav-c,
+  body.side-collapsed .side-div,
+  body.side-collapsed .side-foot{display:none;}
+  body.side-collapsed .nav-item{padding:0 6px;}
+  body.side-collapsed .nav-l{justify-content:center;}
+  body.side-collapsed .nav-l span{display:none;}
+}
+
+@media (max-width:1180px){
+  .col-rail{flex:0 0 280px;width:280px;}
+  .docs-left{flex:0 0 290px;width:290px;}
+}
+@media (max-width:940px){
+  .split{flex-direction:column;}
+  .docs-split{flex-direction:column;}
+  /* 窄屏退回整页滚动，列表和阅读器不再锁高 */
+  #tab-docs:not([hidden]){display:block;overflow:visible;}
+  .docs-left,.docs-right{overflow:visible;}
+  .doc-list{max-height:320px;}
+  .col-rail,.docs-left{flex:1 1 auto;width:100%;}
+}
+@media (max-width:760px){
+  .app{flex-direction:column;}
+  .sidebar{flex:0 0 auto;width:100%;border-right:0;border-bottom:1px solid var(--hair);}
+  .side-head{height:56px;padding:0 16px;}
+  .side-nav{flex-direction:row;overflow:auto;padding:0 12px 10px;gap:6px;}
+  .nav-item{width:auto;flex:0 0 auto;padding:0 12px;}
+  .nav-c,.side-div,.side-foot{display:none;}
+  .page-head{height:auto;padding:14px 16px 12px;align-items:flex-start;}
+  .page-title{font-size:16px;}
+  .hairline{margin:0 16px;}
+  .content{padding:16px 16px 60px;}
+  .reader{padding:18px;}
+  .filter-bar .search{width:100%;}
+}
+@media print{
+  .sidebar,.head-actions,.item-acts,.ep-acts,.more-row{display:none!important;}
+  .content{overflow:visible;padding:0;}
+  .card,.rail-card,.reader,.list-card{box-shadow:none;background:#fff;}
+}
+</style>
+</head>
+<body>
+<div class="glow glow-warm"></div>
+<div class="glow glow-cool"></div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="side-head">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="16" height="16" rx="5" stroke="#16181D" stroke-width="1.2"/>
+        <path d="M6 8.4v1.2M9 6.2v5.6M12 7.6v2.8" stroke="#16181D" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <span class="brand">播客选题台</span>
+      <button class="btn icon sm side-toggle" title="收起/展开侧栏" onclick="toggleSide()" aria-label="收起或展开侧栏">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9.2 2.8 5.6 7l3.6 4.2" stroke="#3B3F47" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 2.5v9" stroke="#3B3F47" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <nav class="side-nav">
+      <button class="nav-item active" data-tab="selection" title="选题台" onclick="setTab('selection')">
+        <span class="nav-l">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.9a4.2 4.2 0 0 0-2.5 7.6v1.5h5V9.5A4.2 4.2 0 0 0 8 1.9Z" stroke="#6C727C" stroke-width="1.2" stroke-linejoin="round"/><path d="M6.5 13.1h3" stroke="#6C727C" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span>选题台</span>
+        </span>
+        <span class="nav-c" id="cnt-selection">0</span>
+      </button>
+      <button class="nav-item" data-tab="candidates" title="候选池" onclick="setTab('candidates')">
+        <span class="nav-l">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.4" stroke="#6C727C" stroke-width="1.2"/><rect x="9" y="2" width="5" height="5" rx="1.4" stroke="#6C727C" stroke-width="1.2"/><rect x="2" y="9" width="5" height="5" rx="1.4" stroke="#6C727C" stroke-width="1.2"/><rect x="9" y="9" width="5" height="5" rx="1.4" stroke="#6C727C" stroke-width="1.2"/></svg>
+          <span>候选池</span>
+        </span>
+        <span class="nav-c" id="cnt-candidates">0</span>
+      </button>
+      <button class="nav-item" data-tab="told" title="已讲" onclick="setTab('told')">
+        <span class="nav-l">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="#6C727C" stroke-width="1.2"/><path d="M5.4 8.2l1.8 1.8 3.4-3.9" stroke="#6C727C" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>已讲</span>
+        </span>
+        <span class="nav-c" id="cnt-told">0</span>
+      </button>
+      <button class="nav-item" data-tab="docs" title="稿件索引" onclick="setTab('docs')">
+        <span class="nav-l">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.8h4.8L12 5.9v7.3H4V2.8Z" stroke="#6C727C" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.6 2.8v3.2H12" stroke="#6C727C" stroke-width="1.2" stroke-linejoin="round"/><path d="M6.2 9.2h3.6M6.2 11.2h2.4" stroke="#6C727C" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span>稿件索引</span>
+        </span>
+        <span class="nav-c" id="cnt-docs">0</span>
+      </button>
+      <button class="nav-item" data-tab="tts" title="合成接入" onclick="setTab('tts')">
+        <span class="nav-l">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6.3h2.1L8 3.7v8.6L5.1 9.7H3V6.3Z" stroke="#6C727C" stroke-width="1.2" stroke-linejoin="round"/><path d="M10.3 5.7a3.1 3.1 0 0 1 0 4.6" stroke="#6C727C" stroke-width="1.2" stroke-linecap="round"/><path d="M12.1 4a5.4 5.4 0 0 1 0 8" stroke="#6C727C" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span>合成接入</span>
+        </span>
+        <span class="nav-c" id="cnt-tts">0</span>
+      </button>
+    </nav>
+
+    <div class="side-div"></div>
+
+    <div class="side-foot">
+      <div class="side-spacer"></div>
+      <div class="sync-card">
+        <div class="sync-row">
+          <span class="sync-left"><span class="dot" id="syncDot"></span><span id="syncLabel">飞书未配置</span></span>
+          <span class="sync-time" id="syncTime"></span>
+        </div>
+        <div class="sync-btns">
+          <button class="btn primary sm block" id="syncBtn" onclick="syncFeishu()">立即同步</button>
+          <button class="btn icon sm" title="刷新" onclick="load(true)" aria-label="刷新">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12 7a5 5 0 1 1-1.6-3.7" stroke="#3B3F47" stroke-width="1.2" stroke-linecap="round"/><path d="M12.2 1.8v3.4H8.8" stroke="#3B3F47" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="sync-row">
+          <span class="sync-left"><span class="dot" id="pushDot"></span><span id="pushLabel">讲稿未推</span></span>
+          <span class="sync-time" id="pushTime"></span>
+        </div>
+        <div class="sync-btns">
+          <button class="btn sm block" id="pushScriptBtn" onclick="pushScript()">推讲稿到飞书</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <h1 class="page-title" id="pageTitle">选题台</h1>
+        <p class="page-sub" id="pageSub">正在读取…</p>
+      </div>
+      <div class="head-actions" id="headActions"></div>
+    </header>
+    <div class="hairline"></div>
+    <div class="content" id="content">
+      <section id="tab-selection"></section>
+      <section id="tab-candidates" hidden></section>
+      <section id="tab-told" hidden></section>
+      <section id="tab-docs" hidden></section>
+      <section id="tab-tts" hidden></section>
+    </div>
+  </main>
+</div>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-mask" onclick="closeDrawer()"></div>
+  <div class="drawer-body">
+    <div class="drawer-head">
+      <div id="drawerTitle"></div>
+      <button class="btn icon sm" onclick="closeDrawer()" aria-label="关闭">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.6 3.6l6.8 6.8M10.4 3.6l-6.8 6.8" stroke="#3B3F47" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div id="drawerBody"></div>
+  </div>
+</div>
+
+<div class="modal" id="confirmModal">
+  <div class="modal-card">
+    <div class="reader-title" id="confirmTitle">Claude 选题</div>
+    <div id="confirmBody"></div>
+    <div class="chips" style="margin-top:20px;justify-content:flex-end">
+      <button class="btn" onclick="closeConfirm()">取消</button>
+      <button class="btn primary" id="confirmOk" onclick="runConfirmed()">开始分析</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ 常量 ============ */
+const STATUS = {
+  inbox:'灵感收件箱', candidate:'候选', shortlist:'已选', rejected:'不讲',
+  scheduled:'排期中', used:'已讲', archived:'归档'
+};
+const STATUS_TYPE = { inbox:'pending', candidate:'pending', shortlist:'active', scheduled:'active', used:'done', rejected:'done', archived:'done' };
+const PRIOR = {1:'高',2:'中',3:'低'};
+const TAB_META = {
+  selection:{ title:'选题台', sub:d=>`${(d.selections||[]).length} 条选题 · 想法先落收件箱，再决定讲不讲` },
+  candidates:{ title:'候选池', sub:d=>`${(d.candidates||[]).length} 个抓取到的项目 · 按分类筛，选中的进选题台` },
+  told:{ title:'已讲', sub:d=>`${(d.episodes||[]).length} 期节目 + ${(d.research||[]).length} 篇调研 · 每期连着拆解稿、成稿和音频` },
+  docs:{ title:'稿件索引', sub:d=>`${(d.docs||[]).length} 篇稿件 · 默认先看拆解稿，新拆解优先显示「人话导览」` },
+  tts:{ title:'合成接入', sub:()=>{
+    const s = state.tts;
+    if (!s) return '读取本地引擎与云厂商配置…';
+    const provs = Object.values(s.providers||{});
+    const done = provs.filter(p=>p.has_secret).length;
+    return `${provs.length} 个 provider · ${done} 个已存 Key · 本地 VoxCPM2 端口 8083`;
+  } }
+};
+
+const state = { data:null, tab:'selection', candLimit:40, docLimit:80, q:'', cat:'', docQ:'', docKind:'breakdown', doc:null, docPaintedPath:null, task:null, confirm:null,
+  docAudio:null, docRepos:[],
+  tts:null, ttsLoading:false, ttsText:'', ttsProvider:'', ttsAudioName:'',
+  /* 折叠态（P1f）：侧栏/选题台分组/稿件索引左列，全落 localStorage wb.ui */
+  ui: (()=>{ try { return JSON.parse(localStorage.getItem('wb.ui')||'{}')||{}; } catch(e) { return {}; } })() };
+/* 「已讲」「不讲/归档」默认折叠——长尾内容收起来，首屏 DOM 减半 */
+if (state.ui.selGroups == null) state.ui.selGroups = { '已讲': true, '不讲 / 归档': true };
+function saveUI(){ try { localStorage.setItem('wb.ui', JSON.stringify(state.ui)); } catch(e) {} }
+function toggleUI(key){ state.ui[key] = !state.ui[key]; saveUI(); }
+function applyUI(){
+  document.body.classList.toggle('side-collapsed', !!state.ui.sideCollapsed);
+  document.body.classList.toggle('docs-left-collapsed', !!state.ui.docsLeftCollapsed);
+}
+function toggleSide(){ toggleUI('sideCollapsed'); applyUI(); }
+function toggleSelGroup(name){ state.ui.selGroups[name] = !state.ui.selGroups[name]; saveUI(); renderSelection(); }
+function toggleDocsLeft(){ toggleUI('docsLeftCollapsed'); applyUI(); }
+
+/* ============ 工具 ============ */
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function time(s) { return (s || '').replace('T',' ').slice(0,16); }
+function hhmm(s) { const t = time(s); return t.length >= 16 ? t.slice(11,16) : ''; }
+function num(n) { return Number(n||0).toLocaleString(); }
+function toast(msg, error=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'toast' + (error?' error':''); el.style.display='block';
+  clearTimeout(el._t); el._t = setTimeout(()=>el.style.display='none', error?7000:3500);
+}
+async function api(path, method='GET', body) {
+  const opt = { method, headers:{'Content-Type':'application/json'} };
+  if (body) opt.body = JSON.stringify(body);
+  const res = await fetch(path, opt);
+  const data = await res.json().catch(()=>({error:'返回不是 JSON'}));
+  if (!res.ok) throw new Error(data.error || `请求失败 ${res.status}`);
+  return data;
+}
+const ICON = {
+  chev:'<svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M4.8 2.8L8.4 6.5 4.8 10.2" stroke="#6C727C" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  spark:'<svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M6.5 1.4l1.2 3.3 3.3 1.2-3.3 1.2-1.2 3.3-1.2-3.3L2 5.9l3.3-1.2L6.5 1.4Z" stroke="#6C727C" stroke-width="1.1" stroke-linejoin="round"/></svg>',
+  link:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5.8 8.2a2.6 2.6 0 0 0 3.7 0l1.8-1.8a2.6 2.6 0 0 0-3.7-3.7l-.9.9" stroke="#6C727C" stroke-width="1.2" stroke-linecap="round"/><path d="M8.2 5.8a2.6 2.6 0 0 0-3.7 0L2.7 7.6a2.6 2.6 0 0 0 3.7 3.7l.9-.9" stroke="#6C727C" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  search:'<svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.6" cy="6.6" r="4.4" stroke="#949AA4" stroke-width="1.2"/><path d="M9.9 9.9L12.8 12.8" stroke="#949AA4" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  bulb:'<svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M11 6.6c0 2-2 3.7-4.4 3.7-.5 0-1-.1-1.5-.2L2.4 11.4l.5-2.1A3.6 3.6 0 0 1 2.2 6.6c0-2 2-3.7 4.4-3.7s4.4 1.7 4.4 3.7Z" stroke="#8A6420" stroke-width="1.1" stroke-linejoin="round"/></svg>'
+};
+function badge(text,type='') { return `<span class="tag ${type}">${esc(text)}</span>`; }
+function statusTag(s) { return badge(STATUS[s]||s, STATUS_TYPE[s]||''); }
+
+/* ============ 框架渲染 ============ */
+async function load(showTip=false) {
+  try { state.data = await api('/api/overview'); if (showTip) toast('已刷新'); render(); }
+  catch (e) { toast(e.message, true); }
+}
+function setTab(tab) {
+  state.tab = tab;
+  document.querySelectorAll('.side-nav .nav-item').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('#content > section').forEach(s=>s.hidden = s.id !== 'tab-'+tab);
+  render();
+  document.getElementById('content').scrollTop = 0;
+  if (tab === 'tts' && !state.tts) loadTts();
+}
+function render() {
+  if (!state.data) return;
+  const d = state.data;
+  /* 侧栏计数 */
+  document.getElementById('cnt-selection').textContent = (d.selections||[]).length;
+  document.getElementById('cnt-candidates').textContent = (d.candidates||[]).length;
+  document.getElementById('cnt-told').textContent = (d.episodes||[]).length + (d.research||[]).length;
+  document.getElementById('cnt-docs').textContent = (d.docs||[]).length;
+  document.getElementById('cnt-tts').textContent = state.tts
+    ? Object.values(state.tts.providers||{}).filter(p=>p.has_secret).length : 0;
+  /* 飞书状态 */
+  const f = d.feishu || {}, last = f.last_sync;
+  document.getElementById('syncDot').className = 'dot' + (last && !last.ok ? ' bad' : '');
+  document.getElementById('syncLabel').textContent = f.configured ? '飞书已接' : '飞书未配置';
+  document.getElementById('syncTime').textContent = f.configured && last?.at ? hhmm(last.at) : '';
+  /* 讲稿推送状态 */
+  const lp = f.last_script_push || {}, lpRes = lp.result || {};
+  document.getElementById('pushDot').className = 'dot' + (lp.at && !lp.ok ? ' bad' : '');
+  document.getElementById('pushLabel').textContent = !lp.at ? '讲稿未推'
+    : !lp.ok ? '讲稿推送失败'
+    : lpRes.skipped ? '讲稿已是最新' : '讲稿已推';
+  document.getElementById('pushTime').textContent = lp.at ? hhmm(lp.at) : '';
+  /* 页头 */
+  const meta = TAB_META[state.tab] || TAB_META.selection;
+  document.getElementById('pageTitle').textContent = meta.title;
+  document.getElementById('pageSub').textContent = meta.sub(d);
+  document.getElementById('headActions').innerHTML = headActions();
+  /* 只渲染当前 tab：全量重建 5 个 tab 会让 docViewer 的 audio 被重置，也让每次操作都整页重绘 */
+  ({selection:renderSelection, candidates:renderCandidates, told:renderTold, docs:renderDocs, tts:renderTts}[state.tab] || renderSelection)();
+}
+function headActions() {
+  const d = state.data;
+  if (state.tab === 'selection') {
+    return `<span class="head-chip">${(d.selections||[]).length} 条选题</span>
+      <button class="btn primary" onclick="focusIdea()">记一条灵感</button>`;
+  }
+  if (state.tab === 'candidates') return `<span class="head-chip">显示 ${Math.min(state.candLimit,(d.candidates||[]).length)} / ${(d.candidates||[]).length}</span>`;
+  if (state.tab === 'told') return `<span class="head-chip">${(d.episodes||[]).length} 期 · ${(d.research||[]).length} 调研</span>`;
+  if (state.tab === 'docs') return `<span class="head-chip">全部 ${(d.docs||[]).length} 篇</span>`;
+  if (state.tab === 'tts') {
+    const n = state.tts ? Object.keys(state.tts.providers||{}).length : '—';
+    return `<span class="head-chip">${n} 个 provider</span><button class="btn sm" onclick="loadTts(true)">刷新</button>`;
+  }
+  return '';
+}
+function focusIdea() {
+  if (state.tab !== 'selection') setTab('selection');
+  setTimeout(()=>document.getElementById('ideaTitle')?.focus(), 30);
+}
+
+/* ============ 选题台 ============ */
+function renderSelection() {
+  const d = state.data, root = document.getElementById('tab-selection');
+  /* 重建前暂存正在输入的灵感草稿，重建后回填（否则每次刷新/操作都会清空输入框） */
+  const prevForm = document.getElementById('ideaForm');
+  const draft = prevForm ? Object.fromEntries(new FormData(prevForm)) : null;
+  const activeEl = document.activeElement;
+  const refocus = (activeEl && activeEl.id && prevForm && prevForm.contains(activeEl))
+    ? {id:activeEl.id, pos:activeEl.selectionStart} : null;
+  const selections = d.selections || [];
+  const groups = [
+    ['灵感收件箱', s=>s.status==='inbox'],
+    ['本周已选', s=>['candidate','shortlist'].includes(s.status)],
+    ['排期中', s=>s.status==='scheduled'],
+    ['已讲', s=>s.status==='used'],
+    ['不讲 / 归档', s=>['rejected','archived'].includes(s.status)]
+  ];
+  const pending = selections.filter(s=>{const t=s.latest_task||{};return t.status==='queued'||t.status==='running';}).length;
+  const done = selections.filter(s=>(s.latest_task||{}).status==='done').length;
+
+  let left = `
+    <div class="idea">
+      <form id="ideaForm">
+        <div class="idea-top">
+          <input id="ideaTitle" name="title" required placeholder="一句话写下你的灵感，标题就行">
+        </div>
+        <div class="idea-extra" id="ideaExtra">
+          <div class="field"><label>链接</label><input name="url" placeholder="网页、GitHub 或文章链接"></div>
+          <div class="field"><label>一句话说明</label><textarea name="summary" placeholder="它做什么，为什么让你注意到了？"></textarea></div>
+          <div class="field"><label>为什么值得讲</label><textarea name="why" placeholder="你觉得它能给你带来什么？"></textarea></div>
+        </div>
+      </form>
+      <div class="idea-foot">
+        <div class="chips">
+          <button class="chip" type="button" onclick="toggleExtra('urlInput')">${ICON.link}加个链接</button>
+          <button class="chip" type="button" onclick="toggleExtra('whyInput')">为什么值得讲</button>
+        </div>
+        <button class="btn primary" type="button" onclick="submitIdea()">放进收件箱</button>
+      </div>
+    </div>`;
+
+  groups.forEach(([name, fn]) => {
+    const rows = selections.filter(fn);
+    /* 折叠的组只渲染 head（标题+计数），行 DOM 不生成（P1f，默认「已讲」「不讲/归档」收起） */
+    const collapsed = !!state.ui.selGroups?.[name];
+    /* 排期中组：按日期升序，组头带周区间（P2b） */
+    let range = '';
+    if (name === '排期中') {
+      rows.sort((a,b)=>String(a.scheduled_for||'9999').localeCompare(String(b.scheduled_for||'9999')));
+      const ds = rows.map(r=>r.scheduled_for).filter(Boolean).sort();
+      if (ds.length) range = `${ds[0].slice(5)} ~ ${ds[ds.length-1].slice(5)} · `;
+    }
+    left += `<div class="group">
+      <div class="group-head" role="button" data-g="${esc(name)}" onclick="toggleSelGroup(this.dataset.g)" title="${collapsed?'展开':'收起'}">
+        <span class="group-title"><span class="g-arrow">${collapsed?'▸':'▾'}</span>${esc(name)}</span><span class="group-count">${range}${rows.length}</span></div>
+      ${collapsed ? '' : `<div class="group-rule"></div>${rows.length ? rows.map(selectionRow).join('') : '<div class="empty">还没有</div>'}`}
+    </div>`;
+  });
+
+  const dist = groups.slice(0,4).map(([name,fn],i)=>[name, selections.filter(fn).length, ['#BF8A3D','#3E6DB5','#3E6DB5','#3F9C6B'][i]]);
+  const rail = `
+    <div class="rail-card">
+      <div class="rail-head"><span class="rail-title">Claude 选题</span>${ICON.spark}</div>
+      <p class="rail-desc">只做选题分析，不写稿、不改文件。</p>
+      <div class="rail-rule"></div>
+      <div class="kv"><span>排队中</span><b>${pending}</b></div>
+      <div class="kv"><span>已完成</span><b>${done}</b></div>
+      <button class="btn primary block" onclick="load(true)">刷新状态</button>
+    </div>
+    <div class="rail-card">
+      <div class="rail-head"><span class="rail-title">周选题</span></div>
+      <p class="rail-desc">让 Claude 挑下周 7 天讲什么（材料全内联，最长约 30 分钟）。</p>
+      <button class="btn primary block" onclick="askWeekly()">跑一次周选题</button>
+      <div id="weeklyArea"></div>
+    </div>
+    <div class="rail-card">
+      <div class="rail-head"><span class="rail-title">选题分布</span><span class="group-count">${selections.length}</span></div>
+      ${dist.map(([n,v,c])=>`<div class="stat-row"><span class="stat-l"><i class="stat-b" style="background:${c}"></i>${esc(n)}</span><span class="stat-v">${v}</span></div>`).join('')}
+    </div>`;
+
+  root.innerHTML = `<div class="split"><div class="col-main">${left}</div><div class="col-rail">${rail}</div></div>`;
+
+  if (draft) {
+    const form = document.getElementById('ideaForm');
+    Object.entries(draft).forEach(([k,v])=>{ const el = form.elements[k]; if (el && v) el.value = v; });
+  }
+  if (refocus) {
+    const el = document.getElementById(refocus.id);
+    if (el) { el.focus(); try { el.setSelectionRange(refocus.pos, refocus.pos); } catch(e) {} }
+  }
+
+  document.getElementById('ideaForm').addEventListener('submit', e=>{ e.preventDefault(); submitIdea(); });
+  document.getElementById('ideaTitle').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); submitIdea(); } });
+}
+
+function toggleExtra(focus) {
+  const el = document.getElementById('ideaExtra');
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) setTimeout(()=>document.getElementById(focus)?.focus(), 30);
+}
+function submitIdea() {
+  const form = document.getElementById('ideaForm');
+  const value = Object.fromEntries(new FormData(form));
+  if (!String(value.title||'').trim()) { toast('先给灵感起个标题', true); document.getElementById('ideaTitle').focus(); return; }
+  return saveIdea(value, form);
+}
+async function saveIdea(value, form) {
+  try {
+    await api('/api/selections','POST', {...value, kind:'idea', status:'inbox', source:'手动'});
+    form.reset(); document.getElementById('ideaExtra').classList.remove('open');
+    await load(); toast('灵感已放进收件箱');
+  } catch(err) { toast(err.message,true); }
+}
+
+const WEEKDAY = ['周日','周一','周二','周三','周四','周五','周六'];
+/* 排期日期徽章：09-17 周四 */
+function schedBadge(s) {
+  if (!s.scheduled_for) return '';
+  const d = new Date(s.scheduled_for + 'T00:00:00');
+  if (isNaN(d)) return '';
+  return `<span class="tag sched-date">${esc(s.scheduled_for.slice(5))} ${WEEKDAY[d.getDay()]}</span>`;
+}
+function selectionRow(s) {
+  const task = s.latest_task || {};
+  const taskText = task.id ? `Claude #${task.id} · ${({queued:'排队中',running:'分析中',done:'已完成',failed:'失败'})[task.status]||task.status}` : '';
+  const meta = [`更新 ${esc(time(s.updated_at))}`, esc(s.source||'手动'), taskText].filter(Boolean).join(' · ');
+  /* 一键状态流转：按当前状态给下一步动作，不用开抽屉改下拉。+ 前缀走 postpone 接口 */
+  const quick = [];
+  if (s.status === 'archived' || s.status === 'rejected') quick.push(['shortlist', '捞回本周已选']);
+  if (s.status === 'inbox') quick.push(['shortlist', '选入本周']);
+  if (s.status === 'shortlist') quick.push(['scheduled', '排期']);
+  if (s.status === 'scheduled') { quick.push(['used', '标记已讲']); quick.push(['next_week', '挪到下周']); quick.push(['back', '回已选']); }
+  return `<article class="item">
+    <div class="item-head">
+      <span class="item-title">${esc(s.title)}</span>
+      ${schedBadge(s)}${statusTag(s.status)}
+    </div>
+    ${s.summary ? `<p class="item-desc">${esc(s.summary)}</p>` : ''}
+    <div class="item-foot">
+      <span class="item-meta">${meta}${s.url?` · <a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">链接</a>`:''}</span>
+      <span class="item-acts">
+        ${quick.map(([act,label])=>`<button class="btn sm" onclick="quickSel(${s.id},'${act}')">${label}</button>`).join('')}
+        <button class="btn icon sm" title="详情" onclick="openSelection(${s.id})">${ICON.chev}</button>
+        <button class="btn icon sm" title="Claude 选题" onclick="askClaudeSelection(${s.id})">${ICON.spark}</button>
+      </span>
+    </div>
+    <div class="item-rule"></div>
+  </article>`;
+}
+function quickSel(id, act) {
+  if (act === 'next_week' || act === 'back') return postponeSel(id, act);
+  return setSelStatus(id, act);
+}
+async function postponeSel(id, mode) {
+  try {
+    await api('/api/selections/'+id+'/postpone','POST',{mode});
+    await load(); toast(mode==='back' ? '已撤回本周已选' : '已挪到下周');
+  } catch(e){ toast(e.message,true); }
+}
+async function setSelStatus(id, status) {
+  try {
+    await api('/api/selections/'+id,'PATCH',{status});
+    await load(); toast('已移到「'+(STATUS[status]||status)+'」');
+  } catch(e){ toast(e.message,true); }
+}
+
+/* ============ 候选池 ============ */
+function renderCandidates() {
+  const d = state.data, root = document.getElementById('tab-candidates');
+  const all = d.candidates || [], cats = d.categories || [];
+  const q = state.q.trim().toLowerCase();
+  const rows = all.filter(x=>(!state.cat||x.category===state.cat) && (!q || (x.full_name+' '+x.description).toLowerCase().includes(q)));
+  const shown = rows.slice(0, state.candLimit);
+  root.innerHTML = `
+    <div class="filter-bar">
+      <label class="search">${ICON.search}<input id="candQ" value="${esc(state.q)}" placeholder="搜索项目或说明" oninput="candFilter(this.value)"></label>
+      <div class="chips">
+        <button class="chip ${!state.cat?'on':''}" onclick="setCat('')">全部</button>
+        ${cats.map(c=>`<button class="chip ${state.cat===c.name?'on':''}" onclick="setCat('${esc(c.name)}')">${esc(c.name)} · ${c.count}</button>`).join('')}
+      </div>
+    </div>
+    <div class="list-card" style="margin-top:16px">
+      ${shown.map(candidateRow).join('') || '<div class="empty">没有匹配的项目</div>'}
+      ${shown.length<rows.length?`<div class="more-row"><button class="btn sm" onclick="moreCandidates()">显示更多</button></div>`:''}
+    </div>`;
+  const inp = document.getElementById('candQ');
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') inp.blur(); });
+}
+function candidateRow(c) {
+  const i=(state.data.candidates||[]).indexOf(c);
+  const selected = (state.data.selections||[]).find(s=>s.project_full_name && s.project_full_name.toLowerCase()===String(c.full_name).toLowerCase());
+  const meta = [`★ ${num(c.stars)}`, c.language, c.category||'未分类'].filter(Boolean).join(' · ');
+  return `<article class="cand">
+    <div class="cand-head">
+      ${c.url
+        ? `<a class="cand-name" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer" title="打开 GitHub">${esc(c.full_name)}</a>`
+        : `<span class="cand-name">${esc(c.full_name)}</span>`}
+      ${selected
+        ? `<button class="btn sm" disabled>已加入</button>`
+        : `<button class="btn sm" onclick="addCandidate(${i})">加入选题</button>`}
+      <button class="btn icon sm" title="详情" onclick="openCandidate(${i})">${ICON.chev}</button>
+    </div>
+    <div class="cand-meta">${esc(meta)}</div>
+    <div class="cand-desc">${esc(c.description||'没有说明')}</div>
+    <div class="item-rule"></div>
+  </article>`;
+}
+function moreCandidates(){ state.candLimit += 40; renderCandidates(); }
+let candTimer;
+function candFilter(v){ clearTimeout(candTimer); candTimer=setTimeout(()=>{ state.q=v; state.candLimit=40; renderCandidates(); document.getElementById('candQ')?.focus(); },220); }
+function setCat(v){ state.cat=v; state.candLimit=40; renderCandidates(); }
+
+function addCandidate(i) { addProject((state.data.candidates||[])[i]); }
+function openCandidate(i) { showCandidate((state.data.candidates||[])[i]); }
+function askClaudeCandidate(i) {
+  const c=(state.data.candidates||[])[i]; if(!c) return;
+  const existing=(state.data.selections||[]).find(s=>s.project_full_name && s.project_full_name.toLowerCase()===String(c.full_name).toLowerCase());
+  if(existing) askClaude({selectionId:existing.id, title:existing.title});
+  else askClaude({candidate:c, title:c.full_name});
+}
+async function addProject(c) {
+  if (!c) return;
+  try {
+    await api('/api/selections','POST',{title:c.full_name,kind:'project',project_full_name:c.full_name,url:c.url,summary:c.description,status:'shortlist',source:'候选池'});
+    await load(); toast('已加入选题');
+  } catch(e) { toast(e.message,true); }
+}
+function showCandidate(c) {
+  const i=(state.data.candidates||[]).indexOf(c);
+  const existing=(state.data.selections||[]).find(s=>s.project_full_name && s.project_full_name.toLowerCase()===String(c.full_name).toLowerCase());
+  setDrawerTitle(esc(c.full_name), [`★ ${num(c.stars)}`, c.language||'未知语言', c.category||'未分类'].join(' · '));
+  setDrawer(`
+    <p class="item-desc">${esc(c.description||'没有说明')}</p>
+    <div class="card card-pad" style="margin-top:16px">
+      <div class="rail-title">候选池细节</div>
+      <div class="kv"><span>最近见到</span><b>${esc(c.last_seen||'—')}</b></div>
+      <div class="kv"><span>首次见到</span><b>${esc(c.first_seen||'—')}</b></div>
+      <div class="kv"><span>已讲</span><b>${c.told_in?`第 ${esc(c.told_in)} 期`:'未讲'}</b></div>
+      <div class="kv"><span>本地源码</span><b>${c.cached?esc(c.cloned||'有'):'没有'}</b></div>
+      <div class="kv"><span>标签</span><b>${esc((c.topics||[]).join('、')||'无')}</b></div>
+    </div>
+    <div class="chips" style="margin-top:18px">
+      ${existing?`<button class="btn sm" disabled>已加入</button><button class="btn sm" onclick="openSelection(${existing.id})">选题详情</button>`:`<button class="btn primary sm" onclick="addCandidate(${i})">加入选题</button>`}
+      <a class="btn sm" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">打开链接</a>
+      <button class="btn sm" onclick="askClaudeCandidate(${i})">Claude 选题</button>
+    </div>`);
+}
+
+/* ============ 已讲 ============ */
+/* 仓库 pill 列表：url 缺省按 owner/repo 拼 GitHub 地址（与 docContext 同一兜底） */
+function repoPills(names, urls) {
+  return (names||[]).map((n,i)=>{
+    const url = (urls||[])[i] || ('https://github.com/'+n);
+    return `<a class="repo-pill" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${ICON.link}${esc(n)}</a>`;
+  }).join('');
+}
+function renderTold() {
+  const d = state.data, eps=d.episodes||[], researches=d.research||[], root=document.getElementById('tab-told');
+  const rows = [
+    ...eps.map(e=>({no:`第 ${e.no} 期`, title:e.title||e.slug, date:e.date, repos:e.repos, repo_urls:e.repo_urls, bd:e.breakdown, sc:e.scripts, au:e.audios, page:e.page})),
+    ...researches.map(x=>({no:'调研', title:x.title, date:x.date, repos:x.repos, repo_urls:x.repo_urls, bd:x.breakdown, sc:x.scripts, au:x.audios}))
+  ];
+  root.innerHTML = `<div class="list-card">${rows.map(toldRow).join('') || '<div class="empty">还没有</div>'}</div>`;
+}
+/* 音频时长从文件名里取（本项目命名约定：xxx-播客完整版-46min.m4a） */
+function audioMinutes(name) {
+  const m = String(name||'').match(/(\d+)\s*min/i);
+  return m ? Number(m[1]) : null;
+}
+function toldRow(e) {
+  /* 点音频 = 边看稿边听：打开该期成稿（或期次页），阅读器里带播放器 */
+  const openScript = () => {
+    const target = (e.sc&&e.sc[0]&&e.sc[0].path) || e.page || (e.bd&&e.bd[0]&&e.bd[0].path) || '';
+    if (target) openDoc(target);
+    else if (e.au&&e.au[0]) playEpisodeAudio(e.au[0]);
+  };
+  const acts = [
+    e.page ? `<a class="pill" href="#" onclick="openDoc('${esc(e.page)}');return false;">期次页</a>` : '',
+    ...(e.bd||[]).map(x=>`<a class="pill" href="#" onclick="openDoc('${esc(x.path)}');return false;">拆解稿</a>`),
+    ...(e.sc||[]).map(x=>`<a class="pill" href="#" onclick="openDoc('${esc(x.path)}');return false;">成稿</a>`),
+    ...(e.au||[]).map(x=>{
+      const mm = audioMinutes(x.name);
+      return `<a class="pill audio" href="#" onclick="playEpisodeAudio(${JSON.stringify({path:x.path,name:x.name,mm:mm}).replace(/"/g,'&quot;')});return false;">▶ 音频${mm?` · ${mm} 分`:''}</a>`;
+    })
+  ].filter(Boolean);
+  const hasAudio = (e.au||[]).length > 0;
+  if (!hasAudio) {
+    const hasWork = (e.bd||[]).length || (e.sc||[]).length;
+    acts.push(hasWork ? '<span class="pill wait">待合成</span>' : '<span class="pill none">无产物</span>');
+  }
+  return `<article class="ep">
+    <div class="ep-head">
+      <div class="ep-l"><span class="ep-no">${esc(e.no)}</span><span class="ep-title">${esc(e.title||'—')}</span></div>
+      <span class="ep-date">${esc((e.date||'').slice(5)||'')}</span>
+    </div>
+    <div class="ep-repos">${(e.repos||[]).length ? repoPills(e.repos, e.repo_urls) : '无项目'}</div>
+    <div class="ep-acts">${acts.join('')}</div>
+    <div class="item-rule"></div>
+  </article>`;
+}
+/* 已讲页点音频：优先带稿听（打开该期成稿，阅读器带播放器）；没有稿的独立弹播放器 */
+function playEpisodeAudio(a) {
+  if (!a) return;
+  state.docAudio = {path:a.path, name:a.name, mm:audioMinutes(a.name)};
+  state.docAudioFor = 'audio:'+a.path;
+  state.docRepos = [];
+  if (state.tab!=='docs') setTab('docs');
+  const viewer = document.getElementById('docViewer');
+  if (viewer && !state.doc) {
+    viewer.innerHTML = `<div class="reader">
+      <h2 class="reader-title">${esc(a.name)}</h2>
+      <div class="doc-audio"><span class="doc-audio-label">音频${state.docAudio.mm?` · ${state.docAudio.mm} 分`:''}</span>
+        <audio controls autoplay src="/media?rel=${encodeURIComponent(a.path)}"></audio></div>
+    </div>`;
+  } else if (viewer && state.doc) {
+    paintDoc(state.doc); toast('音频已挂到当前稿件阅读器');
+  }
+}
+
+/* ============ 稿件索引 ============ */
+const DOC_KINDS = { '':'全部', breakdown:'拆解稿', script:'成稿', research:'调研稿', daily:'日报', brief:'简报', other:'其他' };
+function renderDocs() {
+  const d = state.data, all=(d.docs||[]);
+  /* 只重建左列；docViewer（含正在播放的 audio）不碰；展开按钮在骨架层，不随左列重建 */
+  if (!document.getElementById('docsLeft')) {
+    document.getElementById('tab-docs').innerHTML = `<div class="docs-split">
+      <button class="btn icon sm docs-expand" id="docsExpand" title="展开稿件列表" onclick="toggleDocsLeft()" aria-label="展开稿件列表">${ICON.chev}</button>
+      <div class="docs-left" id="docsLeft"></div>
+      <div class="docs-right" id="docViewer">${state.doc ? '' : '<div class="reader"><div class="empty">选一篇稿件查看</div></div>'}</div>
+    </div>`;
+  }
+  const counts=Object.fromEntries(Object.keys(DOC_KINDS).map(k=>[k, !k ? all.length : all.filter(x=>x.kind===k).length]));
+  const docs=all.filter(x=>(!state.docKind || x.kind===state.docKind) && (!state.docQ || (x.title+x.name).toLowerCase().includes(state.docQ.toLowerCase())));
+  const shown=docs.slice(0,state.docLimit);
+  document.getElementById('docsLeft').innerHTML = `
+    <div class="docs-left-head">
+      <span class="rail-title">稿件 ${all.length}</span>
+      <button class="btn icon sm" title="收起列表" onclick="toggleDocsLeft()" aria-label="收起列表"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" style="transform:rotate(180deg)"><path d="M4.8 2.8L8.4 6.5 4.8 10.2" stroke="#6C727C" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div class="chips">
+      ${Object.entries(DOC_KINDS).map(([k,label])=>`<button class="chip ${state.docKind===k?'on':''}" onclick="setDocKind('${k}')">${esc(label)} · ${counts[k]}</button>`).join('')}
+    </div>
+    <label class="search" style="width:100%">${ICON.search}<input id="docQ" value="${esc(state.docQ)}" placeholder="搜索稿件" oninput="docFilter(this.value)"></label>
+    <div class="doc-list">
+      ${shown.map(x=>`<button class="doc-link ${state.doc?.path===x.path?'on':''}" onclick="openDoc('${esc(x.path)}')">
+        <b>${esc(x.title||x.name)}</b><span>${esc(DOC_KINDS[x.kind]||x.kind)} · ${esc(x.mtime)}</span>
+      </button>`).join('') || '<div class="empty">没有匹配</div>'}
+      ${shown.length<docs.length?`<div class="more-row" style="padding:10px 6px 6px"><button class="btn sm block" onclick="moreDocs()">显示更多</button></div>`:''}
+    </div>`;
+  /* 同一篇稿子不重画（防打断播放）；有 doc 但还没画过才补画 */
+  if (state.doc && state.docPaintedPath !== state.doc.path) paintDoc(state.doc);
+  else if (!state.doc) {
+    const v = document.getElementById('docViewer');
+    if (v && !v.querySelector('.reader')) v.innerHTML = '<div class="reader"><div class="empty">选一篇稿件查看</div></div>';
+  }
+}
+function setDocKind(kind){ state.docKind=kind; state.docLimit=80; renderDocs(); }
+function moreDocs(){ state.docLimit+=80; renderDocs(); }
+let docTimer;
+function docFilter(v){ clearTimeout(docTimer); docTimer=setTimeout(()=>{ state.docQ=v; state.docLimit=80; renderDocs(); document.getElementById('docQ')?.focus(); },220); }
+function paintDoc(doc) {
+  const viewer = document.getElementById('docViewer');
+  if (!viewer) return;
+  state.docPaintedPath = doc.path;
+  const au = state.docAudio;
+  const repos = state.docRepos || [];
+  const toc = doc.toc || [];
+  const tocHtml = toc.length ? `<div class="doc-toc">
+      <div class="doc-toc-title">目录 · 点击跳转</div>
+      ${toc.filter(t=>t.level<=3).map(t=>`<a href="#${esc(t.id)}" class="lv${t.level}">${esc(t.text)}</a>`).join('')}
+    </div>` : '';
+  const reposHtml = repos.length ? `<div class="doc-repos">
+      <span class="rp-label">拆解的原项目：</span>
+      ${repos.map(r=>`<a class="repo-pill" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${ICON.link}${esc(r.name)}</a>`).join('')}
+    </div>` : '';
+  const audioHtml = au ? `<div class="doc-audio">
+      <span class="doc-audio-label">本期音频${au.mm?` · ${au.mm} 分`:''}</span>
+      <audio controls preload="metadata" src="/media?rel=${encodeURIComponent(au.path)}"></audio>
+    </div>` : '';
+  viewer.innerHTML = `<div class="reader">
+    <h2 class="reader-title">${esc(doc.title)}</h2>
+    <p class="reader-meta">${esc(doc.path)} · ${esc(doc.mtime)} · ${doc.chars} 个汉字</p>
+    ${reposHtml}${audioHtml}
+    ${doc.has_plain ? `<div class="plain"><div class="plain-h">${ICON.bulb}人话导览</div><div class="plain-b">${doc.plain_html}</div></div>` : ''}
+    ${tocHtml}
+    <div class="reader-rule"></div>
+    ${doc.has_plain
+      ? `<details class="tech" id="techFull"><summary class="reader-sec">技术拆解原文</summary><div class="article">${doc.html}</div></details>`
+      : `<div class="article">${doc.html}</div>`}
+  </div>`;
+  /* 目录跳转：目录在正文上方；若正文还折叠着（有「人话导览」的稿子），先展开再跳 */
+  viewer.querySelectorAll('.doc-toc a').forEach(a=>{
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      const details = document.getElementById('techFull');
+      if (details) details.open = true;
+      const target = document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));
+      if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+}
+/* 从期次/调研数据里找某篇稿子对应的音频与仓库 */
+function docContext(rel) {
+  const d = state.data;
+  const relNorm = String(rel).replace(/^\.\//,'');
+  let audio = null, repos = [];
+  for (const e of [...(d.episodes||[]), ...(d.research||[])]) {
+    const paths = [
+      ...(e.breakdown||[]).map(x=>x.path),
+      ...(e.scripts||[]).map(x=>x.path),
+      ...(e.page?[e.page]:[])
+    ];
+    if (paths.includes(relNorm)) {
+      const au = (e.audios||[])[0];
+      if (au) audio = {path:au.path, name:au.name, mm:audioMinutes(au.name)};
+      repos = (e.repos||[]).map((n,i)=>({name:n, url:(e.repo_urls||[])[i] || ('https://github.com/'+n)}));
+      break;
+    }
+  }
+  return { audio, repos };
+}
+async function openDoc(rel) {
+  try {
+    const doc = await api('/api/doc?rel='+encodeURIComponent(rel));
+    state.doc = doc;
+    /* 换稿子才换音频/仓库上下文；同一篇重新打开不打断播放 */
+    if (state.docAudioFor !== rel) {
+      const ctx = docContext(rel);
+      state.docAudio = ctx.audio; state.docAudioFor = rel; state.docRepos = ctx.repos;
+    }
+    if (state.tab!=='docs') setTab('docs'); else renderDocs();
+    /* 同一篇不重画，不打断正在播放的音频 */
+    if (state.docPaintedPath !== doc.path) paintDoc(doc);
+  } catch(e) { toast(e.message,true); }
+}
+
+/* ============ 合成接入 ============ */
+function fmtSize(n) {
+  n = Number(n||0);
+  return n > 1048576 ? (n/1048576).toFixed(1)+' MB' : (n > 1024 ? Math.round(n/1024)+' KB' : n+' B');
+}
+async function loadTts(force=false) {
+  if (state.tts && !force) { renderTts(); return; }
+  const root = document.getElementById('tab-tts');
+  if (root) root.innerHTML = '<div class="tts-card"><div class="empty">读取合成接入配置…</div></div>';
+  try { state.tts = await api('/api/tts/state'); renderTts(); }
+  catch(e) { toast(e.message, true); }
+}
+function ttsProviderRow(id, p) {
+  const isCustom = !!p.custom;
+  return `<div class="tts-prow">
+    <div class="tts-prow-head">
+      <span class="tts-prow-name">${esc(p.label||id)}<span class="tag ${isCustom?'active':''}">${isCustom?'自定义':'预设'}</span></span>
+      <span class="item-acts">
+        <span class="pill ${p.has_secret?'audio':'none'}">${p.has_secret?'已存 Key':'未存 Key'}</span>
+        <button class="btn sm" onclick="openProvider('${esc(id)}')">配置</button>
+      </span>
+    </div>
+    <div class="tts-prow-meta">${esc(id)} · ${esc(p.adapter||'')} · ${esc(p.model||'—')}${p.voice?' · '+esc(p.voice):''}</div>
+    <div class="item-rule"></div>
+  </div>`;
+}
+function renderTts() {
+  const root = document.getElementById('tab-tts');
+  if (!root) return;
+  const s = state.tts;
+  if (!s) { root.innerHTML = '<div class="tts-card"><div class="empty">读取合成接入配置…</div></div>'; return; }
+
+  const providers = s.providers || {}, local = s.local || {}, adapters = s.adapters || [];
+  const ids = Object.keys(providers);
+  const savedCount = ids.filter(id=>providers[id].has_secret).length;
+
+  /* 1) 本地模型 */
+  const localCard = `
+    <div class="tts-card">
+      <div class="tts-card-head">
+        <span class="tts-card-title">本地模型 · ${esc(local.engine||'VoxCPM2')}</span>
+        <span class="pill ${local.running?'audio':'none'}"><span class="${local.running?'dot':'dot bad'}" style="margin-right:6px"></span>${local.running?'在跑':'未跑'}</span>
+      </div>
+      <div class="kv"><span>地址</span><b>${esc(local.address||'127.0.0.1:8083')}</b></div>
+      <div class="kv"><span>音色参考</span><b>${local.voice_ref_exists?'✓ 存在':'✗ 缺失'}</b></div>
+      <div class="tts-prow-meta">${esc(local.voice_ref||'voices/podcast-voice.wav')}</div>
+      <div class="kv"><span>句尾去噪</span><b>${esc(local.denoise_default||'off')}</b> <span class="group-count">可选 ${esc((local.denoise_options||[]).join(' / '))}</span></div>
+      <div class="tts-card-title" style="margin-top:2px">启动命令</div>
+      <div class="tts-cmd">${esc(local.start_command||'')}</div>
+      <div class="chips"><button class="btn sm" onclick="copyText(this.dataset.cmd)" data-cmd="${esc(local.start_command||'')}">一键复制</button></div>
+      <p class="tts-note">换音色＝换 voices/podcast-voice.wav。本卡只探活 8083，不会自己拉起进程。</p>
+    </div>`;
+
+  /* 2) provider 列表 */
+  const provCard = `
+    <div class="tts-card">
+      <div class="tts-card-head"><span class="tts-card-title">云厂商 API Key</span><span class="group-count">${ids.length}</span></div>
+      ${ids.map(id=>ttsProviderRow(id, providers[id])).join('') || '<div class="empty">还没有 provider</div>'}
+    </div>`;
+
+  /* 3) 新建自定义模型 */
+  const adapterOptions = adapters.map(a=>`<option value="${esc(a.id)}">${esc(a.label)} · ${esc(a.id)}</option>`).join('');
+  const newCard = `
+    <div class="tts-card">
+      <div class="tts-card-head"><span class="tts-card-title">新建自定义模型</span></div>
+      <div class="tts-form">
+        <div class="tts-two">
+          <div><label class="sr-label" style="margin-top:0">id（小写字母/数字/-/_，2-40 位）</label><input class="sr-select" id="newTtsId" placeholder="my_openai_tts" spellcheck="false"></div>
+          <div><label class="sr-label" style="margin-top:0">显示名</label><input class="sr-select" id="newTtsLabel" placeholder="我的 OpenAI 兼容服务"></div>
+        </div>
+        <label class="sr-label">协议</label>
+        <select class="sr-select" id="newTtsAdapter">${adapterOptions}</select>
+        <label class="sr-label">endpoint</label>
+        <input class="sr-select" id="newTtsEndpoint" placeholder="https://api.example.com/v1/audio/speech" spellcheck="false">
+        <div class="tts-two">
+          <div><label class="sr-label">model</label><input class="sr-select" id="newTtsModel" placeholder="tts-1"></div>
+          <div><label class="sr-label">voice</label><input class="sr-select" id="newTtsVoice" placeholder="alloy"></div>
+        </div>
+        <label class="sr-label">API Key（写入 Keychain，可留空后补）</label>
+        <input class="sr-select" id="newTtsSecret" type="password" autocomplete="new-password" placeholder="sk-...">
+      </div>
+      <div class="chips"><button class="btn primary sm" onclick="createProvider()">添加模型</button></div>
+    </div>`;
+
+  /* 4) 试听区 */
+  const testText = state.ttsText || '';
+  const audioName = state.ttsAudioName || '';
+  const providerOptions = ids.map(id=>`<option value="${esc(id)}" ${state.ttsProvider===id?'selected':''}>${esc((providers[id]||{}).label||id)} · ${esc(id)}</option>`).join('');
+  const audios = s.audios || [];
+  const testCard = `
+    <div class="tts-card">
+      <div class="tts-card-head"><span class="tts-card-title">试听</span></div>
+      <label class="sr-label" style="margin-top:0">provider</label>
+      <select class="sr-select" id="ttsProvider" onchange="state.ttsProvider=this.value">${providerOptions || '<option value="">（无）</option>'}</select>
+      <label class="sr-label">短文本（最多 200 字，超出自动截断）</label>
+      <textarea class="sr-textarea" id="ttsText" placeholder="写一句话，选个 provider，点合成试听" oninput="state.ttsText=this.value">${esc(testText)}</textarea>
+      <div class="chips">
+        <button class="btn primary sm" onclick="testCurrent()">合成试听</button>
+        <span class="tts-note">${esc(testText.length)} 字</span>
+      </div>
+      <audio id="ttsPlayer" controls ${audioName?'':'style="display:none"'} ${audioName?`src="/api/tts/audio?name=${encodeURIComponent(audioName)}"`:''}></audio>
+      <div class="tts-card-title" style="margin-top:4px">最近试听</div>
+      <div class="doc-list">
+        ${audios.map(a=>`<button class="tts-audiofile ${audioName===a.name?'on':''}" onclick="playAudio('${esc(a.name)}')">${esc(a.name)}<span>${esc(a.mtime)} · ${fmtSize(a.size)}</span></button>`).join('') || '<div class="empty">还没有试听文件</div>'}
+      </div>
+    </div>`;
+
+  /* 右栏：协议速查 + 安全 */
+  const rail = `
+    <div class="tts-card">
+      <div class="tts-card-head"><span class="tts-card-title">协议速查</span></div>
+      ${adapters.map(a=>`<div class="tts-adapter-row"><b>${esc(a.id)}</b><span>${esc(a.desc)}</span></div>`).join('')}
+    </div>
+    <div class="tts-card">
+      <div class="tts-card-head"><span class="tts-card-title">安全</span></div>
+      <div class="kv"><span>已存 Key</span><b>${savedCount}</b></div>
+      <div class="kv"><span>自定义模型</span><b>${(s.custom_ids||[]).length}</b></div>
+      <div class="rail-rule"></div>
+      <p class="tts-note">API Key 只写入 macOS Keychain（service <b>ai-jarvis-tts-console</b>），不落项目文件、不出现在页面响应或日志里。对外只暴露「是否已存」。</p>
+    </div>`;
+
+  root.innerHTML = `<div class="tts-split">
+    <div class="tts-main">${localCard}${provCard}${newCard}${testCard}</div>
+    <div class="tts-rail">${rail}</div>
+  </div>`;
+}
+function copyText(text) {
+  const done = ()=>toast('已复制');
+  const fallback = ()=>{
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch(e) { toast('复制失败', true); }
+    document.body.removeChild(ta);
+  };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback);
+  else fallback();
+}
+function openProvider(id) {
+  const s = state.tts; if (!s) return;
+  const p = (s.providers||{})[id]; if (!p) return;
+  const adapters = s.adapters || [], isCustom = !!p.custom;
+  const extraText = JSON.stringify(p.extra||{}, null, 2);
+  const opts = adapters.map(a=>`<option value="${esc(a.id)}" ${p.adapter===a.id?'selected':''}>${esc(a.label)} · ${esc(a.id)}</option>`).join('');
+  setDrawerTitle(esc(p.label||id), `${esc(id)} · ${isCustom?'自定义':'预设'} · ${p.has_secret?'已存 Key':'未存 Key'}`);
+  setDrawer(`
+    <label class="sr-label">显示名${isCustom?'':'（预设不可改）'}</label>
+    <input class="sr-select" id="ttsLabel" value="${esc(p.label||'')}" ${isCustom?'':'disabled'}>
+    <label class="sr-label">协议</label>
+    <select class="sr-select" id="ttsAdapter">${opts}</select>
+    <label class="sr-label">endpoint</label>
+    <input class="sr-select" id="ttsEndpoint" value="${esc(p.endpoint||'')}" placeholder="https://..." spellcheck="false">
+    <div class="tts-two">
+      <div><label class="sr-label">model</label><input class="sr-select" id="ttsModel" value="${esc(p.model||'')}"></div>
+      <div><label class="sr-label">voice</label><input class="sr-select" id="ttsVoice" value="${esc(p.voice||'')}"></div>
+    </div>
+    <label class="sr-label">额外参数（JSON，不能放密钥字段）</label>
+    <textarea class="sr-textarea" id="ttsExtra" spellcheck="false">${esc(extraText)}</textarea>
+    <label class="sr-label">API Key（只写入 Keychain）</label>
+    <input class="sr-select" id="ttsSecret" type="password" autocomplete="new-password" placeholder="${p.has_secret?'已保存，留空则保留':'未保存，填一个新 Key'}">
+    <div class="chips" style="margin-top:16px">
+      <button class="btn primary sm" onclick="saveProvider('${esc(id)}')">保存</button>
+      ${p.has_secret?`<button class="btn sm" onclick="clearProviderKey('${esc(id)}')">清除 Key</button>`:''}
+      <button class="btn sm" onclick="testProvider('${esc(id)}')">试听</button>
+      ${isCustom?`<button class="btn sm" onclick="deleteProvider('${esc(id)}')">删除</button>`:''}
+    </div>
+    <p class="tts-note" style="margin-top:12px">填了就更新 Key，留空保留原值；Key 永不回显到页面。</p>`);
+}
+function _val(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+async function saveProvider(id) {
+  const labelEl = document.getElementById('ttsLabel');
+  const extraRaw = _val('ttsExtra');
+  let extra = {};
+  if (extraRaw.trim()) { try { extra = JSON.parse(extraRaw); } catch(e) { toast('额外参数不是合法 JSON', true); return; } }
+  const body = { provider:id, adapter:_val('ttsAdapter'), endpoint:_val('ttsEndpoint'), model:_val('ttsModel'), voice:_val('ttsVoice'), extra };
+  if (labelEl && !labelEl.disabled) body.label = labelEl.value.trim();
+  const secret = _val('ttsSecret'); if (secret) body.secret = secret;
+  try {
+    const out = await api('/api/tts/provider','POST', body);
+    state.tts = out.state; renderTts(); openProvider(id);
+    toast('已保存');
+  } catch(e) { toast(e.message, true); }
+}
+async function clearProviderKey(id) {
+  try {
+    const out = await api('/api/tts/provider','POST',{provider:id, clear_secret:true});
+    state.tts = out.state; renderTts(); openProvider(id);
+    toast('已清除 Key');
+  } catch(e) { toast(e.message, true); }
+}
+async function deleteProvider(id) {
+  if (!window.confirm(`删除自定义模型「${id}」？配置和 Key 都会清掉。`)) return;
+  try {
+    const out = await api('/api/tts/provider/delete','POST',{provider:id});
+    state.tts = out.state; renderTts(); closeDrawer();
+    toast('已删除');
+  } catch(e) { toast(e.message, true); }
+}
+async function createProvider() {
+  const id = _val('newTtsId').trim();
+  if (!id) { toast('先填一个 id', true); return; }
+  const body = { id, label:_val('newTtsLabel').trim(), adapter:_val('newTtsAdapter'),
+    endpoint:_val('newTtsEndpoint').trim(), model:_val('newTtsModel').trim(), voice:_val('newTtsVoice').trim() };
+  const secret = _val('newTtsSecret'); if (secret) body.secret = secret;
+  try {
+    const out = await api('/api/tts/provider/create','POST', body);
+    state.tts = out.state; render();
+    toast('已添加模型 ' + out.provider);
+  } catch(e) { toast(e.message, true); }
+}
+function testCurrent() {
+  const sel = document.getElementById('ttsProvider');
+  const id = sel ? sel.value : state.ttsProvider;
+  if (!id) { toast('还没有可用的 provider', true); return; }
+  const text = (_val('ttsText') || state.ttsText || '').trim();
+  if (!text) { toast('先写一句要合成的话', true); return; }
+  state.ttsProvider = id;
+  runTest(id, text);
+}
+function testProvider(id) {
+  const text = (_val('ttsText') || state.ttsText || '').trim();
+  if (!text) { toast('先在「试听」区写一句话', true); return; }
+  runTest(id, text);
+}
+async function runTest(id, text) {
+  try {
+    const out = await api('/api/tts/test','POST',{provider:id, text});
+    state.ttsAudioName = out.name; state.ttsProvider = id;
+    state.tts = await api('/api/tts/state');
+    renderTts(); _playLoaded();
+    toast(out.truncated ? `已合成（超出 200 字，截断为 ${out.chars} 字）` : '已合成，可播放');
+  } catch(e) { toast(e.message, true); }
+}
+function _playLoaded() {
+  const a = document.getElementById('ttsPlayer');
+  if (a) { a.style.display=''; try { a.play().catch(()=>{}); } catch(e) {} }
+}
+function playAudio(name) {
+  state.ttsAudioName = name;
+  renderTts(); _playLoaded();
+}
+
+/* ============ 抽屉 / 弹窗 ============ */
+function setDrawerTitle(title, meta) {
+  document.getElementById('drawerTitle').innerHTML =
+    `<div class="reader-title">${title}</div>${meta?`<div class="reader-meta">${meta}</div>`:''}`;
+}
+function setDrawer(html) { document.getElementById('drawerBody').innerHTML = html; document.getElementById('drawer').classList.add('open'); }
+function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); }
+function openSelection(id) {
+  const s=(state.data.selections||[]).find(x=>x.id===id); if(!s) return;
+  const task=s.latest_task||{};
+  setDrawerTitle(esc(s.title), `${esc(time(s.updated_at))} · ${esc(s.source||'手动')}`);
+  setDrawer(`
+    <label class="sr-label">状态</label><select class="sr-select" id="selStatus">${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${s.status===k?'selected':''}>${v}</option>`).join('')}</select>
+    <label class="sr-label">优先级</label><select class="sr-select" id="selPriority">${[1,2,3].map(x=>`<option value="${x}" ${Number(s.priority)===x?'selected':''}>${PRIOR[x]}</option>`).join('')}</select>
+    <label class="sr-label">一句话说明</label><textarea class="sr-textarea" id="selSummary">${esc(s.summary||'')}</textarea>
+    <label class="sr-label">为什么值得讲</label><textarea class="sr-textarea" id="selWhy">${esc(s.why||'')}</textarea>
+    <label class="sr-label">链接</label><input class="sr-select" id="selUrl" value="${esc(s.url||'')}" placeholder="https://github.com/owner/repo" spellcheck="false">
+    <div class="chips" style="margin-top:16px"><button class="btn primary sm" onclick="saveSelection(${s.id})">保存</button><button class="btn sm" onclick="archiveSelection(${s.id})">归档</button><button class="btn sm" onclick="askClaudeSelection(${s.id})">Claude 选题</button>${s.url?`<a class="btn sm" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">打开链接</a>`:''}</div>
+    <div class="card card-pad" style="margin-top:20px">
+      <div class="rail-title">同步状态</div>
+      <div class="kv"><span>飞书</span><b>${s.sync?.sync_status ? esc(s.sync.sync_status) : '未同步'}</b></div>
+      ${s.sync?.conflict_info?`<div class="rail-desc" style="margin-top:6px">${esc(s.sync.conflict_info)}</div>`:''}
+    </div>
+    <div style="margin-top:20px" id="taskArea">${task.id?renderTask(task):'<div class="empty">还没有 Claude 选题任务</div>'}</div>
+  `);
+}
+async function saveSelection(id) {
+  try {
+    await api('/api/selections/'+id,'PATCH',{status:document.getElementById('selStatus').value,priority:Number(document.getElementById('selPriority').value),summary:document.getElementById('selSummary').value,why:document.getElementById('selWhy').value,url:document.getElementById('selUrl').value.trim()});
+    await load(); openSelection(id); toast('已保存');
+  } catch(e){ toast(e.message,true); }
+}
+async function archiveSelection(id){ try { await api('/api/selections/'+id,'PATCH',{status:'archived'}); await load(); openSelection(id); toast('已归档'); } catch(e){toast(e.message,true);} }
+
+function askClaude(payload) {
+  state.confirm=payload;
+  document.getElementById('confirmTitle').textContent='Claude 选题';
+  document.getElementById('confirmBody').innerHTML=
+    `<p class="item-desc" style="margin-top:10px"><strong>${esc(payload.title)}</strong></p>
+     <div class="card card-pad" style="margin-top:12px"><div class="rail-title">Claude 将检查</div>
+     <ol style="margin:10px 0 0;padding-left:20px;font-size:12.5px;line-height:1.8;color:var(--ink-700)">
+       <li>这个选题是什么、为什么值得讲</li><li>能从哪些角度拆解</li><li>以后能怎么用、有什么风险</li>
+     </ol></div>
+     <p class="rail-desc" style="margin-top:12px">只做选题分析，不写稿、不改文件、不触发合成。</p>`;
+  document.getElementById('confirmModal').classList.add('open');
+}
+function askWeekly() {
+  state.confirm={weekly:true};
+  document.getElementById('confirmTitle').textContent='周选题';
+  document.getElementById('confirmBody').innerHTML=
+    `<p class="item-desc" style="margin-top:10px">让 Claude 读<b>选题库第 0-3 块 + 防重复台账 + 三池选题 + 候选池前 40</b>，排下周 7 天各讲什么。</p>
+     <p class="rail-desc" style="margin-top:12px">只做排期建议，不写稿、不改文件、不触发合成。跑完弹 7 天建议面板，<strong>你逐天勾选确认后才落排期</strong>。最长约 30 分钟。</p>`;
+  document.getElementById('confirmModal').classList.add('open');
+}
+function askClaudeSelection(id) { const s=(state.data.selections||[]).find(x=>x.id===id); if(s) askClaude({selectionId:id, title:s.title}); }
+function closeConfirm(){ document.getElementById('confirmModal').classList.remove('open'); state.confirm=null; }
+async function runConfirmed() {
+  const p=state.confirm; if(!p) return; closeConfirm();
+  if(p.weekly) {
+    try {
+      const out=await api('/api/weekly-tasks','POST',{});
+      state.task=out.task;
+      toast(out.reused ? '这一周的计划已经在跑，接着等面板' : '周选题任务已排队，跑完弹面板');
+      watchWeeklyTask(out.task.id);
+    } catch(e){ toast(e.message,true); }
+    return;
+  }
+  try {
+    let selectionId=p.selectionId;
+    if(!selectionId && p.candidate) {
+      const c=p.candidate;
+      const out=await api('/api/selections','POST',{title:c.full_name,kind:'project',project_full_name:c.full_name,url:c.url,summary:c.description,status:'shortlist',source:'候选池'});
+      selectionId=out.selection.id;
+    }
+    const out=await api(`/api/selections/${selectionId}/claude`,'POST',{});
+    state.task=out.task; await load(); toast('Claude 任务已排队');
+    if(state.tab==='selection') { const s=(state.data.selections||[]).find(x=>x.id===selectionId); if(s) openSelection(selectionId); }
+    watchTask(out.task.id);
+  } catch(e){ toast(e.message,true); }
+}
+function renderTask(task) {
+  let result={};
+  try { result=JSON.parse(task.result_json||'{}'); } catch(e) {}
+  if(task.status==='failed') return `<div class="reader-title" style="font-size:15px">Claude 任务失败</div><p class="item-desc" style="margin-top:8px">${esc(result.error||task.result_md||'没有失败原因')}</p>`;
+  if(task.status!=='done') return `<div class="task-running"><span class="dot" style="background:#2C5C9E"></span>Claude 正在${task.status==='queued'?'排队':'分析'}…</div>`;
+  return `<div class="reader-title" style="font-size:15px">人话版选题报告</div>
+    <div class="report">
+      <div class="soft"><h4>推荐指数</h4><div class="v">${esc(result.recommendation||'—')}</div></div>
+      <div><h4>为什么值得讲</h4><div class="v">${esc(result.why||'—')}</div></div>
+      <div><h4>具体拆解角度</h4><ol>${(result.angles||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>
+      <div><h4>以后能怎么用</h4><ol>${(result.usage||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>
+      <div><h4>风险或不推荐理由</h4><div class="v">${esc(result.risks||'暂无')}</div></div>
+      <div class="soft"><h4>一条判断标准</h4><div class="v">${esc(result.standard||'—')}</div></div>
+    </div>`;
+}
+async function watchTask(id) {
+  for(let i=0;i<300;i++) {
+    try {
+      const task=await api('/api/tasks/'+id); state.task=task;
+      const area=document.getElementById('taskArea'); if(area) area.innerHTML=renderTask(task);
+      if(['done','failed'].includes(task.status)) { await load(); return; }
+    } catch(e) {}
+    await new Promise(r=>setTimeout(r,3000));
+  }
+}
+/* 周选题：轮询上限 35 分钟（任务自身 30 分钟超时留了余量） */
+async function watchWeeklyTask(id) {
+  const area=()=>document.getElementById('weeklyArea');
+  if(area()) area().innerHTML='<div class="task-running"><span class="dot" style="background:#2C5C9E"></span>周选题跑着呢，好了自动弹面板…</div>';
+  for(let i=0;i<700;i++) {
+    try {
+      const out=await api('/api/weekly-tasks/'+id);
+      if(['done','failed'].includes(out.task.status)) {
+        await load();
+        if(out.task.status==='done') { showWeeklyPanel(out.plan); }
+        else {
+          let err=out.task.result_md||'失败';
+          try { err=JSON.parse(out.task.result_json||'{}').error||err; } catch(e) {}
+          if(area()) area().innerHTML=`<div class="rail-desc" style="color:#B4472E">周选题失败：${esc(err)}</div>`;
+          toast('周选题失败：'+err, true);
+        }
+        return;
+      }
+    } catch(e) {}
+    await new Promise(r=>setTimeout(r,3000));
+  }
+  toast('周选题 35 分钟还没跑完，日志在 output/selection-tasks/', true);
+}
+function weekDayZh(dateStr) {
+  const d=new Date(dateStr+'T00:00:00');
+  return isNaN(d) ? '' : WEEKDAY[d.getDay()];
+}
+function showWeeklyPanel(plan) {
+  let result={}; try { result=JSON.parse(plan.result_json||'{}'); } catch(e) {}
+  const days=result.days||[];
+  setDrawerTitle('周选题建议 · '+esc(plan.week_start)+' 那周', `计划 #${plan.id} · 确认前不动任何排期`);
+  setDrawer(`
+    <p class="item-desc"><strong>下周主题：${esc(result.week_theme||'—')}</strong></p>
+    ${days.map(d=>`
+      <div class="card card-pad" style="margin-top:12px">
+        <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer">
+          <input type="checkbox" class="wk-adopt" data-date="${esc(d.date)}" checked>
+          <b>${esc(d.date)}（${esc(weekDayZh(d.date))}）</b>
+          <span class="tag">${esc(d.confidence||'中')}</span>
+        </label>
+        <div class="kv" style="margin-top:6px"><span>选题</span><b>${esc(d.title)}</b></div>
+        <div class="kv"><span>标的</span><b>${esc(d.project)}</b></div>
+        <div class="rail-desc" style="margin-top:6px">${esc(d.reason||'')}</div>
+        ${(d.angles||[]).length?`<div class="rail-desc">角度：${esc(d.angles.join('；'))}</div>`:''}
+      </div>`).join('')}
+    ${result.leftover?`<p class="rail-desc" style="margin-top:14px">留意池：${esc(result.leftover)}</p>`:''}
+    ${result.notes?`<p class="rail-desc">提醒：${esc(result.notes)}</p>`:''}
+    <div class="chips" style="margin-top:18px">
+      <button class="btn primary sm" onclick="confirmWeekly(${plan.id})">确认排期（勾选的天落库）</button>
+      <button class="btn sm" onclick="closeDrawer()">先不确认</button>
+    </div>`);
+}
+async function confirmWeekly(planId) {
+  const adopt={};
+  document.querySelectorAll('.wk-adopt').forEach(cb=>{ adopt[cb.dataset.date]=cb.checked; });
+  const n=Object.values(adopt).filter(Boolean).length;
+  if(!n) { toast('一天都没勾，先勾再确认', true); return; }
+  try {
+    const out=await api('/api/weekly-plans/'+planId+'/confirm','POST',{adopt});
+    const upd=out.results.filter(r=>r.action==='updated').length;
+    const cre=out.results.filter(r=>r.action==='created').length;
+    const mirrorWarn = typeof out.topic_library_mirrored==='string' ? '；但选题库第 4 块回写失败：'+out.topic_library_mirrored : '';
+    closeDrawer(); await load();
+    toast(`已排 ${n} 天：更新 ${upd} 条 / 新建 ${cre} 条，去「排期中」过目${mirrorWarn}`, !!mirrorWarn);
+  } catch(e){ toast(e.message, true); }
+}
+async function syncFeishu() {
+  const btn=document.getElementById('syncBtn'); btn.disabled=true; btn.textContent='同步中';
+  try { const out=await api('/api/feishu/sync','POST',{}); await load(); toast(out.ok?'飞书同步完成':'飞书同步有问题，请看状态'); }
+  catch(e){ toast(e.message,true); }
+  finally { btn.disabled=false; btn.textContent='立即同步'; }
+}
+async function pushScript() {
+  const btn=document.getElementById('pushScriptBtn'); btn.disabled=true; btn.textContent='推送中';
+  try {
+    const out=await api('/api/feishu/push-script','POST',{});
+    await load();
+    toast(out.skipped ? ('讲稿未变，跳过：'+out.file) : ('讲稿已推飞书：'+out.file));
+  } catch(e){ await load(); toast(e.message,true); }
+  finally { btn.disabled=false; btn.textContent='推讲稿到飞书'; }
+}
+
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeDrawer(); closeConfirm(); } });
+applyUI();
+load(true);
+</script>
+</body>
+</html>

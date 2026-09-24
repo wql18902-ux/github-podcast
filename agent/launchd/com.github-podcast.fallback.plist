@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  播客兜底班（03:00）。设计稿 §3：兜底是纯确定性脚本、零积分，
+  所以刻意**不占外部自动任务名额**，也不依赖任何会话存活。
+
+  装它（拆旧那一步再做，见 agent/launchd/README.md）——
+  先把 <string>REPLACE_WITH_PROJECT_ROOT</string> 换成本项目的绝对路径：
+    sed -i '' "s|REPLACE_WITH_PROJECT_ROOT|$PWD|" agent/launchd/com.github-podcast.fallback.plist
+    cp agent/launchd/com.github-podcast.fallback.plist ~/Library/LaunchAgents/
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.github-podcast.fallback.plist
+  验证：
+    launchctl print gui/$(id -u)/com.github-podcast.fallback
+  卸它：
+    launchctl bootout gui/$(id -u)/com.github-podcast.fallback
+
+  用 python3 是从 PATH 找的；如果你的 python3 不在标准位置，把下面第一个 <string> 换成绝对路径。
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.github-podcast.fallback</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/python3</string>
+    <string>-m</string>
+    <string>agent.cli</string>
+    <string>fallback-auto</string>
+  </array>
+
+  <key>WorkingDirectory</key><string>REPLACE_WITH_PROJECT_ROOT</string>
+
+  <!-- 每天 03:00。错峰表：写稿 00:34 起跑、豆包 02:00 合成、
+       02:40 是「等到这时候还没有成品就算超期」的线，03:00 本地兜底接上。 -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key><integer>3</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+
+  <!-- 不 KeepAlive：这是一次性任务，不是常驻服务（workbench 那种才要常驻） -->
+  <key>RunAtLoad</key><false/>
+
+  <key>StandardOutPath</key><string>/tmp/github-podcast-fallback.log</string>
+  <key>StandardErrorPath</key><string>/tmp/github-podcast-fallback.err.log</string>
+</dict>
+</plist>

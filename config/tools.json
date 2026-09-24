@@ -1,0 +1,98 @@
+{
+  "_readme": [
+    "工具表。工具 = 现有 scripts/ 下的 CLI，**不改写它们**（设计稿 §4.2）。加能力 = 加一个脚本 + 在这里登记一行。",
+    "字段含义（ToolSpec）：",
+    "  cmd / env / timeout_s   怎么跑、跑多久算超时",
+    "  writable                会不会改东西。false 的永不重试（重试写操作是事故来源）",
+    "  idempotent              重复调用结果一样吗。writable 且 !idempotent 的调用前会查 episode_events，",
+    "                          同类操作这期成功过就跳过（防重复上传 / 重复合成，§9）",
+    "  on_fail                 abort（停整期）| retry（同阶段重试）| degrade（降级继续）| continue（只记日志）",
+    "说明：设计稿 §8.2 只登记了主干 4 个，这里补了 fallback/publish 两阶段真正会用到的几条，",
+    "      以及一条只读的 ffprobe（量实测时长，不判死只记录）。"
+  ],
+  "version": 1,
+  "tools": [
+    {
+      "name": "prep",
+      "desc": "待消费闸 → fetch → 国内源 → 选料 clone，跑到选料就停（PREP_ONLY=1）",
+      "cmd": ["bash", "scripts/daily-prepare.sh"],
+      "env": { "PREP_ONLY": "1" },
+      "timeout_s": 1200,
+      "writable": true,
+      "idempotent": false,
+      "on_fail": "abort"
+    },
+    {
+      "name": "verify",
+      "desc": "验收闸唯一入口，写 output/latest-status.txt（豆包那班读它）",
+      "cmd": ["bash", "scripts/verify-episode.sh"],
+      "timeout_s": 120,
+      "writable": true,
+      "idempotent": true,
+      "on_fail": "retry"
+    },
+    {
+      "name": "split",
+      "desc": "口播稿切段（PACE 4.0），给合成用",
+      "cmd": ["python3", "scripts/split_segments.py"],
+      "timeout_s": 300,
+      "writable": true,
+      "idempotent": true,
+      "on_fail": "abort"
+    },
+    {
+      "name": "tts_local",
+      "desc": "本地 VoxCPM2 兜底合成（降级路线）",
+      "cmd": ["python3", "scripts/tts_local.py"],
+      "timeout_s": 7200,
+      "writable": true,
+      "idempotent": false,
+      "on_fail": "degrade"
+    },
+    {
+      "name": "upload",
+      "desc": "上传网易云云盘（豆包路线产物；豆包那条线自己会上传，外环只在前者缺席时用）",
+      "cmd": ["bash", "scripts/pipeline.sh", "upload"],
+      "timeout_s": 600,
+      "writable": true,
+      "idempotent": false,
+      "on_fail": "abort"
+    },
+    {
+      "name": "upload_local",
+      "desc": "上传本地链路产物（文件名带 -local，跟豆包那条不撞名）",
+      "cmd": ["bash", "scripts/pipeline.sh", "upload-local"],
+      "timeout_s": 600,
+      "writable": true,
+      "idempotent": false,
+      "on_fail": "abort"
+    },
+    {
+      "name": "push_script",
+      "desc": "讲稿 md 推成飞书选题记录的「稿子」附件（幂等：md5 没变就 skip）",
+      "cmd": ["python3", "scripts/feishu_sync.py", "--push-script"],
+      "timeout_s": 300,
+      "writable": true,
+      "idempotent": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "desc": "告警推飞书（lark-cli im 发自己）。失败只记日志，绝不因为告警失败而改验收结论",
+      "cmd": ["python3", "-m", "agent.notify"],
+      "timeout_s": 120,
+      "writable": false,
+      "idempotent": false,
+      "on_fail": "continue"
+    },
+    {
+      "name": "ffprobe",
+      "desc": "只读：量音频实测时长（容差检查用，不判死只记录）",
+      "cmd": ["ffprobe"],
+      "timeout_s": 60,
+      "writable": false,
+      "idempotent": true,
+      "on_fail": "continue"
+    }
+  ]
+}
