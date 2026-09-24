@@ -21,11 +21,17 @@ AUDIENCE_EXAMPLE = PROJECT_ROOT / "config" / "audience.example.md"
 
 
 def _sections(text: str) -> dict[str, str]:
-    """按 `## 标题` 切文件。切不完就整篇当一节。"""
-    parts = re.split(r"^##\s+", text, flags=re.M)
+    """按 `## 标题` 切文件，返回 {标题: 正文}。
+
+    用 finditer 而不是 re.split——split 不带捕获组会把标题文本从结果里吃掉，
+    拿到的就是「上一节的正文」而不是标题，切出来全是错位的节。
+    """
     out: dict[str, str] = {}
-    for i in range(1, len(parts), 2):
-        out[parts[i].strip()] = parts[i + 1] if i + 1 < len(parts) else ""
+    marks = list(re.finditer(r"^##\s+(.+)$", text, flags=re.M))
+    for i, m in enumerate(marks):
+        start = m.end()
+        end = marks[i + 1].start() if i + 1 < len(marks) else len(text)
+        out[m.group(1).strip()] = text[start:end].strip()
     return out
 
 
