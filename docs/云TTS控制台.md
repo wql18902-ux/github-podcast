@@ -57,6 +57,7 @@ http://127.0.0.1:8787
 - `extra.style_prompt`：预置音色模型放自然语言风格指令（可空）；voicedesign 模型放音色描述（必填）；格式 `wav`（流式才需要 pcm16，控制台走非流式）。
 - 「限时免费」核实自官方按量计费页（2026-09-22 更新时间，2026-09-24 抓取）；无字符额度数字，故不设本地免费闸门，改期收费时需回来补 `free_remaining_chars`。
 - 同系列 `mimo-v2.5-asr`（语音识别）**不是免费**：¥0.5/小时，走 `转录系统/mimo_asr.py`，Key 同一把（见该文件 docstring），不进本控制台。
+- **整期合成路线（2026-10-07 接入）**：`scripts/tts_mimo.py`（`bash scripts/pipeline.sh synth-mimo`）复用的是 `mimo_tts_clone` 这个 provider，但**参考音频不读控制台里保存的值**——脚本走 `cloud_tts.synthesize_with_config()` 在内存里把 `extra.reference_audio_path` 覆盖成 `voices/mimo-clone-ref.wav`（`--ref` 可换），**不写回 provider 配置**。所以控制台里 `mimo_tts_clone` 的默认值照旧是 `voices/podcast-voice.wav`，两边互不干扰。实测原速 257–317 汉字/分（2026-10-07 三段样本，882 汉字 / 343s），比本地 VoxCPM2 的 187 快一截；`--han-per-min` 用 atempo 定标，只改速度不改音高。
 
 火山 Agent Plan 使用 HTTP 单流接口：
 

@@ -1,0 +1,253 @@
+/* Readable workspace and a listening surface. Keep interaction states together. */
+:root {
+  --paper: #f6f5f0;
+  --paper-2: #eeefe7;
+  --surface: #fffefb;
+  --ink: #202a23;
+  --ink-2: #414c42;
+  --ink-3: #586252;
+  --ink-4: #626d5d;
+  --accent: #365d47;
+  --accent-soft: #e7ede1;
+  --rule: #d8ded2;
+}
+[data-theme="night"] {
+  --paper: #1b211e;
+  --paper-2: #252e27;
+  --surface: #222923;
+  --ink: #edf0e8;
+  --ink-2: #c8d0c3;
+  --ink-3: #b3beaa;
+  --ink-4: #aebaab;
+  --accent: #b1c9a0;
+  --accent-soft: #303d2f;
+  --rule: #485245;
+}
+body { font-size: 15px; }
+.nav a { font-size: 14px; min-height: 48px; }
+.nav-label, .local-note, .local-note p, .source-link, .theme-switch { font-size: 12px; }
+.breadcrumb, .search input, .service-status { font-size: 13px; }
+.eyebrow { font-size: 11px; letter-spacing: 1.6px; }
+.btn, .compose-actions .btn, .reader-actions .btn { font-size: 14px; min-height: 44px; padding: 10px 18px; }
+.btn--ink { background: var(--accent); color: var(--paper); }
+.btn--ink:hover { background: var(--ink); color: var(--paper); }
+.linkbtn { font-size: 13px; min-height: 36px; }
+.micro, .legal, .compose-privacy, .source-details summary { font-size: 13px; color: var(--ink-3); line-height: 1.85; }
+.sechead h2 { font-size: 30px; letter-spacing: -.6px; }
+.sechead p, .home-heading p:last-child { font-size: 15px; line-height: 1.85; }
+.tabs { gap: 32px; margin-bottom: 32px; }
+.tab { font-size: 15px; padding: 0 2px 15px; min-height: 44px; color: var(--ink-3); }
+.tab.is-on { color: var(--accent); border-bottom: 3px solid var(--accent); font-weight: 600; }
+.tab:hover { color: var(--ink); }
+.pill { font-size: 12px; }
+
+/* A style name always gets its own line. Every state defines text and background. */
+.stylewrap { grid-template-columns: 270px minmax(0,1fr); gap: 38px; }
+.stylegrid { background: none; border: 0; gap: 10px; }
+.stylecard {
+  position: relative;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 20px 22px;
+  gap: 12px;
+  min-width: 0;
+  transition: background .18s, border-color .18s, box-shadow .18s;
+}
+.stylecard b { display: block; font-family: var(--sans); font-size: 17px; line-height: 1.45; font-weight: 600; padding-right: 18px; }
+.stylecard b i { display: block; font-family: var(--sans); font-size: 11px; font-weight: 400; line-height: 1.6; color: var(--ink-3); opacity: 1; letter-spacing: .4px; margin-top: 5px; }
+.stylecard > span { font-size: 13px; line-height: 1.8; color: var(--ink-3); }
+.stylecard:hover { background: var(--paper-2); border-color: var(--accent); }
+.stylecard.is-on, .stylecard.is-on:hover, [data-theme="night"] .stylecard.is-on {
+  background: #293e31;
+  border-color: #293e31;
+  color: #fffef7;
+  box-shadow: 0 4px 12px #243b2410;
+}
+.stylecard.is-on::after { content: '✓'; position: absolute; top: 20px; right: 20px; color: #cde4b2; font-size: 16px; }
+.stylecard.is-on b i, .stylecard.is-on > span { color: #dce8d5; opacity: 1; }
+.styleview { border: 0; padding: 0; min-width: 0; }
+.styleview__top { padding: 0 0 24px; gap: 20px; }
+.styleview__top h3 { font-family: var(--sans); font-size: 30px; font-weight: 600; line-height: 1.5; letter-spacing: -.7px; }
+.styleview__top p { font-size: 15px; line-height: 1.9; margin-top: 9px; }
+#styleWhen { margin-top: 18px; }
+.sample { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 28px 32px; font-family: var(--sans); font-size: 16px; line-height: 2.05; color: var(--ink); }
+.sample .who { font-size: 13px; }
+.style-use { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 20px; }
+.style-use > span { font-size: 12px; color: var(--ink-3); }
+.style-details { border-top: 1px solid var(--rule); margin-top: 30px; padding-top: 18px; }
+.style-details summary { cursor: pointer; font-size: 13px; color: var(--ink-3); min-height: 32px; }
+.stylegrid2 { grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 30px; }
+.h4 { font-size: 14px; color: var(--ink-2); font-weight: 600; letter-spacing: .4px; }
+.skel { font-size: 14px; line-height: 2; }
+.metric { font-size: 13px; grid-template-columns: 5.2em minmax(0,1fr) 4.4em; }
+.promptbox__bar { font-size: 13px; }
+.promptbox pre { font-size: 13px; line-height: 1.9; }
+.cloner p { font-size: 14px; line-height: 1.9; }
+
+/* The working controls use the same readable scale as the listening views. */
+.composer-input label, .settings-section label, .persona-editor label { font-size: 14px; }
+.composer-input input, .composer-input textarea, .composer-input select,
+.settings-section input, .settings-section select, .persona-editor input,
+.persona-editor textarea, .voicecol textarea, .voicecol select, .voicebar select {
+  font-size: 15px; line-height: 1.8; min-height: 46px;
+}
+input::placeholder, textarea::placeholder { color: var(--ink-4); opacity: 1; }
+.source-modes button { font-size: 13px; min-height: 38px; }
+.local-badge { font-size: 11px; }
+.material-drop span { font-size: 15px; }
+.material-drop small, .source-url-row .btn { font-size: 12px; }
+.draft-toolbar, .draft-paper-foot, .draft-toolbar .linkbtn, .draft-paper-foot .linkbtn { font-size: 12px; }
+#draftOutput { font-size: 16px; line-height: 2; padding: 28px; }
+.drop__t { font-size: 15px; }
+.drop__s, .bridgestate, .quota, .cmd code { font-size: 13px; }
+.voicebar { flex-wrap: wrap; gap: 12px; }
+.voiceout p, .persona-card p, .settings-section p, .work-card p { font-size: 14px; }
+.persona-card .persona-label, .work-card small { font-size: 12px; }
+.notebook input, .notebook textarea { font-size: 15px; }
+.note-tools button, .note-links, .note-meta { font-size: 13px; }
+
+/* An idle turntable is decorative; playback and waveforms follow actual audio. */
+.home-heading { margin-bottom: 20px; }
+.home-heading h1 { font-size: clamp(28px,2.6vw,38px); font-weight: 600; }
+.home-section-head { margin-top: 32px; }
+.home-section-head h2 { font-size: 20px; }
+.home-section-head span, .home-section-head > a { font-size: 13px; line-height: 1.8; }
+.listening-hero { grid-template-columns: 1.15fr 1fr; min-height: 370px; border-radius: 16px; }
+.featured-copy { padding: 38px 40px; }
+.featured-copy h2 { font-size: clamp(28px,2.8vw,39px); line-height: 1.45; letter-spacing: -1.2px; margin-block: 18px; }
+.feature-kicker, .feature-series, .feature-meta { font-size: 12px; }
+.feature-desc { font-size: 15px; line-height: 1.85; color: #46573f; max-width: 33em; }
+.feature-actions { flex-wrap: wrap; gap: 18px; }
+.feature-actions .btn { min-height: 46px; font-size: 14px; }
+.feature-detail { font-size: 13px; color: #374d32; min-height: 40px; }
+.record-art { min-height: 370px; background: #d8e2c5; }
+.record { width: 326px; height: 326px; top: 31px; right: -26px; animation: record-spin 48s linear infinite; }
+.is-playing .record { animation-duration: 16s; }
+.motion-paused .record { animation-play-state: paused; }
+.record-label span { font-size: 24px; }
+.record-label small { font-size: 7px; letter-spacing: .5px; }
+.art-label { font-size: 10px; line-height: 1.65; top: 23px; left: 24px; color: #3b5134; }
+.art-bottom { left: 24px; right: 24px; bottom: 21px; font-size: 11px; color: #374c31; display: flex; justify-content: space-between; gap: 12px; }
+.art-bottom b { font-weight: 400; }
+.motion-toggle { position: absolute; z-index: 3; top: 18px; right: 18px; padding: 8px 11px; background: #f8faef; border: 1px solid #bdcba9; border-radius: 30px; color: #344b2e; font-size: 11px; min-height: 34px; }
+.motion-toggle:hover { background: #fffef7; }
+.motion-toggle:disabled { cursor: default; }
+.episode-shelf { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.audition-card .shelf-cover { aspect-ratio: 2.8; min-height: 165px; padding: 22px; }
+.audition-card:nth-child(2) .shelf-cover { background: #e9ddcf; color: #674c38; }
+.shelf-cover .cover-index { font-size: 10px; top: 20px; left: 22px; }
+.shelf-cover .cover-name { font-size: 27px; bottom: 24px; left: 22px; line-height: 1.3; max-width: 80%; }
+.cover-name small { display: block; font-size: 13px; font-weight: 400; margin-top: 10px; letter-spacing: 0; }
+.cover-play { width: 42px; height: 42px; right: 22px; bottom: 22px; font-size: 16px; }
+.shelf-cover[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--accent); }
+.shelf-info b { font-size: 14px; font-weight: 500; }
+.shelf-info p { font-size: 12px; }
+.personal-hero { margin-top: 32px; min-height: 280px; padding: 32px 36px; }
+.personal-hero h2 { font-size: 29px; }
+.personal-hero p { font-size: 14px; }
+.material-tags { font-size: 12px; flex-wrap: wrap; }
+.workspace-empty p { font-size: 14px; }
+.dock-track b { font-size: 13px; }
+.dock-track span:not(.dock-cover) { font-size: 11px; }
+.dock-time { font-size: 12px; }
+.sound-preview { display: grid; grid-template-columns: 190px minmax(0,1fr); gap: 32px; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 28px; margin-bottom: 34px; overflow: hidden; }
+.sound-preview__art { position: relative; align-self: center; width: 190px; height: 190px; background: #e0e6d4; border-radius: 12px; overflow: hidden; }
+.sound-preview__art .record { width: 175px; height: 175px; right: -5px; top: 8px; }
+.sound-preview__art .record-label span { font-size: 17px; }
+.sound-preview__art .record-label i { margin: 8px; }
+.sound-preview__body { min-width: 0; }
+.sound-preview h3 { font-size: 24px; font-weight: 500; margin-top: 9px; }
+.sound-preview p { font-size: 14px; color: var(--ink-3); margin: 7px 0 18px; }
+.voice-auditions { display: flex; gap: 12px; flex-wrap: wrap; }
+.voice-auditions button { flex: 1; display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 15px; border: 1px solid var(--rule); border-radius: 8px; min-width: 190px; background: var(--paper); color: var(--ink); }
+.voice-auditions button:hover, .voice-auditions button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.voice-auditions b { font-size: 14px; font-weight: 600; display: block; }
+.voice-auditions small { font-size: 11px; color: var(--ink-3); display: block; margin-top: 3px; }
+.voice-auditions button > span:last-child { margin-left: auto; font-size: 12px; color: var(--ink-3); }
+.audition-play { width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: var(--paper); font-size: 11px; }
+.sound-preview__wave { margin-top: 16px; }
+#soundWave { display: block; width: 100%; height: 34px; opacity: .8; }
+#auditionStatus { display: block; font-size: 11px; color: var(--ink-3); margin-top: 6px; }
+
+@media (max-width: 1200px) {
+  .stylewrap { grid-template-columns: 235px minmax(0,1fr); gap: 28px; }
+  .stylecard { padding: 18px; }
+  .stylegrid2 { grid-template-columns: 1fr; }
+  .featured-copy { padding: 30px; }
+  .record { right: -70px; }
+  .sound-preview { grid-template-columns: 150px minmax(0,1fr); gap: 24px; }
+  .sound-preview__art { width: 150px; height: 180px; }
+}
+@media (max-width: 1020px) {
+  .stylewrap { grid-template-columns: minmax(0,1fr); gap: 26px; }
+  .stylegrid { grid-template-columns: none; grid-template-rows: none; grid-auto-flow: column; grid-auto-columns: 218px; overflow-x: auto; padding: 2px 2px 12px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+  .stylecard { scroll-snap-align: start; }
+  .stylegrid2 { grid-template-columns: 1fr 1fr; }
+  .sound-preview { grid-template-columns: minmax(0,1fr); }
+  .sound-preview__art { display: none; }
+  .featured-copy h2 { font-size: 29px; }
+  .home-section-head > div { display: block; }
+  .home-section-head span { display: block; }
+  .nav a { font-size: 13px; }
+}
+@media (max-width: 760px) {
+  .sidebar { padding-inline: 20px; }
+  .nav { gap: 23px; }
+  .sidebar .nav a { font-size: 13px; white-space: nowrap; min-height: 46px; flex-shrink: 0; }
+  .workspace-bar .search { width: 110px; }
+  .workspace-bar .search input { width: 78px; font-size: 12px; }
+  .sechead { align-items: flex-start; gap: 14px; }
+  .sechead h2 { font-size: 26px; }
+  .sechead p { font-size: 14px; }
+  .sechead > .btn { padding-inline: 12px; font-size: 12px; white-space: nowrap; }
+  #studio .sechead { display: block; position: relative; }
+  #studio .sechead > .btn { position: absolute; top: 0; right: 0; min-height: 38px; }
+  #studio .sechead p { margin-top: 18px; }
+  .tabs { gap: 20px; }
+  .tab { font-size: 14px; white-space: nowrap; }
+  .styleview__top h3 { font-size: 27px; }
+  .styleview__top p { font-size: 14px; }
+  .stylegrid2 { grid-template-columns: 1fr; }
+  .sample { font-size: 15px; line-height: 2; padding: 22px; }
+  .stylecard { padding: 19px; }
+  .style-use { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .compose-choice-grid { grid-template-columns: 1fr; }
+  .compose-actions { flex-wrap: wrap; }
+  .draft-toolbar { align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .draft-toolbar .linkbtn, .draft-paper-foot .linkbtn { font-size: 12px; }
+  #draftOutput { padding: 22px; font-size: 15px; }
+  .home-heading h1 { font-size: 28px; }
+  .home-heading p:last-child { font-size: 14px; max-width: none; }
+  .home-section-head { align-items: flex-start; gap: 20px; }
+  .home-section-head h2 { font-size: 20px; }
+  .home-section-head > a { font-size: 12px; white-space: nowrap; }
+  .home-section-head span { font-size: 12px; }
+  .listening-hero { grid-template-columns: minmax(0,1fr); }
+  .featured-copy { padding: 27px; }
+  .featured-copy h2 { font-size: 31px; }
+  .feature-desc { font-size: 15px; }
+  .record-art { min-height: 265px; }
+  .record { width: 265px; height: 265px; top: -14px; right: -12px; }
+  .art-label { left: 22px; top: 22px; }
+  .art-bottom { left: 22px; right: 22px; bottom: 16px; }
+  .motion-toggle { top: 16px; right: 16px; }
+  .episode-shelf { grid-template-columns: 1fr; gap: 22px; }
+  .audition-card .shelf-cover { min-height: 170px; }
+  .shelf-cover .cover-name { font-size: 27px; }
+  .personal-hero { padding: 27px; }
+  .personal-hero h2 { font-size: 26px; }
+  .personal-hero p { font-size: 14px; }
+  .personal-hero .material-tags { font-size: 12px; }
+  .sound-preview { padding: 22px; }
+  .voice-auditions { flex-direction: column; }
+  .voice-auditions button { width: 100%; }
+  .voicecol textarea, .voicecol select { width: 100%; }
+  .voicebar select { width: 100%; }
+  .dock-track b { font-size: 12px; }
+  .dock-track span:not(.dock-cover) { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .record { animation: none; }
+}

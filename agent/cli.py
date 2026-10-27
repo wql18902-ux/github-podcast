@@ -7,7 +7,7 @@
     python3 -m agent.cli run                       # 从断点跑到需要宿主接手
     python3 -m agent.cli resume                    # 宿主干完活之后续跑
     python3 -m agent.cli report                    # 一期体检报告
-    python3 -m agent.cli fallback --date 2026-09-21  # 手动走本地兜底
+    python3 -m agent.cli fallback --date 2026-09-21  # 手动走降级合成（路线见 config/agent.json synth.fallback）
     python3 -m agent.cli doctor                    # 自检：接线、工具、红线
 
 宿主无关（设计稿 §3.1）：这里只依赖标准库与 subprocess，任何 agent 跑它行为一致。
@@ -263,7 +263,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--wait-host", action="store_true")
     p.set_defaults(func=cmd_stage)
 
-    p = sub.add_parser("fallback", help="手动走本地兜底合成")
+    p = sub.add_parser("fallback", help="走降级合成（synth.fallback 配的那条：本地 VoxCPM2 或 MiMo 克隆）")
     add_common(p)
     p.set_defaults(func=cmd_fallback)
 

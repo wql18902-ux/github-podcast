@@ -4,28 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>播客选题台</title>
+<link rel="stylesheet" href="tokens.css?v=20261024">
 <style>
 :root{
   color-scheme:light;
-  --bg:#F7F6F4;
-  --ink-900:#16181D; --ink-700:#3B3F47; --ink-600:#5A5F68;
-  --ink-500:#6C727C; --ink-400:#949AA4; --ink-300:#B7BCC4;
-  --hair:rgba(22,24,29,.09);
-  --hair-soft:rgba(22,24,29,.07);
-  --hair-strong:rgba(22,24,29,.12);
-  --hair-stronger:rgba(22,24,29,.13);
-  --glass:rgba(255,255,255,.5);
-  --glass-mid:rgba(255,255,255,.62);
-  --glass-high:rgba(255,255,255,.8);
-  --glass-card:rgba(255,255,255,.85);
-  --r-card:14px; --r-idea:18px; --r-btn:10px; --r-chip:15px; --r-tag:7px;
-  --sh-card:0 8px 20px -6px rgba(22,24,29,.07);
-  --sh-idea:0 10px 28px -6px rgba(22,24,29,.09);
-  --sh-btn:0 4px 12px -2px rgba(22,24,29,.2);
-  --green:#2A6B49; --green-raw:#3F9C6B;
-  --blue:#2C5C9E; --amber:#8A6420;
-  --mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  /* 纸墨 token：canonical 在 design-system/tokens.css，本地副本 web/tokens.css（须字节一致）。
+     本文件沿用自有命名（--ink-*/--hair*/--glass*…），值全部改由 canonical 派生；
+     选题台独有的工位状态色用 --wb-* 前缀，不进 canonical。 */
+  --bg:var(--paper);
+  --ink-900:var(--ink); --ink-700:var(--ink-2); --ink-600:var(--ink-3);
+  --ink-500:var(--ink-3); --ink-400:var(--ink-4); --ink-300:var(--ink-4);
+  --hair:var(--rule); --hair-soft:var(--rule-soft); --hair-strong:var(--rule); --hair-stronger:var(--rule-strong);
+  --glass:var(--surface-2); --glass-mid:var(--surface-2); --glass-high:var(--surface); --glass-card:var(--surface);
+  --r-card:var(--radius-lg); --r-idea:var(--radius-lg); --r-btn:var(--radius-md); --r-chip:var(--radius-round); --r-tag:var(--radius-sm);
+  --sh-card:0 6px 16px -8px rgba(20,23,21,.08);
+  --sh-idea:0 8px 20px -8px rgba(20,23,21,.10);
+  --sh-btn:0 3px 10px -3px rgba(20,23,21,.22);
+  --green:var(--ok); --green-raw:var(--ok);
+  --blue:var(--accent); --amber:var(--warn);
+  /* 工位状态色（状态语言允许独立于单一强调色，见 GOAL.md §4.2） */
+  --wb-blue:#3E6DB5; --wb-blue-soft:#EBF2FC; --wb-green-soft:#E7F1EA; --wb-amber-soft:#F6EDD8;
+  --wb-red:#B4452F; --wb-plain:#FBF6EA;
+  --mono:var(--font-mono); --sans:var(--font-ui);
 }
 *{box-sizing:border-box;}
 html,body{height:100%;}
@@ -35,7 +35,7 @@ button{cursor:pointer;}
 ::selection{background:rgba(22,24,29,.12);}
 
 /* ---------- 背景光晕（毛玻璃的折射底） ---------- */
-.glow{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
+.glow{position:fixed;border-radius:50%;pointer-events:none;z-index:0;opacity:.3;}
 .glow-warm{width:1020px;height:1020px;left:-260px;top:-420px;
   background:radial-gradient(circle,rgba(246,215,178,.85) 0%,rgba(246,215,178,.16) 55%,rgba(246,215,178,0) 100%);}
 .glow-cool{width:1120px;height:1120px;right:-300px;bottom:-500px;
@@ -71,7 +71,7 @@ button{cursor:pointer;}
 .sync-time{font:400 10.5px/1 var(--mono);color:var(--ink-400);}
 .sync-btns{display:flex;gap:8px;}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green-raw);flex:0 0 auto;display:inline-block;}
-.dot.bad{background:#D14343;}
+.dot.bad{background:var(--wb-red);}
 
 /* ---------- 页头 ---------- */
 .page-head{height:70px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex:0 0 auto;}
@@ -131,8 +131,8 @@ button{cursor:pointer;}
   display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;white-space:nowrap;
   transition:background .12s ease,border-color .12s ease;}
 .btn:hover{background:rgba(255,255,255,.92);}
-.btn.primary{background:var(--ink-900);border-color:var(--ink-900);color:#fff;font-weight:500;box-shadow:var(--sh-btn);}
-.btn.primary:hover{background:#26282F;}
+.btn.primary{background:var(--ink-900);border-color:var(--ink-900);color:var(--paper);font-weight:500;box-shadow:var(--sh-btn);}
+.btn.primary:hover{background:var(--ink-2);}
 .btn.sm{height:32px;padding:0 14px;border-radius:9px;font-size:12px;}
 .btn.block{width:100%;}
 .btn.icon{width:34px;padding:0;flex:0 0 34px;}
@@ -145,17 +145,17 @@ button{cursor:pointer;}
 .chip:hover{background:rgba(255,255,255,.9);}
 .chip.on{background:var(--ink-900);border-color:var(--ink-900);color:#fff;font-weight:500;}
 .tag{height:24px;padding:0 9px;border-radius:var(--r-tag);font-size:11px;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;}
-.tag.sched-date{background:rgba(62,109,181,.12);color:#3E6DB5;font-weight:500;}
-.tag.pending{background:#FAF0DB;color:var(--amber);}
-.tag.active{background:#EBF2FC;color:var(--blue);}
-.tag.done{background:#EAF5EE;color:var(--green);}
+.tag.sched-date{background:var(--wb-blue-soft);color:var(--wb-blue);font-weight:500;}
+.tag.pending{background:var(--wb-amber-soft);color:var(--amber);}
+.tag.active{background:var(--wb-blue-soft);color:var(--wb-blue);}
+.tag.done{background:var(--wb-green-soft);color:var(--ok);}
 .pill{height:26px;padding:0 10px;border-radius:var(--r-tag);font-size:11.5px;display:inline-flex;align-items:center;
   border:1px solid rgba(22,24,29,.1);background:rgba(255,255,255,.72);color:var(--ink-500);
   text-decoration:none;white-space:nowrap;}
 .pill:hover{background:rgba(255,255,255,.95);}
 .pill.audio{background:rgba(63,156,107,.1);border-color:rgba(63,156,107,.22);color:var(--green);font-weight:500;}
 .pill.none{background:rgba(22,24,29,.04);border-color:rgba(22,24,29,.08);color:var(--ink-300);}
-.pill.wait{background:#FAF0DB;border-color:rgba(200,138,63,.25);color:var(--amber);font-weight:500;}
+.pill.wait{background:var(--wb-amber-soft);border-color:rgba(200,138,63,.25);color:var(--amber);font-weight:500;}
 
 /* ---------- 分组 / 列表项 ---------- */
 .group{display:flex;flex-direction:column;}
@@ -247,7 +247,7 @@ a.cand-name:hover{text-decoration:underline;}
 @keyframes tocFlash{0%{background:rgba(63,156,107,.22);}100%{background:transparent;}}
 .reader-title{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0;}
 .reader-meta{font-size:11px;color:var(--ink-400);margin:8px 0 0;overflow-wrap:anywhere;}
-.plain{margin:16px 0 0;border-radius:10px;background:#FCF7EC;border:1px solid rgba(200,138,63,.18);
+.plain{margin:16px 0 0;border-radius:10px;background:var(--wb-plain);border:1px solid rgba(200,138,63,.18);
   padding:16px;display:flex;flex-direction:column;gap:10px;}
 .plain-h{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--amber);}
 .plain-b{font-size:12.5px;line-height:21px;color:var(--ink-600);}
@@ -298,7 +298,7 @@ details.tech[open] > summary{margin-bottom:14px;}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:90;
   background:rgba(22,24,29,.92);color:#fff;padding:10px 16px;border-radius:10px;font-size:12.5px;
   max-width:min(92vw,680px);display:none;box-shadow:0 12px 30px -8px rgba(22,24,29,.4);}
-.toast.error{background:#B91C1C;}
+.toast.error{background:var(--wb-red);}
 .task-running{font-size:12.5px;color:var(--blue);display:flex;align-items:center;gap:8px;}
 .report{display:flex;flex-direction:column;gap:14px;margin-top:14px;}
 .report h4{margin:0 0 5px;font-size:12px;font-weight:500;color:var(--ink-500);letter-spacing:.02em;}
@@ -338,6 +338,19 @@ audio#ttsPlayer{width:100%;margin-top:12px;}
 .tts-note{font-size:11px;color:var(--ink-400);line-height:17px;}
 .tts-adapter-row{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:17px;color:var(--ink-500);}
 .tts-adapter-row b{font:500 11px/1.6 var(--mono);color:var(--ink-700);flex:0 0 auto;}
+
+/* ---------- 启动/错误态（后端未运行时的诚实呈现，不伪装数据） ---------- */
+.boot-card{margin:8px auto 0;max-width:580px;border-radius:var(--r-card);padding:26px 28px;
+  background:var(--glass-card);border:1px solid var(--hair-strong);box-shadow:var(--sh-card);text-align:left;}
+.boot-kicker{font:500 11px/1 var(--mono);letter-spacing:.14em;color:var(--wb-red);text-transform:uppercase;}
+.boot-kicker.wait{color:var(--ink-400);}
+.boot-title{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:10px 0 6px;}
+.boot-desc{font-size:12.5px;line-height:20px;color:var(--ink-500);margin:0;}
+.boot-cmd{font:12px/1.6 var(--mono);color:var(--ink-700);background:rgba(20,23,21,.04);
+  border:1px solid var(--hair-soft);border-radius:10px;padding:10px 12px;margin:14px 0 10px;overflow-wrap:anywhere;}
+.boot-note{font-size:11px;color:var(--ink-400);line-height:17px;margin:0 0 14px;}
+.boot-acts{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.boot-err{font:11px/1.6 var(--mono);color:var(--ink-400);overflow-wrap:anywhere;min-width:0;}
 
 /* ---------- 三处折叠（P1f，状态落 localStorage wb.ui）---------- */
 .g-arrow{display:inline-block;width:15px;color:var(--ink-400);font-size:10px;}
@@ -486,6 +499,7 @@ body.docs-left-collapsed .docs-expand{display:inline-flex;}
     </header>
     <div class="hairline"></div>
     <div class="content" id="content">
+      <section id="tab-boot" hidden></section>
       <section id="tab-selection"></section>
       <section id="tab-candidates" hidden></section>
       <section id="tab-told" hidden></section>
@@ -573,8 +587,10 @@ function toast(msg, error=false) {
 async function api(path, method='GET', body) {
   const opt = { method, headers:{'Content-Type':'application/json'} };
   if (body) opt.body = JSON.stringify(body);
-  const res = await fetch(path, opt);
-  const data = await res.json().catch(()=>({error:'返回不是 JSON'}));
+  let res;
+  try { res = await fetch(path, opt); }
+  catch (e) { throw new Error('连不上选题台后端（127.0.0.1:8788）——服务没起，或刚停下'); }
+  const data = await res.json().catch(()=>({error:'返回不是 JSON（服务返回了网页或空内容）'}));
   if (!res.ok) throw new Error(data.error || `请求失败 ${res.status}`);
   return data;
 }
@@ -589,11 +605,59 @@ function badge(text,type='') { return `<span class="tag ${type}">${esc(text)}</s
 function statusTag(s) { return badge(STATUS[s]||s, STATUS_TYPE[s]||''); }
 
 /* ============ 框架渲染 ============ */
+/* boot 三态：null=首次加载中 / 'ok'=拿到过数据 / 'err'=首次加载失败（多半是后端没起）。
+   已有数据后的刷新失败不清现场，只 toast——防「看了一半页面被抽空」。 */
+state.boot = null; state.bootErr = '';
+let bootTimer = null;
+function stopBootTimer(){ if (bootTimer) { clearInterval(bootTimer); bootTimer = null; } }
+function renderBoot(){
+  const tab = document.getElementById('tab-boot');
+  document.querySelectorAll('#content > section').forEach(s=>s.hidden = s.id !== 'tab-boot');
+  const t0 = state.bootT0 || Date.now();
+  if (state.boot === 'err') {
+    tab.innerHTML = `
+      <div class="boot-card">
+        <div class="boot-kicker">CONNECTION FAILED</div>
+        <div class="boot-title">选题台后端没有在运行</div>
+        <p class="boot-desc">这个页面的数据全部来自本机服务 <b>workbench_server.py</b>（127.0.0.1:8788），现在连不上。该服务于 2026-10-07 起处于关闭状态，页面本身没有坏。</p>
+        <div class="boot-cmd">bash scripts/open-workbench.sh</div>
+        <p class="boot-note">在项目根目录跑上面这条命令拉起服务；为什么关、开了会影响什么，见 docs/工作台选题台.md。下面错误码只是佐证，不用琢磨。</p>
+        <div class="boot-acts">
+          <button class="btn primary" onclick="load()">重试</button>
+          <span class="boot-err">${esc(state.bootErr||'')}</span>
+        </div>
+      </div>`;
+  } else {
+    tab.innerHTML = `
+      <div class="boot-card">
+        <div class="boot-kicker wait">CONNECTING</div>
+        <div class="boot-title">正在连接本机服务…</div>
+        <p class="boot-desc" id="bootWait">等 127.0.0.1:8788 的 workbench_server 返回 /api/overview。</p>
+      </div>`;
+    stopBootTimer();
+    bootTimer = setInterval(()=>{
+      const el = document.getElementById('bootWait');
+      if (el) el.textContent = `等 127.0.0.1:8788 的 workbench_server 返回 /api/overview（已等 ${Math.round((Date.now()-t0)/1000)} 秒）`;
+      else stopBootTimer();
+    }, 500);
+  }
+}
 async function load(showTip=false) {
-  try { state.data = await api('/api/overview'); if (showTip) toast('已刷新'); render(); }
-  catch (e) { toast(e.message, true); }
+  const hadData = !!state.data;
+  if (!hadData) { state.boot = null; state.bootErr = ''; state.bootT0 = Date.now(); renderBoot(); }
+  try {
+    state.data = await api('/api/overview');
+    state.boot = 'ok'; stopBootTimer();
+    document.getElementById('tab-boot').hidden = true;
+    if (showTip && hadData) toast('已刷新');
+    render(); setTab(state.tab);
+  } catch (e) {
+    if (hadData) { toast(e.message, true); return; }
+    state.boot = 'err'; state.bootErr = e.message; stopBootTimer(); renderBoot();
+  }
 }
 function setTab(tab) {
+  if (!state.data) { toast('后端还没连上：按页面里的指引拉起服务，或点重试', true); return; }
   state.tab = tab;
   document.querySelectorAll('.side-nav .nav-item').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
   document.querySelectorAll('#content > section').forEach(s=>s.hidden = s.id !== 'tab-'+tab);

@@ -21,11 +21,11 @@
 | 维度 | 内容 | 状态 |
 |---|---|---|
 | 目标与用途 | 每日自动产出一期讲给伟谦一个人听的播客，从抓源到上传网易云全程无人 | 已确认 |
-| 成功标准 | 早上打开网易云云盘就有一期 51-62 分钟的音频；一夜没稿 = 失败；失败必须可见（不静默） | 已确认 |
+| 成功标准 | 早上打开网易云云盘就有一期 49-60 分钟的音频；一夜没稿 = 失败；失败必须可见（不静默） | 已确认 |
 | 任务结构 | 准备 → 读源码拆解 → 写稿 → 自验收 → **独立审稿** → 交豆包合成 → 超期降级本地合成 → 上传 → 推飞书 | 已确认 |
 | 数据/资源边界 | 本机仓库与 `cache/`、GitHub API、`output/` 产物、SQLite、飞书多维表格、网易云云盘 | 已确认 |
 | 硬约束 | ① 写稿模型固定 DeepSeek-V4.1-Flash，走 WorkBuddy 免费额度 ② 合成主走豆包 App（会员，省钱）③ 不把任何 Key 写进文件/日志 ④ 删除只进废纸篓 ⑤ 不改 `fetch.py` 的 `QUERIES`/`KNOWN_CN_ORGS`，不改 `episodes.log` 历史 | 已确认 |
-| 用户与场景 | 一个人听，手机网易云；早间收听；一期 51-62 分钟 | 已确认 |
+| 用户与场景 | 一个人听，手机网易云；早间收听；一期 49-60 分钟 | 已确认 |
 | 边界（不做什么） | 不做视频版；不自动换写稿模型；不在额度紧张时自动转付费合成；不动选题抓取规则 | 默认假设 |
 | 技术栈约束 | **宿主无关**——WorkBuddy 优先，Claude Code / Codex / Hermes 都能驱动同一份流程；本机进程 = launchd；脚本保持 CLI 形态；状态进 SQLite；配置用 JSON（标准库零依赖） | 已确认 |
 
@@ -90,7 +90,7 @@
 
 **能做到，而且地基已经浇好了。** 实测事实（`ai-jarvis/references/三家Agent能力与分界线.md`，2026-09-12 实测快照）：
 
-- `~/.claude/skills` 是**唯一一个 skill 库**，Codex / Hermes / WorkBuddy 全是指向它的软链
+- `~/.codex/skills` 是**唯一一个 skill 库**，Codex / Hermes / WorkBuddy 全是指向它的软链
 - 三家跑的是**同一个模型** `deepseek-flash`（都指向 `api.deepseek.com`）
 - 三家**共用一份记忆** `~/ai-brain/ai-jarvis/memory/`
 - 三家**不共享对话，只共享文件**——文件是唯一通道
@@ -102,7 +102,7 @@
 | 层 | 放在哪 | 换宿主时 |
 |---|---|---|
 | **编排 + 状态**（谁先谁后、记到哪、闸门判据） | 项目内 `agent/`（纯 Python + SQLite） | **不动**。任何 agent 跑 `python3 -m agent.cli run`，行为完全一致 |
-| **智能规范**（写稿/审稿怎么写才算好） | `~/.claude/skills/podcast-agent/`（三家共用的软链库） | **不动**。三家加载的是同一份 |
+| **智能规范**（写稿/审稿怎么写才算好） | `~/.codex/skills/podcast-agent/`（三家共用的软链库） | **不动**。三家加载的是同一份 |
 | **宿主适配**（谁唤醒、用哪个模型、怎么给权限） | 各家的自动化配置，每家一份、每份 ≤10 行 | 只改这一层 |
 
 ### 各家怎么接（适配层全貌）
@@ -330,7 +330,7 @@ github-podcast/
 ├── config/
 │   ├── agent.json                  # 新增：全部口径（时间/阈值/模型/降级）
 │   └── tools.json                  # 新增：工具表
-├── ~/.claude/skills/podcast-agent/  # 新增：智能规范（在**三家共用的软链库**里，不是 WorkBuddy 专属目录）
+├── ~/.codex/skills/podcast-agent/  # 新增：智能规范（在**三家共用的软链库**里，不是 WorkBuddy 专属目录）
 │   └── SKILL.md                     # 读 request.json → 写稿 → 写 done.json；平台无关
 ├── scripts/                        # 现有 28 个脚本：不动，它们是工具层
 ├── output/                         # 产物：稿件 / 笔记 / 音频 / 日志（不变）
@@ -664,7 +664,7 @@ class GateConfig:
     "length": {
       "min_chars": 8500,
       "fail_below_chars": 6500,
-      "chars_per_minute": 168
+      "chars_per_minute": 175
     }
   },
 
@@ -878,7 +878,7 @@ class GateConfig:
 
 **第 1-5 步已编码完成**，第 6 步（拆旧）未动——旧链路照旧在跑，新链路**还没挂到任何定时任务上**。
 代码在 `agent/`（8 个 py + schema.sql）、配置在 `config/agent.json` + `config/tools.json`、
-内环规范在 `~/.claude/skills/podcast-agent/SKILL.md`（三家共用的软链库，不是 WorkBuddy 专属目录）。
+内环规范在 `~/.codex/skills/podcast-agent/SKILL.md`（三家共用的软链库，不是 WorkBuddy 专属目录）。
 
 ### 13.1 与设计稿不一致的四处（都是核对实际接口后改的）
 
@@ -914,9 +914,11 @@ class GateConfig:
 
 - **三个待拍项照旧**（§12.1 的第 1-3 条）。配置里先按建议值落了：`max_projects_per_episode: 3`（建议保 3）、
   `max_tokens_per_episode` 只记账不硬拦（积分换算查不到公开口径）。
-- **`chars_per_minute` 填的是 168，不是 170-185**。理由是让它**跟着闸门脚本走**，DB 里的数与
-  `latest-status.txt` 里的数完全一致，漂移检测才有意义。写稿 prompt §0.5 主张 170-185 那处没裁决前，
-  不单方面改——否则就是又造一个「口径对不上」。裁决后只改这一个数。
+- **`chars_per_minute` 填 175**（2026-10-03 裁决统一；此前闸门脚本与写稿 prompt §0.5 两个折算口径
+  并存、连漂九次，旧值与漂移全过程见 BLOCKED.md「语速换算三处口径不一致」）。取豆包 seed-audio
+  六样本实测散布 140-195 的中位偏保守值。它**跟着闸门脚本走**，DB 里的数与
+  `latest-status.txt` 里的数完全一致，漂移检测才有意义——守卫测试 `tests/test_speed_caliber.py`。
+  产出侧 PACE 4.0 ≈187 是**合成档位**，不是预估口径，两者不互改。
 - **旧兜底实际上没在跑（2026-09-21 收紧口径）**。原文写「旧兜底还挂着」是**错的**：
   用户确认 **Trae 侧没有挂任何任务**，WorkBuddy 面板里那条「播客本地兜底」（03:00）是 **PAUSED**。
   → **豆包那班失败时当前没有任何兜底**（ep15 缺音频就是这么来的）。这也让 `agent/launchd/`

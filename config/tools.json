@@ -50,6 +50,15 @@
       "on_fail": "degrade"
     },
     {
+      "name": "tts_mimo",
+      "desc": "MiMo-V2.5-TTS-VoiceClone 云合成整期（克隆音色，降级路线之一；不需要本地 GPU）",
+      "cmd": ["python3", "scripts/tts_mimo.py"],
+      "timeout_s": 7200,
+      "writable": true,
+      "idempotent": false,
+      "on_fail": "degrade"
+    },
+    {
       "name": "upload",
       "desc": "上传网易云云盘（豆包路线产物；豆包那条线自己会上传，外环只在前者缺席时用）",
       "cmd": ["bash", "scripts/pipeline.sh", "upload"],
@@ -66,6 +75,15 @@
       "writable": true,
       "idempotent": false,
       "on_fail": "abort"
+    },
+    {
+      "name": "upload_quark",
+      "desc": "备份成品音频到夸克网盘（网易云的第二落点；Cookie 存本机 Keychain，未配置时退出 2，文件路径追加在 cmd 后）",
+      "cmd": ["bash", "scripts/upload-quark.sh"],
+      "timeout_s": 600,
+      "writable": true,
+      "idempotent": false,
+      "on_fail": "continue"
     },
     {
       "name": "push_script",

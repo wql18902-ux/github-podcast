@@ -72,8 +72,8 @@ def build_brief(date: str, repos: list[str], cfg: dict[str, Any]) -> str:
         f"{repo_lines}\n\n"
         f"## 拼盘要求\n\n"
         f"- 一期最多 {max_n} 个仓库，每个都要走完拆解 10 字段，**不许只讲一个就收**\n"
-        f"- 体量口径：正文 ≥{cfg['gates']['length']['min_chars']} 汉字（≈51 分钟）；"
-        f"单项目只够 3600-4025 汉字（≈24 分钟），撑不起就拼盘\n"
+        f"- 体量口径：正文 ≥{cfg['gates']['length']['min_chars']} 汉字（≈49 分钟）；"
+        f"单项目只够 3600-4025 汉字（≈21–23 分钟），撑不起就拼盘\n"
         f"- 读源码至少要碰 {cfg['budget']['min_files_read']} 个文件（回执里要报 files_read）\n"
     )
     if sel.get("project") and not any(sel.get("project") in r for r in repos):

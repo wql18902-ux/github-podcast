@@ -1,0 +1,94 @@
+/* The rail is the lower plane. Header and workspace share a single rounded upper plane. */
+html[data-sourcecast="neon"] body:not(.is-welcome){background:var(--shell-base);height:100dvh;overflow:hidden}
+html[data-sourcecast="neon"] body:not(.is-welcome)::before{display:none}
+.app-surface{
+  --paper:var(--shell-surface);--paper-2:var(--shell-input);--paper-3:var(--shell-soft);
+  --surface:var(--shell-surface);--surface-2:var(--shell-input);--rule:var(--shell-rule);--rule-soft:var(--shell-rule-soft);
+  position:relative;z-index:20;margin:10px 10px 10px var(--rail-w);height:calc(100dvh - 20px);min-height:0;display:flex;flex-direction:column;
+  background:var(--shell-surface);border:1px solid var(--shell-rim);border-radius:24px;overflow:hidden;
+  box-shadow:0 12px 48px -20px var(--shell-shadow);transition:margin-left 260ms cubic-bezier(.22,1,.36,1);
+}
+.sidebar#rail{z-index:5;background:var(--shell-base);border-right:0;padding-right:0}
+.sidebar#rail .rail-head{border-bottom:0;margin-bottom:8px}
+.sidebar#rail .nav-label--group{border-top:0}
+.sidebar#rail .nav a{border-radius:10px;margin-inline:8px;width:calc(var(--rail-expanded) - 16px);padding-left:0}
+.sidebar#rail .nav a:hover{background:var(--shell-input)}
+.sidebar#rail .nav a.is-active{background:var(--shell-soft);color:var(--ink)}
+.sidebar#rail .nav a.is-active::before{display:none}
+.sidebar#rail .nav-icon{width:calc(var(--rail-collapsed) - 16px);flex-basis:calc(var(--rail-collapsed) - 16px)}
+.sidebar#rail .sidebar-bottom{border-top:0}
+html.rail-open .app-surface{margin-left:var(--rail-expanded)}
+.app-surface main#top,html.rail-open .app-surface main#top{margin-left:0!important;padding-bottom:120px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--rule) transparent}
+.app-surface #topbar.workspace-bar,html.rail-open .app-surface #topbar.workspace-bar{position:relative;top:auto;margin-left:0;height:64px;flex:0 0 64px;background:var(--shell-surface);border-bottom:1px solid var(--shell-rule-soft)}
+.app-surface .workspace-actions{gap:12px}
+.app-surface .search{border:0;background:var(--shell-input);padding:0 11px;border-radius:10px;width:220px}
+.app-surface .search input{border:0}
+.app-surface .iconbtn{border-radius:9px;background:transparent}
+.app-surface .btn{border-radius:10px;min-height:42px}
+.app-surface .btn--ink{background:var(--shell-soft);border-color:var(--shell-rim);color:var(--ink)}
+.app-surface .btn--ink:hover{background:var(--rule);border-color:var(--rule-strong)}
+.app-surface .btn--line{border-color:var(--shell-rule)}
+.app-surface .btn--line:hover{background:var(--shell-input)}
+.app-surface input:not([type=range]):not([type=file]):not([type=checkbox]),
+.app-surface select,.app-surface textarea{
+  box-sizing:border-box;min-width:0;max-width:100%;border-radius:10px;border:1px solid var(--shell-rule);
+  background:var(--shell-input);color:var(--ink);padding:11px 13px;font-size:14px;line-height:1.7;
+}
+.app-surface input:focus-visible,.app-surface textarea:focus-visible,.app-surface select:focus-visible{outline:2px solid var(--ink-3);outline-offset:3px;box-shadow:none}
+.app-surface .search input{padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;outline:none}
+.app-surface .voicewrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 40px;align-items:start}
+.app-surface .voicecol{min-width:0;position:relative;padding:24px 0;border:0}
+.app-surface .voicecol--wide{grid-column:1/-1}
+.app-surface .voicecol>.h4{margin-bottom:16px;font-size:16px}
+.app-surface .voicecol>label.h4{display:block;margin:20px 0 8px;font-size:13px;color:var(--ink-2)}
+.app-surface #voiceMode{display:block;width:100%;min-height:46px}
+.app-surface #voiceDescription{display:block;position:relative;inset:auto;width:100%;min-height:130px;height:auto;resize:vertical;margin:0;float:none;line-height:1.8}
+.app-surface #ttsText{width:100%;min-height:128px;resize:vertical}
+.app-surface .voicecol .bridgestate{margin-top:20px;flex-wrap:wrap}
+.app-surface .bridge-details{margin-top:18px}
+.app-surface #personaEditor{padding:30px 0;border:0;background:transparent}
+.app-surface #personaEditor .compose-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0 12px}
+.app-surface #personaEditor .compose-actions>.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;height:44px;padding:10px 16px;margin:0!important;line-height:1.4;white-space:nowrap;font-size:13px;font-weight:500;cursor:pointer}
+.app-surface #personaEditor>label{margin-top:24px}
+.app-surface .settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
+.app-surface .settings-section{min-width:0;border-radius:0;background:transparent;padding-block:24px}
+.app-surface .settings-section label{font-weight:400}
+.app-surface .settings-section input,.app-surface .settings-section select{width:100%;min-height:46px;display:block;margin-bottom:16px}
+.service-links{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+.service-links>a{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:8px 12px;border-radius:9px;background:var(--shell-input);font-size:12px;color:var(--ink-2)}
+.service-links>a:hover{color:var(--ink);background:var(--shell-soft)}
+.agent-handoff{padding:18px;border-radius:14px;background:var(--shell-input);margin:20px 0}
+.agent-handoff>strong{display:block;font-size:14px;font-weight:500;margin-bottom:8px}
+.agent-handoff>p{font-size:13px;line-height:1.9;color:var(--ink-3)}
+.agent-handoff ol{padding-left:20px;color:var(--ink-2);font-size:13px;line-height:2;margin:12px 0}
+.agent-handoff .compose-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0 0}
+.app-surface .agent-handoff .compose-actions>.btn{display:inline-flex;align-items:center;justify-content:center;margin:0;border-radius:10px;min-height:42px;height:auto;padding:10px 12px;line-height:1.5}
+.agent-handoff label.btn{margin:0;font-size:12px;min-height:42px;cursor:pointer}
+.app-surface .service-callout{border-radius:12px;line-height:1.9}
+.app-surface .foot{border-top:1px solid var(--shell-rule-soft)}
+.toast{background:var(--shell-input);color:var(--ink);border:1px solid var(--shell-rim);border-radius:12px;box-shadow:0 8px 28px var(--shell-shadow);font-size:13px;line-height:1.7}
+.is-welcome .app-surface{display:block;margin:0!important;padding:0;height:auto;min-height:100dvh;border:0;border-radius:0;background:var(--shell-base);box-shadow:none;overflow:visible}
+.is-welcome .app-surface main#top{padding:0!important;overflow:visible}
+@media(max-width:1100px){.app-surface .voicewrap{gap:24px}.app-surface .settings-grid{gap:28px}.app-surface #personaEditor .compose-actions>.btn{padding-inline:13px}}
+@media(max-width:760px){
+  html[data-sourcecast="neon"] body:not(.is-welcome){display:flex;flex-direction:column}
+  .app-surface,html.rail-open .app-surface{margin:0 6px 6px!important;border-radius:18px;min-height:0;height:auto;flex:1;overflow:hidden}
+  .sidebar#rail{z-index:10;border:0;background:var(--shell-base);flex-shrink:0}
+  .sidebar#rail .rail-inner{padding-inline:16px}
+  .sidebar#rail .nav a{margin:0;width:auto;padding-inline:8px;min-height:42px;border-radius:8px}
+  .sidebar#rail .nav-icon{width:15px;flex:0 0 15px}
+  .sidebar#rail .nav a.is-active{border:0}
+  .sidebar#rail .nav{border:0;padding-bottom:7px;gap:8px}
+  .app-surface #topbar.workspace-bar{position:relative;inset:auto;height:52px;flex-basis:52px;margin:0;padding:8px 14px;justify-content:space-between}
+  .app-surface .breadcrumb{display:flex;font-size:11px;gap:6px}.app-surface .breadcrumb>span{display:none}.app-surface .breadcrumb>i{display:none}
+  .app-surface .workspace-actions{gap:4px}.app-surface .search{width:130px;min-height:32px}.app-surface .search input{width:100%;font-size:11px}
+  .app-surface .workspace-actions .mobile-theme{display:none}
+  .app-surface .voicewrap,.app-surface .settings-grid{grid-template-columns:1fr;gap:18px}
+  .app-surface .voicecol{padding:18px 0}
+  .app-surface #personaEditor .compose-actions{gap:8px}
+  .app-surface #personaEditor .compose-actions>.btn{height:auto;min-height:44px;white-space:normal;padding:10px 13px;flex:1 1 135px}
+  .app-surface main#top{padding-inline:16px!important}
+  .is-welcome .app-surface{margin:0!important;border-radius:0}
+  .is-welcome .app-surface main#top{padding:0!important}
+}
+@media(prefers-reduced-motion:reduce){.app-surface{transition:none}}

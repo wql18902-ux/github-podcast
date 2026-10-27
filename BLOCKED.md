@@ -1,5 +1,28 @@
 # BLOCKED.md（待裁决清单）
 
+## 2026-10-03 夸克备份链路（本轮 /goal，最新在最上）
+
+1. **【已解决】夸克登录态（原「拿不到 Cookie」阻塞）**
+   2026-10-03 22:51 解决，方式是**浏览器扫码驱动**而非手抄 Cookie：
+   - playwright（本机已装，无新增安装）开无头 Chromium 打开 `pan.quark.cn`，截图二维码给用户，用户用夸克 APP 扫；
+   - 脚本轮询到 `__pus` cookie 后用 `context.cookies()` 抓全量（含 HttpOnly），经 stdin 直接喂给 `bash scripts/upload-quark.sh --set-cookie`，**全程不打印、不落盘**；
+   - `--set-cookie` 自带的 `kuake user` 验证通过（Keychain 服务名同脚本内 KEYCHAIN_SERVICE）。
+   补传随即完成：10-01/02/03 三个 m4a 均 `bin/kuake list "/"` 在列，`output/upload-quark.log` 三行 OK。
+   ⇒ **下次 Cookie 失效照此办理即可，不必再等用户手抄**；要点已写进 `docs/夸克备份.md`。
+
+2. **飞书告警通道本身是坏的（`agent.notify` → lark-cli 缺 scope）**
+   证据：`python3 -m agent.notify --text ...` → `{"ok": false, "identity": "user", "error": {"type": "authorization", "subtype": "missing_scope", "message": "missing required scope(s): im:message.send_as_user", "hint": "run \`lark-cli auth login --scope \"im:message.send_as_user\"\` ..."}}`。
+   影响：夸克上传失败时该推的告警推不出去（脚本按设计兜底：只打本地提示，不崩、不阻断）。网易云那侧同样收不到。
+   修法（用户手动，要浏览器授权，本执行者白名单外没动）：`lark-cli auth login --scope "im:message.send_as_user"`。
+
+3. **顺手记的三条（不阻塞）**
+   - `output/upload-quark.log` 里 2026-10-03 22:35 那条 `template-... FAIL` 是反向验证用占位 Cookie 触发的测试行，不是真上传事故。
+   - `bin/kuake` 是 darwin-amd64 二进制，M4 靠 Rosetta 跑，实测正常；以后若换官方 arm64 版，`docs/夸克备份.md` 的重下命令和字节数要同步改。
+   - 夸克 Cookie 现已配置（22:51 起）；夸克登录态会过期，失效现象与代抓办法见 `docs/夸克备份.md`，届时按该文档「懒人办法」节重走一遍扫码即可。
+   - 网易云 CLI 已由用户扫码登录成功（22:51:41，账号 fdxffdcc）；凌晨的自动重登按原机制自行刷新，无需干预。
+
+---
+
 > **2026-09-21 洁癖收尾的现状标注**：本文件里下面这些已经**毕业进 `CLAUDE.md`，不再是待裁决项**，
 > 原文保留只作轨迹：
 > - 「顶部」第 1/3 条（死代理 127.0.0.1:7890）→ 已是 `CLAUDE.md`「环境陷阱」第 1 条（用 `env -u` 绕行）
@@ -68,6 +91,14 @@
    141 作废；`CLAUDE.md`「验收口径」与 `verify-episode.sh` 仍 `÷168`，脚本还多印「1.5x 收听」
    （而 `CLAUDE.md` 明说 1.5x 汇报已去除）；新的 `config/agent.json` 也取 168。
    → 你定一个数，我改 config + 那两处。
+   - ✅ **已裁决（2026-10-03）：统一 175 汉字/分**——豆包 seed-audio 六样本实测散布 140-195 的中位偏保守值。
+     已改 12 个文件：`config/agent.json`（chars_per_minute）、`scripts/verify-episode.sh`（÷175、status 行去掉
+     「1.5x 听」尾巴）、`scripts/write-episode-prompt.md`、`agent/request.py`、`CLAUDE.md`、`README.md`、
+     `定时任务.md`、`DESIGN.md`、`docs/全流程梳理.md`、`docs/seed-audio-schedule.md`、
+     `scripts/research-synth.sh`、`docs/播客Agent架构设计.md`。**闸门硬阈值 8500/6500 一个字没动**；
+     产出侧 PACE 4.0 ≈187 是合成档位，明确不互改。口径守卫 = `tests/test_speed_caliber.py`
+     （`python3 -m unittest discover -v`，STALE 模式扫上面 12 个文件）。
+     上文保留原叙述——它是这条漂移史 itself，删了下次还会犯。
 3. **ep15 的音频要手动补**：09-21 那期稿子 08:40 才落盘（白天），豆包那班的「12 小时」闸已过期，
    不会自动合成 → `bash scripts/pipeline.sh synth-local`，或先 `touch output/latest-script.md` 再触发豆包那班。
 4. **agent 外环要不要挂定时**（设计稿第 6 步）：先跑通一期真稿再拆旧，前提在 `agent/launchd/README.md`。

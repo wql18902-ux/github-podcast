@@ -1,0 +1,121 @@
+/* Sourcecast / Obys FORMAT · 画幅构成 revision (replaces SIGNAL 4.0). Project scope only; other tools keep their own tokens.
+   Spec: 设计系统/docs/references/OBYS-FORMAT.md + registry/catalog.json profile profile-ed6726dc-44c6-4980-acee-a91d78627530 rev-d85c29e3-8d86-4a1f-8325-c5b8f56ad4af.
+   Rules: 炭黑画布 + 纯白画幅 + 灰阶层次建立秩序；矩形保持直角（radius 0）；不加渐变、玻璃、发光和通用阴影；米黄 #E0DDBF 只用于批注层。
+   Variable NAMES are carried over unchanged from SIGNAL 4.0 so the five consumer stylesheets keep working; only VALUES changed.
+   --card-shadow / --hero-glow / --stage-glow are CSS *color slots* consumed as `box-shadow:0 8px 30px var(--card-shadow)` and
+   `radial-gradient(...,var(--hero-glow),transparent)`, so they hold rgba(0,0,0,0) instead of `none` (a `none` would make those rules invalid). */
+@font-face { font-family:"Space Grotesk"; src:url("assets/fonts/space-grotesk.woff2") format("woff2"); font-style:normal; font-weight:300 700; font-display:swap; }
+html[data-sourcecast="neon"] {
+  color-scheme:dark;
+  --paper:#000000; --paper-2:#0b0b0b; --paper-3:#141414;
+  --surface:#0b0b0b; --surface-2:#141414;
+  --ink:#ffffff; --ink-page:#ffffff; --ink-2:#bfbfbf; --ink-3:#939393; --ink-4:#6e6e6e;
+  --accent:#ffffff; --accent-hover:#bfbfbf; --accent-soft:#363636; --accent-ink:#000000;
+  --signal:#bfbfbf; --signal-soft:#363636; --brass:#939393; --clay:#6e6e6e;
+  --rule:#2e2e2e; --rule-strong:#6a6a6a; --rule-soft:#1e1e1e;
+  --stage:#0b0b0b; --stage-2:#141414; --stage-3:#101010;
+  --stage-ink:#ffffff; --stage-ink-2:#bfbfbf; --stage-ink-3:#939393;
+  --stage-accent:#ffffff; --stage-signal:#bfbfbf;
+  --vinyl:#0b0b0b; --vinyl-2:#141414; --vinyl-line:#2e2e2e; --vinyl-edge:#000000;
+  --vinyl-label:#141414; --vinyl-label-ink:#ffffff;
+  --stage-glow:rgba(0,0,0,0); --stage-glow-soft:rgba(0,0,0,0);
+  --ok:#b8cbb6; --warn:#d8c79a; --error:#f3aaaa; --note:#e0ddbf; --focus:#ffffff; --scrim:rgba(0,0,0,.72);
+  --beam-1:#4a4a4a; --beam-2:#3a3a3a; --beam-3:#2e2e2e; --beam-4:#242424; --beam-5:#565656;
+  --hero-title:#ffffff; --hero-muted:#bfbfbf; --hero-line:#555555; --hero-glow:rgba(0,0,0,0);
+  --hero-glow-2:rgba(0,0,0,0); --glass:rgba(0,0,0,.82);
+  --card-shadow:rgba(0,0,0,0); --inverse:#000000;
+  --font-ui:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  --font-display:var(--font-ui); --serif:var(--font-ui); --sans:var(--font-ui);
+  --radius-sm:0px; --radius-panel:0px;
+  --text-size:16px; --text-leading:1.7; --text-weight:400;
+  /* 「画幅」layer — in pure-black mode a plate is a near-black surface separated by hairlines,
+     NOT a white block. Text stays light; contrast comes from the rule and the type scale. */
+  --plate:#0b0b0b; --plate-ink:#ffffff; --plate-2:#141414; --plate-ink-2:#bfbfbf;
+  --plate-line:#2e2e2e; --plate-scroll:rgba(0,0,0,0);
+  /* 渐变与氛围：字母背景、连线渐变都从这里取，样式表不写色值。 */
+  --grad-a:#f2f2f2; --grad-b:#5a5a5a; --grad-c:#111111;
+  --grad-line-a:#3a3a3a; --grad-line-b:#8a8a8a; --grad-line-c:#3a3a3a;
+  --atm-1:rgba(255,255,255,.055); --atm-2:rgba(255,255,255,.018); --atm-3:rgba(255,255,255,.09);
+  /* 毛玻璃：glass 是半透明面板，模糊半径与高光边单独成 token。
+     纯黑上做玻璃必须有环境光晕，否则 blur 出来仍是黑 —— 光晕见 --amb-*。 */
+  --glass-bg:rgba(255,255,255,.075);
+  --glass-bg-strong:rgba(255,255,255,.12);
+  --glass-border:rgba(255,255,255,.16);
+  --glass-border-soft:rgba(255,255,255,.09);
+  --glass-highlight:rgba(255,255,255,.5);
+  --glass-blur:26px;
+  --glass-saturate:150%;
+  /* 环境光晕：给玻璃提供可模糊的底色 */
+  --amb-1:rgba(150,170,255,.20); --amb-2:rgba(255,255,255,.07);
+  --amb-3:rgba(180,200,255,.24);
+  /* 抽屉分层：一层比一层亮一档，层次靠明度差，不靠描边。 */
+  --layer-0:#000000; --layer-1:#0c0c0c; --layer-2:#151515; --layer-3:#1e1e1e;
+  --layer-line:rgba(255,255,255,.07);
+  --layer-shadow:0 24px 60px -24px rgba(0,0,0,.9);
+  /* Eight-column measure on a 1440 baseline: 20px margin, 20px gutter. */
+  --grid-margin:20px; --grid-gutter:20px; --grid-max:1400px;
+}
+html[data-sourcecast="neon"][data-theme="day"] {
+  color-scheme:light;
+  --paper:#f2f1ed; --paper-2:#ffffff; --paper-3:#e7e5e0;
+  --surface:#ffffff; --surface-2:#e7e5e0;
+  --ink:#1a1a1a; --ink-page:#1a1a1a; --ink-2:#55544f; --ink-3:#7a7973; --ink-4:#9a998f;
+  --accent:#1a1a1a; --accent-hover:#3a3a3a; --accent-soft:#e7e5e0; --accent-ink:#ffffff;
+  --signal:#1a1a1a; --signal-soft:#e7e5e0; --brass:#55544f; --clay:#7a7973;
+  --rule:#c9c7c0; --rule-strong:#a5a39b; --rule-soft:#dedcd5;
+  --stage:#f2f1ed; --stage-2:#ffffff; --stage-3:#e7e5e0;
+  --stage-ink:#1a1a1a; --stage-ink-2:#3a3a3a; --stage-ink-3:#7a7973;
+  --stage-accent:#1a1a1a; --stage-signal:#55544f;
+  --vinyl:#e7e5e0; --vinyl-2:#ffffff; --vinyl-line:#c9c7c0; --vinyl-edge:#d3d1ca;
+  --vinyl-label:#ffffff; --vinyl-label-ink:#1a1a1a;
+  --stage-glow:rgba(0,0,0,0); --stage-glow-soft:rgba(0,0,0,0);
+  --ok:#b8cbb6; --warn:#d8c79a; --error:#f3aaaa; --note:#e0ddbf; --focus:#1a1a1a; --scrim:rgba(26,26,26,.45);
+  --beam-1:#1a1a1a; --beam-2:#55544f; --beam-3:#7a7973; --beam-4:#9a998f; --beam-5:#3a3a3a;
+  --hero-title:#1a1a1a; --hero-muted:#55544f; --hero-line:#c9c7c0; --hero-glow:rgba(0,0,0,0);
+  --hero-glow-2:rgba(0,0,0,0); --glass:rgba(242,241,237,.86); --card-shadow:rgba(0,0,0,0); --inverse:#f2f1ed;
+  /* Day mode inverts the plates: canvas becomes paper, plates become pure white. */
+  /* 亮色模式下画幅反相成深块，块内文字必须保持浅色，否则字与底同色 */
+  --plate:#1a1a1a; --plate-ink:#f2f1ed; --plate-2:#262626; --plate-ink-2:#c9c7c0;
+  --plate-line:#3a3a3a; --plate-scroll:rgba(0,0,0,0);
+  --glass-bg:rgba(255,255,255,.62);
+  --glass-bg-strong:rgba(255,255,255,.78);
+  --glass-border:rgba(26,26,26,.14);
+  --glass-border-soft:rgba(26,26,26,.08);
+  --glass-highlight:rgba(255,255,255,.9);
+  --amb-1:rgba(26,26,26,.06); --amb-2:rgba(26,26,26,.03); --amb-3:rgba(26,26,26,.09);
+  --grad-a:#222222; --grad-b:#8a8780; --grad-c:#f2f1ed;
+  --grad-line-a:#b9b7b0; --grad-line-b:#5a5852; --grad-line-c:#b9b7b0;
+  --atm-1:rgba(26,26,26,.05); --atm-2:rgba(26,26,26,.02); --atm-3:rgba(26,26,26,.08);
+  --layer-0:#f2f1ed; --layer-1:#ffffff; --layer-2:#e9e7e1; --layer-3:#dedcd5;
+  --layer-line:rgba(0,0,0,.08);
+  --layer-shadow:0 24px 60px -30px rgba(20,20,20,.28);
+}
+
+/* Griffin fusion experiment: only the introduction uses these tokens.
+   The black canvas follows the existing project contract; warm type and rules are from Griffin computed values. */
+.gfn-landing{
+  --gfn-bg:#000000;--gfn-ink:#f9f5ef;--gfn-muted:#a6a199;--gfn-faint:#807b73;
+  --gfn-line:#363533;--gfn-line-soft:#222220;--gfn-panel:#0c0c0b;--gfn-panel-raised:#141412;
+  --gfn-surface:#1b1b18;--gfn-dot:#c2b8a4;--gfn-active:#c9d5b8;--gfn-cream:#e6dcc6;
+  --gfn-glass:rgba(12,12,11,.96);--gfn-shadow:rgba(0,0,0,.6);--gfn-map:rgba(208,197,173,.18);
+}
+html[data-theme="day"] .gfn-landing{
+  --gfn-bg:#f9f5ef;--gfn-ink:#25241f;--gfn-muted:#615e55;--gfn-faint:#726d63;
+  --gfn-line:#c7c0b3;--gfn-line-soft:#e0dacd;--gfn-panel:#f0ebe1;--gfn-panel-raised:#e7e0d3;
+  --gfn-surface:#dcd3c3;--gfn-dot:#746956;--gfn-active:#49563c;--gfn-cream:#504635;
+  --gfn-glass:rgba(249,245,239,.96);--gfn-shadow:rgba(60,52,32,.14);--gfn-map:rgba(90,76,48,.2);
+}
+
+/* Review 2026-10-25: the rail is the lower plane; the workspace is one raised surface. */
+html[data-sourcecast="neon"] {
+  --shell-base:#000000;--shell-surface:#101113;--shell-input:#17191c;
+  --shell-soft:#1b1d21;--shell-rim:rgba(255,255,255,.08);
+  --shell-rule:rgba(255,255,255,.09);--shell-rule-soft:rgba(255,255,255,.05);
+  --shell-shadow:rgba(0,0,0,.55);--shell-focus:rgba(255,255,255,.08);
+}
+html[data-sourcecast="neon"][data-theme="day"] {
+  --shell-base:#eceef0;--shell-surface:#fcfcfd;--shell-input:#f2f3f5;
+  --shell-soft:#e9ebee;--shell-rim:rgba(0,0,0,.06);
+  --shell-rule:rgba(0,0,0,.10);--shell-rule-soft:rgba(0,0,0,.05);
+  --shell-shadow:rgba(20,24,32,.1);--shell-focus:rgba(0,0,0,.05);
+}

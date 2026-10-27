@@ -6,7 +6,7 @@
     grep -rE '^\\s*(import|from)\\s+(anthropic|openai|codex|hermes)' agent/ && echo 违反红线
 
 分层：编排（pipeline/stages）→ 工具（tools，subprocess 打现有 CLI）→ 状态（state，SQLite）。
-智能规范不在这里，在 ~/.claude/skills/podcast-agent/SKILL.md（三家共用的软链库）。
+智能规范不在这里，在 ~/.codex/skills/podcast-agent/SKILL.md（三家共用的软链库）。
 """
 
 __all__ = ["paths", "state", "tools", "gates", "request", "stages", "pipeline"]

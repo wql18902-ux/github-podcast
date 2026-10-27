@@ -1,0 +1,18 @@
+{
+  "speakers": {
+    "Person1": {
+      "name": "讲述者",
+      "provider": "mimo_tts",
+      "voice": "白桦",
+      "style": "陈述句平稳清楚，语速适中，句间留一点自然停顿，像朋友当面聊天。不要广播腔，不要夸张，不加背景音乐。"
+    },
+    "Person2": {
+      "name": "追问者",
+      "provider": "mimo_tts",
+      "voice": "冰糖",
+      "style": "问句带一点好奇，语速稍快，接话自然，像真的想弄明白。不要夸张，不要戏剧化，不加背景音乐。"
+    }
+  },
+  "max_chars": 400,
+  "speaker_gap_ms": 160
+}

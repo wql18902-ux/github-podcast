@@ -13,7 +13,7 @@ agent_created: true
 
 > **单一真相源**：写稿规范原文在 `<项目根目录>/scripts/write-episode-prompt.md`，
 > 深度框架在 `skills/podcast-depth-writing/SKILL.md`。本 skill 是**跨 Agent 的入口与契约说明**
-> （任何认 `~/.claude/skills` 的 Agent 通用：Claude Code / Codex / WorkBuddy 同一份）。
+> （任何认 `~/.codex/skills` 的 Agent 通用：Claude Code / Codex / WorkBuddy 同一份）。
 > 冲突时以那两份为准。
 
 ## 什么时候用

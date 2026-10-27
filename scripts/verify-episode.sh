@@ -8,6 +8,10 @@
 # 设计要点（2026-09-14 立，V2）：
 # - 这是「闸门唯一入口」：写稿 agent 写完自己跑它，或由 daily-prepare.sh 调用。
 #   以前闸门写在 daily-prepare.sh 里，但那条链路当时不产出稿子，等于闸门守死路。
+# - 分钟换算统一按 175 汉字/分（2026-10-03 用户拍板，豆包 seed-audio 六样本实测散布
+#   140-195 的中位偏保守取值；守卫测试 tests/test_speed_caliber.py，漂移史 BLOCKED.md）。
+#   产出侧 PACE 4.0 ≈187 汉字/分是**合成档位**，不是预估口径，两者不互改。
+#   闸门硬阈值 8500/6500 只跟「写没写够」有关，跟语速无关，别顺改。
 # - 只读稿子、只写 output/latest-status.txt。不 clone、不 fetch、不合成。
 # - 验收对象是「真落盘路径」：output/latest-script.md + output/<日期>-breakdown.md
 # - 拆分两类判据：内容闸（读没读到实现级）与时长闸（写没写够）。前者先跑，
@@ -113,11 +117,11 @@ DETAIL=$(grep -oE '[A-Za-z0-9_.-]+\.(py|js|mjs|ts|tsx|go|rs|md|json|ya?ml|toml|s
 PROJ=$(head -1 "$BREAKDOWN" | sed 's/^# *拆解笔记 *[·:：] *//')
 [ -n "$PROJ" ] || PROJ="未登记"
 
-read -r EST EST15 <<<"$(python3 -c "h=$HAN; print(f'{h/168:.0f} {h/168/1.5:.0f}')")"
+read -r EST <<<"$(python3 -c "h=$HAN; print(f'{h/175:.0f}')")"
 
 echo "汉字 $HAN ｜ 具体值 $VALUEN 行 ｜ 实现级节 $DEEP/3 ｜ 文件名 $DETAIL 处"
 echo "拆解笔记 ${BFIELDS} 字段 / ${BSIZE} 字节 ｜ 项目 $PROJ"
-echo "预估音频 ${EST} 分钟 ｜ 1.5x 收听 ${EST15} 分钟 ｜ 目标 8500-10500 汉字（≈51-62 分钟）"
+echo "预估音频 ${EST} 分钟 ｜ 目标 8500-10500 汉字（≈49-60 分钟）"
 
 # 两档：<6500 判失败（明显没写够）；6500-8500 放行但标 SHORT。
 # 两档是为了不出现「一夜没稿可听」——那比短更糟。
@@ -127,11 +131,11 @@ if [ "$HAN" -lt 6500 ]; then
 fi
 if [ "$HAN" -lt 8500 ]; then
     SHORT=" | SHORT 偏短（目标 8500-10500）"
-    echo "[!] 汉字 $HAN < 8500（≈51 分钟），放行但标 SHORT"
+    echo "[!] 汉字 $HAN < 8500（≈49 分钟），放行但标 SHORT"
 fi
 
-printf 'OK %s %s | %s汉字 | 拆解%s字段 | 预估%s分钟/1.5x听%s分钟%s\n' \
-    "$TODAY" "$PROJ" "$HAN" "$BFIELDS" "$EST" "$EST15" "$SHORT" > "$STATUS"
+printf 'OK %s %s | %s汉字 | 拆解%s字段 | 预估%s分钟%s\n' \
+    "$TODAY" "$PROJ" "$HAN" "$BFIELDS" "$EST" "$SHORT" > "$STATUS"
 echo "[✓] 验收通过，状态已落 $STATUS"
 
 # ---------- C 讲稿推飞书（2026-09-16 加）----------

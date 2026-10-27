@@ -1,0 +1,1074 @@
+{
+ "count": 39,
+ "judgment_count": 50,
+ "judged_count": 20,
+ "repo_count": 71,
+ "audio_count": 8,
+ "audio_minutes": 488,
+ "first_date": "2026-09-08",
+ "last_date": "2026-10-22",
+ "series": [
+  "算力取舍",
+  "开源协作",
+  "Agent 这层壳",
+  "攒得住的东西",
+  "攒下的东西，怎么验",
+  "能不能带走",
+  "会不会自己烂掉",
+  "AI 交了这么多",
+  "你攒下的东西"
+ ],
+ "series_meta": [
+  {
+   "name": "算力取舍",
+   "color": "#6b7a4a"
+  },
+  {
+   "name": "开源协作",
+   "color": "#4a6b7a"
+  },
+  {
+   "name": "Agent 这层壳",
+   "color": "#7a4a6b"
+  },
+  {
+   "name": "攒得住的东西",
+   "color": "#8a6a3a"
+  },
+  {
+   "name": "攒下的东西，怎么验",
+   "color": "#3a6b5a"
+  },
+  {
+   "name": "能不能带走",
+   "color": "#5a5a7a"
+  },
+  {
+   "name": "会不会自己烂掉",
+   "color": "#7a4a4a"
+  },
+  {
+   "name": "AI 交了这么多",
+   "color": "#4a5a7a"
+  },
+  {
+   "name": "你攒下的东西",
+   "color": "#6b4a3a"
+  }
+ ],
+ "chars_total": 492368,
+ "chars_max": 20069,
+ "episodes": [
+  {
+   "no": 1,
+   "slug": "ep1-whisper-cpp",
+   "title": "whisper.cpp",
+   "subtitle": "",
+   "series": "算力取舍",
+   "color": "#6b7a4a",
+   "chars": 1653,
+   "month": "2026-09",
+   "date": "2026-09-08",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "ggml-org/whisper.cpp"
+   ],
+   "audio": null,
+   "related": [
+    "ep2-ecc"
+   ]
+  },
+  {
+   "no": 2,
+   "slug": "ep2-ecc",
+   "title": "ECC",
+   "subtitle": "25 万人给一堆 markdown 文件点的星",
+   "series": "开源协作",
+   "color": "#4a6b7a",
+   "chars": 9948,
+   "month": "2026-09",
+   "date": "2026-09-09",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "affaan-m/ECC"
+   ],
+   "audio": {
+    "file": "ecc-播客完整版-51min.m4a",
+    "minutes": 51
+   },
+   "related": [
+    "ep1-whisper-cpp",
+    "ep3-hermes-agent"
+   ]
+  },
+  {
+   "no": 3,
+   "slug": "ep3-hermes-agent",
+   "title": "Hermes Agent",
+   "subtitle": "把记忆当头等公民",
+   "series": "Agent 这层壳",
+   "color": "#7a4a6b",
+   "chars": 20069,
+   "month": "2026-09",
+   "date": "2026-09-10",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "NousResearch/hermes-agent"
+   ],
+   "audio": {
+    "file": "hermes-播客完整版-114min.m4a",
+    "minutes": 114
+   },
+   "related": [
+    "ep2-ecc",
+    "ep4-n8n",
+    "ep5-claude-code"
+   ]
+  },
+  {
+   "no": 4,
+   "slug": "ep4-n8n",
+   "title": "n8n",
+   "subtitle": "用一张图把外行接进大模型",
+   "series": "Agent 这层壳",
+   "color": "#7a4a6b",
+   "chars": 9033,
+   "month": "2026-09",
+   "date": "2026-09-10",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "n8n-io/n8n"
+   ],
+   "audio": {
+    "file": "n8n-播客完整版-60min.m4a",
+    "minutes": 60
+   },
+   "related": [
+    "ep3-hermes-agent",
+    "ep5-claude-code"
+   ]
+  },
+  {
+   "no": 5,
+   "slug": "ep5-claude-code",
+   "title": "Agent（标本：Claude Code）",
+   "subtitle": "强弱不在模型多聪明，在笼子有多严",
+   "series": "Agent 这层壳",
+   "color": "#7a4a6b",
+   "chars": 9639,
+   "month": "2026-09",
+   "date": "2026-09-11",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "anthropics/claude-code"
+   ],
+   "audio": {
+    "file": "agent-播客完整版-57min.m4a",
+    "minutes": 57
+   },
+   "related": [
+    "ep4-n8n",
+    "ep6-autogpt",
+    "ep3-hermes-agent"
+   ]
+  },
+  {
+   "no": 6,
+   "slug": "ep6-autogpt",
+   "title": "AutoGPT（Agent 这层壳）",
+   "subtitle": "把纪律从人身上挪到机器身上",
+   "series": "Agent 这层壳",
+   "color": "#7a4a6b",
+   "chars": 14612,
+   "month": "2026-09",
+   "date": "2026-09-12",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "Significant-Gravitas/AutoGPT"
+   ],
+   "audio": {
+    "file": "autogpt-播客完整版-38min.m4a",
+    "minutes": 38
+   },
+   "related": [
+    "ep5-claude-code",
+    "ep4-n8n",
+    "ep3-hermes-agent"
+   ]
+  },
+  {
+   "no": 7,
+   "slug": "ep7-codex-claude-code",
+   "title": "Codex vs Claude Code（Agent 这层壳）",
+   "subtitle": "锁装在节点上，还是装在入口上",
+   "series": "Agent 这层壳",
+   "color": "#7a4a6b",
+   "chars": 3645,
+   "month": "2026-09",
+   "date": "2026-09-12",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "openai/codex",
+    "anthropics/claude-code"
+   ],
+   "audio": null,
+   "related": [
+    "ep5-claude-code",
+    "ep3-hermes-agent",
+    "ep6-autogpt"
+   ]
+  },
+  {
+   "no": 8,
+   "slug": "ep8-memory-stack",
+   "title": "攒得住的东西（记忆三件套：claude-mem / mempalace / graphify）",
+   "subtitle": "记忆不在模型里，在你自己的文件里",
+   "series": "攒得住的东西",
+   "color": "#8a6a3a",
+   "chars": 8665,
+   "month": "2026-09",
+   "date": "2026-09-14",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "thedotmack/claude-mem",
+    "MemPalace/mempalace",
+    "Graphify-Labs/graphify"
+   ],
+   "audio": {
+    "file": "memory-播客完整版-46min.m4a",
+    "minutes": 46
+   },
+   "related": [
+    "ep3-hermes-agent",
+    "ep7-codex-claude-code"
+   ]
+  },
+  {
+   "no": 9,
+   "slug": "ep9-memory-ops",
+   "title": "攒得住的东西（二）",
+   "subtitle": "记忆怎么存、怎么取、怎么忘（mem0 / graphiti / basic-memory）",
+   "series": "攒得住的东西",
+   "color": "#8a6a3a",
+   "chars": 8664,
+   "month": "2026-09",
+   "date": "2026-09-15",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "mem0ai/mem0",
+    "getzep/graphiti",
+    "basicmachines-co/basic-memory"
+   ],
+   "audio": null,
+   "related": [
+    "ep8-memory-stack",
+    "ep3-hermes-agent"
+   ]
+  },
+  {
+   "no": 10,
+   "slug": "ep10-skills-portable",
+   "title": "攒得住的东西（三）",
+   "subtitle": "技能怎么封装带走（open-design / superpowers / anthropics-skills）",
+   "series": "攒得住的东西",
+   "color": "#8a6a3a",
+   "chars": 12618,
+   "month": "2026-09",
+   "date": "2026-09-16",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "nexu-io/open-design",
+    "obra/superpowers",
+    "anthropics/skills"
+   ],
+   "audio": null,
+   "related": [
+    "ep9-memory-ops",
+    "ep8-memory-stack",
+    "ep5-claude-code"
+   ]
+  },
+  {
+   "no": 11,
+   "slug": "ep11-knowledge-assets",
+   "title": "攒得住的东西（四）",
+   "subtitle": "知识怎么变成资产（markitdown / docling / ponytail）",
+   "series": "攒得住的东西",
+   "color": "#8a6a3a",
+   "chars": 13208,
+   "month": "2026-09",
+   "date": "2026-09-17",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "microsoft/markitdown",
+    "docling-project/docling",
+    "DietrichGebert/ponytail"
+   ],
+   "audio": null,
+   "related": [
+    "ep10-skills-portable",
+    "ep9-memory-ops",
+    "ep8-memory-stack",
+    "ep5-claude-code"
+   ]
+  },
+  {
+   "no": 12,
+   "slug": "ep12-workstyle-portable",
+   "title": "攒得住的东西（五）",
+   "subtitle": "工作方式怎么跟着人走（cc-switch / caveman / LangChain）",
+   "series": "攒得住的东西",
+   "color": "#8a6a3a",
+   "chars": 13340,
+   "month": "2026-09",
+   "date": "2026-09-18",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "farion1231/cc-switch",
+    "JuliusBrussee/caveman",
+    "langchain-ai/langchain"
+   ],
+   "audio": null,
+   "related": [
+    "ep11-knowledge-assets",
+    "ep10-skills-portable",
+    "ep9-memory-ops",
+    "ep8-memory-stack",
+    "ep5-claude-code"
+   ]
+  },
+  {
+   "no": 13,
+   "slug": "ep13-judgment-lists",
+   "title": "攒得住的东西（六）",
+   "subtitle": "把判断写成清单（trufflehog / ruff / buf）",
+   "series": "攒得住的东西",
+   "color": "#8a6a3a",
+   "chars": 14429,
+   "month": "2026-09",
+   "date": "2026-09-19",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "trufflesecurity/trufflehog",
+    "astral-sh/ruff",
+    "bufbuild/buf"
+   ],
+   "audio": null,
+   "related": [
+    "ep12-workstyle-portable",
+    "ep11-knowledge-assets",
+    "ep10-skills-portable",
+    "ep9-memory-ops",
+    "ep8-memory-stack"
+   ]
+  },
+  {
+   "no": 14,
+   "slug": "ep14-formats-that-last",
+   "title": "攒得住的东西（收线）",
+   "subtitle": "格式凭什么攒得住（safetensors / GGUF / ONNX）",
+   "series": "攒得住的东西",
+   "color": "#8a6a3a",
+   "chars": 12301,
+   "month": "2026-09",
+   "date": "2026-09-20",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "safetensors/safetensors",
+    "ggml-org/llama.cpp",
+    "onnx/onnx"
+   ],
+   "audio": null,
+   "related": [
+    "ep13-judgment-lists",
+    "ep12-workstyle-portable",
+    "ep11-knowledge-assets",
+    "ep10-skills-portable",
+    "ep9-memory-ops",
+    "ep8-memory-stack"
+   ]
+  },
+  {
+   "no": 15,
+   "slug": "ep15-assertions",
+   "title": "攒下的东西，怎么验（一）",
+   "subtitle": "断言：不看过程怎么判对错（promptfoo / guardrails / garak）",
+   "series": "攒下的东西，怎么验",
+   "color": "#3a6b5a",
+   "chars": 14911,
+   "month": "2026-09",
+   "date": "2026-09-21",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "promptfoo/promptfoo",
+    "guardrails-ai/guardrails",
+    "NVIDIA/garak"
+   ],
+   "audio": null,
+   "related": [
+    "ep14-formats-that-last",
+    "ep13-judgment-lists",
+    "ep12-workstyle-portable",
+    "ep11-knowledge-assets",
+    "ep10-skills-portable",
+    "ep9-memory-ops",
+    "ep8-memory-stack"
+   ]
+  },
+  {
+   "no": 16,
+   "slug": "ep16-real-world-benchmarks",
+   "title": "攒下的东西，怎么验（四）",
+   "subtitle": "基准：拿真实世界当考卷（SWE-bench / OSWorld / SWE-smith）",
+   "series": "攒下的东西，怎么验",
+   "color": "#3a6b5a",
+   "chars": 15109,
+   "month": "2026-09",
+   "date": "2026-09-24",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "SWE-bench/SWE-bench",
+    "xlang-ai/OSWorld",
+    "SWE-bench/SWE-smith"
+   ],
+   "audio": null,
+   "related": [
+    "ep15-assertions",
+    "ep13-judgment-lists"
+   ]
+  },
+  {
+   "no": 17,
+   "slug": "ep17-regression-evals",
+   "title": "攒下的东西，怎么验（五）",
+   "subtitle": "换代回归：模型换了，怎么知道没变差（lm-eval / HELM / Inspect）",
+   "series": "攒下的东西，怎么验",
+   "color": "#3a6b5a",
+   "chars": 15592,
+   "month": "2026-09",
+   "date": "2026-09-25",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "EleutherAI/lm-evaluation-harness",
+    "stanford-crfm/helm",
+    "UKGovernmentBEIS/inspect_ai"
+   ],
+   "audio": null,
+   "related": [
+    "ep16-real-world-benchmarks",
+    "ep15-assertions",
+    "ep14-formats-that-last"
+   ]
+  },
+  {
+   "no": 18,
+   "slug": "ep18-eval-landing",
+   "title": "攒下的东西，怎么验（六）",
+   "subtitle": "落地：自己搭，还是接进流水线（deepeval / MLflow / langfuse）",
+   "series": "攒下的东西，怎么验",
+   "color": "#3a6b5a",
+   "chars": 12738,
+   "month": "2026-09",
+   "date": "2026-09-26",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "confident-ai/deepeval",
+    "mlflow/mlflow",
+    "langfuse/langfuse"
+   ],
+   "audio": null,
+   "related": [
+    "ep19-judgments-that-run",
+    "ep17-regression-evals",
+    "ep16-real-world-benchmarks"
+   ]
+  },
+  {
+   "no": 19,
+   "slug": "ep19-judgments-that-run",
+   "title": "攒下的东西，怎么验（七）",
+   "subtitle": "收线：判据得自己会跑（mutmut / hypothesis / ClusterFuzz）",
+   "series": "攒下的东西，怎么验",
+   "color": "#3a6b5a",
+   "chars": 11474,
+   "month": "2026-09",
+   "date": "2026-09-27",
+   "question": "",
+   "one_liner": "",
+   "judgments": [],
+   "repos": [
+    "boxed/mutmut",
+    "HypothesisWorks/hypothesis",
+    "google/clusterfuzz"
+   ],
+   "audio": null,
+   "related": [
+    "ep18-eval-landing",
+    "ep17-regression-evals",
+    "ep16-real-world-benchmarks",
+    "ep15-assertions"
+   ]
+  },
+  {
+   "no": 20,
+   "slug": "ep20-model-swap",
+   "title": "攒下的东西，能不能带走（二）",
+   "subtitle": "换模型：换个模型，你的东西还认吗（aisuite / litellm / pydantic-ai）",
+   "series": "能不能带走",
+   "color": "#5a5a7a",
+   "chars": 11052,
+   "month": "2026-09",
+   "date": "2026-09-28",
+   "question": "",
+   "one_liner": "「换模型只要改一个字符串」这句话里，真正难的从来不是那个字符串，是字符串右边那一半。",
+   "judgments": [
+    "换完模型第一件事不是跑一遍看能不能通，是把新旧两个模型的能力档案逐项比一遍。十九个键，比一遍两分钟。",
+    "把「只有这一家才有」的东西单独列一张表——可能是某个参数，也可能是「这家返回的内容里带思考过程」这种从没被当成依赖的隐式假设。",
+    "参数静默丢弃是三层的共性风险，但只有 litellm 默认站在「抛错」那一侧。你把 drop_params 打开换来的跑得通，就是 aisuite 那种静默丢弃。"
+   ],
+   "repos": [
+    "andrewyng/aisuite",
+    "BerriAI/litellm",
+    "pydantic/pydantic-ai"
+   ],
+   "audio": null,
+   "related": [
+    "ep19-judgments-that-run",
+    "ep12-workstyle-portable"
+   ]
+  },
+  {
+   "no": 21,
+   "slug": "ep21-template-updates",
+   "title": "能不能带走（四）",
+   "subtitle": "换项目：模板能不能跟着项目一起长大（cookiecutter / copier / nrwl·nx）",
+   "series": "能不能带走",
+   "color": "#5a5a7a",
+   "chars": 10844,
+   "month": "2026-10",
+   "date": "2026-10-01",
+   "question": "",
+   "one_liner": "模板的差距不在星数，在它们各自给「记忆」分配了多少预算。",
+   "judgments": [
+    "回执里存的是「你填了什么」还是「生成了什么」，决定了你只能重放还是能演进。",
+    "三个项目承认边界的地方，全在注释里，没有一处进类型系统——认了，但没锁。",
+    "安全外包给 git，但颗粒度差一层：copier 是整个升级一个 diff，nx 是每条迁移一个提交。十条迁移的时候，这个差别是决定性的。"
+   ],
+   "repos": [
+    "cookiecutter/cookiecutter",
+    "copier-org/copier",
+    "nrwl/nx"
+   ],
+   "audio": null,
+   "related": [
+    "ep20-model-swap",
+    "ep19-judgments-that-run",
+    "ep14-formats-that-last"
+   ]
+  },
+  {
+   "no": 22,
+   "slug": "ep22-executable-handover",
+   "title": "能不能带走（五）",
+   "subtitle": "换人：不经过你，别人照着也能做对（runme / just / pre-commit）",
+   "series": "能不能带走",
+   "color": "#5a5a7a",
+   "chars": 10598,
+   "month": "2026-10",
+   "date": "2026-10-02",
+   "question": "",
+   "one_liner": "换一个人来接手，他需要向你问几个问题才能开始？问得越少，你攒下的东西越像判断力。",
+   "judgments": [
+    "把「知道该干什么」从人身上卸下来放进文件里，是三个项目共同的动作；分歧只在卸下来之后放在哪一层：文档里、清单里、还是动作的必经之路上。",
+    "兜底的解析器如果「永远不会报错、对无效数据返回空表」，那属性名写错就会静默失效——不报错的地方，最需要有人验。"
+   ],
+   "repos": [
+    "runmedev/runme",
+    "casey/just",
+    "pre-commit/pre-commit"
+   ],
+   "audio": null,
+   "related": [
+    "ep21-template-updates",
+    "ep20-model-swap"
+   ]
+  },
+  {
+   "no": 23,
+   "slug": "ep23-vendor-swap",
+   "title": "能不能带走（六）",
+   "subtitle": "换供应方：换个后端，埋点还能用吗",
+   "series": "能不能带走",
+   "color": "#5a5a7a",
+   "chars": 10150,
+   "month": "2026-10",
+   "date": "2026-10-03",
+   "question": "",
+   "one_liner": "三个项目是同一条数据线的三段：埋点层把赌注押在接口上，管道层押在配置上，后端层押在协议上。",
+   "judgments": [
+    "我写下来的那句话，有没有换一种说法的必要？",
+    "中间那段掉数据的时候，我会不会知道？",
+    "我依赖的那一层，有多少人在用？"
+   ],
+   "repos": [
+    "open-telemetry/opentelemetry-python",
+    "open-telemetry/opentelemetry-collector",
+    "jaegertracing/jaeger"
+   ],
+   "audio": null,
+   "related": [
+    "ep22-executable-handover",
+    "ep20-model-swap"
+   ]
+  },
+  {
+   "no": 24,
+   "slug": "ep24-machine-repro",
+   "title": "能不能带走（七·收线）",
+   "subtitle": "换机器：环境能不能原样重现",
+   "series": "能不能带走",
+   "color": "#5a5a7a",
+   "chars": 11351,
+   "month": "2026-10",
+   "date": "2026-10-04",
+   "question": "",
+   "one_liner": "三个项目是同一件事的三个深度，差别只在「什么算同一个东西」。",
+   "judgments": [
+    "判断力的标志，是它能被写下来、能在你不在场时被别人执行一遍，还得出同一个结论。"
+   ],
+   "repos": [
+    "astral-sh/uv",
+    "prefix-dev/pixi",
+    "jetify-com/devbox"
+   ],
+   "audio": null,
+   "related": [
+    "ep23-vendor-swap",
+    "ep21-template-updates"
+   ]
+  },
+  {
+   "no": 25,
+   "slug": "ep25-dependency-rot",
+   "title": "攒下的东西，会不会自己烂掉（一）",
+   "subtitle": "你依赖的东西坏了，谁先知道",
+   "series": "会不会自己烂掉",
+   "color": "#7a4a4a",
+   "chars": 13913,
+   "month": "2026-10",
+   "date": "2026-10-06",
+   "question": "",
+   "one_liner": "三家是同一问题的三层答案，差别只在「谁负责发现」。",
+   "judgments": [
+    "问一句「它失效的时候，会有什么东西变」；答不上来，那它现在就在失效，只是你不知道。"
+   ],
+   "repos": [
+    "ossf/scorecard",
+    "dependabot/dependabot-core",
+    "renovatebot/renovate"
+   ],
+   "audio": {
+    "file": "deps-播客完整版-69min.m4a",
+    "minutes": 69
+   },
+   "related": [
+    "ep24-machine-repro",
+    "ep23-vendor-swap"
+   ]
+  },
+  {
+   "no": 26,
+   "slug": "ep26-silent-defaults",
+   "title": "攒下的东西，会不会自己烂掉（二）",
+   "subtitle": "你不在的时候，谁替你发现它已经坏了",
+   "series": "会不会自己烂掉",
+   "color": "#7a4a4a",
+   "chars": 10449,
+   "month": "2026-10",
+   "date": "2026-10-07",
+   "question": "",
+   "one_liner": "三家是同一条台阶，按「过期的东西长在哪一层」排。",
+   "judgments": [
+    "默认那一档，是报警还是沉默？",
+    "它看不见的东西，有没有一份清单？",
+    "它自己过期的时候，有没有第二个人在盯？",
+    "三句里有一句答不上来，它就不是守护，只是一个你偶尔会看一眼的显示器。"
+   ],
+   "repos": [
+    "python/mypy",
+    "pytest-dev/pytest",
+    "sqlalchemy/alembic"
+   ],
+   "audio": {
+    "file": "watchdogs-播客完整版-53min.m4a",
+    "minutes": 53
+   },
+   "related": [
+    "ep25-dependency-rot",
+    "ep24-machine-repro"
+   ]
+  },
+  {
+   "no": 27,
+   "slug": "ep27-rule-rot",
+   "title": "攒下的东西，会不会自己烂掉（三）",
+   "subtitle": "你写下的规则，谁替它保鲜",
+   "series": "会不会自己烂掉",
+   "color": "#7a4a4a",
+   "chars": 15545,
+   "month": "2026-10",
+   "date": "2026-10-08",
+   "question": "你给 AI 写下的规则，在你不管它之后，还活着吗？",
+   "one_liner": "规则不会自己变旧，也不会通知你。",
+   "judgments": [
+    "改一处够不够——它是不是唯一出处？",
+    "它有没有一条能跑的动作（不是写在文件里）？",
+    "它失效的时候会不会有东西变？报错、拒绝、指纹变了都算。"
+   ],
+   "repos": [
+    "open-policy-agent/opa",
+    "open-policy-agent/conftest"
+   ],
+   "audio": null,
+   "related": [
+    "ep26-silent-defaults",
+    "ep25-dependency-rot"
+   ]
+  },
+  {
+   "no": 28,
+   "slug": "ep28-verified-expiry",
+   "title": "攒下的东西，会不会自己烂掉（四）",
+   "subtitle": "当初验过的，现在还验得过吗",
+   "series": "会不会自己烂掉",
+   "color": "#7a4a4a",
+   "chars": 14932,
+   "month": "2026-10",
+   "date": "2026-10-09",
+   "question": "当初验过的，现在还验得过吗？",
+   "one_liner": "十分钟的证书，给一份要活很多年的名作证。",
+   "judgments": [
+    "记没记下什么时候验的——时间落在它自己那个只追加的结构里，还是来自一个可以悄悄改的钟？",
+    "它是谁认领的——有没有第二方背书，还是自己给自己盖章？",
+    "它过期时先疼谁——先疼别人，就是别人替你看班；先疼你，你自然会去看。"
+   ],
+   "repos": [
+    "sigstore/cosign",
+    "sigstore/sigstore-python"
+   ],
+   "audio": null,
+   "related": [
+    "ep27-rule-rot",
+    "ep26-silent-defaults",
+    "ep25-dependency-rot"
+   ]
+  },
+  {
+   "no": 29,
+   "slug": "ep29-backup-rot",
+   "title": "攒下的东西，会不会自己烂掉（五）",
+   "subtitle": "你说有备份，那你恢复过一次吗",
+   "series": "会不会自己烂掉",
+   "color": "#7a4a4a",
+   "chars": 14990,
+   "month": "2026-10",
+   "date": "2026-10-10",
+   "question": "你说有备份，那你恢复过一次吗？",
+   "one_liner": "判断一份「我有备份」还站不站得住，问三句。",
+   "judgments": [
+    "这条恢复的路，谁走过、什么时候走的？答不出「有人把东西拿出来打开看了一眼」，就还不是判据。",
+    "备份和原件会不会一起坏？同一块盘、同一台机器、同一个账号，以及最要命的那一条——能不能被同一把钥匙删掉。",
+    "上一次走是什么时候，下一次安排在什么时候？"
+   ],
+   "repos": [
+    "restic/restic",
+    "kopia/kopia",
+    "borgbackup/borg"
+   ],
+   "audio": null,
+   "related": [
+    "ep28-verified-expiry",
+    "ep27-rule-rot",
+    "ep25-dependency-rot"
+   ]
+  },
+  {
+   "no": 30,
+   "slug": "ep30-looks-fine",
+   "title": "攒下的东西，会不会自己烂掉（六 · 收线）",
+   "subtitle": "看起来没问题，和真的没问题",
+   "series": "会不会自己烂掉",
+   "color": "#7a4a4a",
+   "chars": 14476,
+   "month": "2026-10",
+   "date": "2026-10-11",
+   "question": "你信一个东西，是因为你验过，还是因为它看起来没问题？",
+   "one_liner": "本周前五期的判据有一个共同的假定：失效的时候，会有东西变。今天这个案例是那个假定的反例形态。",
+   "judgments": [
+    "第一档：全靠对方给的凭证（证书 / 状态页 / 发布日志）——你验的是「看起来」。",
+    "第二档：自己记了一份，但记完没回头看过——有答案，没做题。",
+    "第三档：自己记了一份，而且有一个动作会定期拿它去比、比出不一样会响——这道题才算从判断变成了填空。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep29-backup-rot",
+    "ep28-verified-expiry",
+    "ep27-rule-rot",
+    "ep25-dependency-rot"
+   ]
+  },
+  {
+   "no": 31,
+   "slug": "ep31-trust-the-done",
+   "title": "AI 交了这么多（二）",
+   "subtitle": "AI 说完成了，我该相信什么",
+   "series": "AI 交了这么多",
+   "color": "#4a5a7a",
+   "chars": 15339,
+   "month": "2026-10",
+   "date": "2026-10-13",
+   "question": "AI 说「完成了」，我该相信什么？",
+   "one_liner": "一句话「完成了」要能算数，它得指向一个由别人记下来、你亲手看过一次的东西。",
+   "judgments": [
+    "检查存在 ≠ 检查有效。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep30-looks-fine",
+    "ep29-backup-rot",
+    "ep27-rule-rot"
+   ]
+  },
+  {
+   "no": 32,
+   "slug": "ep32-borrowed-voice",
+   "title": "为什么换一把声音，我就愿意再试一次",
+   "subtitle": "",
+   "series": "AI 交了这么多",
+   "color": "#4a5a7a",
+   "chars": 14759,
+   "month": "2026-10",
+   "date": "2026-10-14",
+   "question": "为什么换一把声音，我就愿意再试一次？",
+   "one_liner": "换一把声音之所以让人愿意再试一次，不是因为声音更好听，而是因为声音这个东西本来没人验。",
+   "judgments": [
+    "第一关 愿意点开：入口本身是什么做的。",
+    "第二关 跟不跟得上：三本模型在同一件事上的分工。",
+    "第三关 愿不愿意还有下一次：注意力是一本会被花掉的账。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep31-trust-the-done",
+    "ep30-looks-fine"
+   ]
+  },
+  {
+   "no": 33,
+   "slug": "ep33-demo-gap",
+   "title": "演示很好看，到我手里为什么这么费劲",
+   "subtitle": "",
+   "series": "AI 交了这么多",
+   "color": "#4a5a7a",
+   "chars": 14769,
+   "month": "2026-10",
+   "date": "2026-10-15",
+   "question": "为什么有些 AI 工具演示很好看，用起来却费劲？",
+   "one_liner": "演示没有骗你。它只是只拍了那条路上三分之二的地方，剩下的三分之一留在原地，等你走过来。",
+   "judgments": [
+    "数差额：看演示的时候数一下镜头里的步数，再数你真用起来从输入到能用一共几步。差多少，中间的差额就是你的活。",
+    "哪一步错了会报错：最贵的几件事全发生在不报错的地方。不出声的地方最费钱。",
+    "哪一步只有懂这件事的人能做：后面那种不要指望外包。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep32-borrowed-voice",
+    "ep31-trust-the-done",
+    "ep30-looks-fine"
+   ]
+  },
+  {
+   "no": 34,
+   "slug": "ep34-who-judges",
+   "title": "一件事交给 AI，人还需要判断什么",
+   "subtitle": "",
+   "series": "AI 交了这么多",
+   "color": "#4a5a7a",
+   "chars": 14841,
+   "month": "2026-10",
+   "date": "2026-10-16",
+   "question": "一件事交给 AI，人还需要判断什么？",
+   "one_liner": "判断力不是保证你对，是让你每一次都比同类人好一点点，然后把这一点点攒起来。",
+   "judgments": [
+    "能写成规则的那部分会一直被拿走；剩下写不成规则的那部分，才是人在这件事里的位置。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep33-demo-gap",
+    "ep32-borrowed-voice"
+   ]
+  },
+  {
+   "no": 35,
+   "slug": "ep35-which-change",
+   "title": "这周的 AI 变化，哪一件值得我认真理解",
+   "subtitle": "",
+   "series": "AI 交了这么多",
+   "color": "#4a5a7a",
+   "chars": 14610,
+   "month": "2026-10",
+   "date": "2026-10-17",
+   "question": "这周的 AI 变化，哪一件值得我认真理解？",
+   "one_liner": "交出来的东西变多十倍，先坏的通常不是模型那一层，是收的那一层。",
+   "judgments": [
+    "东西多十倍之后，先坏的是「收」的那一层。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep34-who-judges",
+    "ep33-demo-gap",
+    "ep32-borrowed-voice"
+   ]
+  },
+  {
+   "no": 36,
+   "slug": "ep36-self-feeding",
+   "title": "自己喂自己，为什么越喂越窄",
+   "subtitle": "",
+   "series": "AI 交了这么多",
+   "color": "#4a5a7a",
+   "chars": 14476,
+   "month": "2026-10",
+   "date": "2026-10-18",
+   "question": "这一周我改掉了哪一条判断，改在哪儿",
+   "one_liner": "「要有人在系统外面看一眼」这句话只检查了位置，没检查视野。",
+   "judgments": [
+    "那个人得真的站在外面，而且得看得见足够大的世界——位置 + 视野。",
+    "每一轮至少有一件输入，是上一轮输出推不出来的（可自查，可记账）。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep35-which-change",
+    "ep34-who-judges",
+    "ep31-trust-the-done"
+   ]
+  },
+  {
+   "no": 37,
+   "slug": "ep37-one-place",
+   "title": "改一处就够，前提是你知道有几处",
+   "subtitle": "",
+   "series": "你攒下的东西",
+   "color": "#6b4a3a",
+   "chars": 14394,
+   "month": "2026-10",
+   "date": "2026-10-19",
+   "question": "同一个事实，怎么才能真的只在一个地方维护；做到之后，它保证什么、不保证什么",
+   "one_liner": "只在一个地方维护，能保证你不自相矛盾；它不保证你不自欺。",
+   "judgments": [
+    "原件在哪，别人能不能用一条命令验出来？只有你能确认，等于没做到。",
+    "改的时候，怎么机械地知道还有几处？清单要跟检查长在一起。",
+    "它过期的时候，谁会先发现？答案若是「没人」，这份可信是借来的。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep36-self-feeding",
+    "ep27-rule-rot",
+    "ep31-trust-the-done"
+   ]
+  },
+  {
+   "no": 38,
+   "slug": "ep38-silent-pass",
+   "title": "没有报错，不等于做对了",
+   "subtitle": "",
+   "series": "你攒下的东西",
+   "color": "#6b4a3a",
+   "chars": 14620,
+   "month": "2026-10",
+   "date": "2026-10-21",
+   "question": "",
+   "one_liner": "没有报错，可能只是因为它从来不打算报错。",
+   "judgments": [
+    "它上一次失败是什么时候、因为什么？",
+    "失败会通知到「会做决定的人」吗？日志 ≠ 通知。",
+    "它管的那块，跟我以为的是不是同一块？靠弄坏一次验。",
+    "它错了以后，后面的结论还信不信？"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep37-one-place",
+    "ep31-trust-the-done",
+    "ep34-who-judges"
+   ]
+  },
+  {
+   "no": 39,
+   "slug": "ep39-handoff-decisions",
+   "title": "交接的是决定，不是结果",
+   "subtitle": "",
+   "series": "你攒下的东西",
+   "color": "#6b4a3a",
+   "chars": 14612,
+   "month": "2026-10",
+   "date": "2026-10-22",
+   "question": "",
+   "one_liner": "结果会被人改掉，决定才会被人守住。",
+   "judgments": [
+    "交接时先找那个「只有作者知道」的判断，把它写下来；操作步骤反而是最容易补的。",
+    "事实写来源与日期，判断写前提；把判断写成事实，是最危险的一种记录。",
+    "一份决策记录最少要有六样：背景、选项、因为、代价、确认、复审。"
+   ],
+   "repos": [],
+   "audio": null,
+   "related": [
+    "ep38-silent-pass",
+    "ep37-one-place"
+   ]
+  }
+ ]
+}

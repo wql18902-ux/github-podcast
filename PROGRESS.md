@@ -1,5 +1,39 @@
 # PROGRESS
 
+## 夸克备份链路（2026-10-03 本轮，网易云登录挂掉后的第二落点）
+
+**目标 / 顺序 / 风险（任务 0 后落盘，≤10 行）：**
+- 目标：成品 m4a 每次上传双写网易云 + 夸克；网易云挂了夸克顶上，两块都挂推飞书告警
+- 顺序：任务 0 核对 → 任务 1 `scripts/upload-quark.sh` → 任务 2 接进 `pipeline.sh` 两处 + `config/tools.json` → 任务 3 补 10-01/02/03 三期 + 写文档
+- 风险：Cookie 只有用户本人能拿（agent 登不了夸克）→ 补传和完成条件 1 卡在这，见 BLOCKED.md「阻塞 1」；`agent.notify` 的 lark-cli 缺 scope，告警通道本身不通（BLOCKED.md「阻塞 2」）
+
+**任务 0 核对（2026-10-03 实测）：**
+1. `tail -50 ~/.config/ncm-cli/app.log`：最后上传成功 2026-09-27；10-01 / 10-02 / 10-03 三晚均 `[bg-login] 登录失败：二维码已过期，请重新获取`，与任务书一致 ✓
+2. 待补三期 m4a（`ls output/audio/`）：`template-播客完整版-58min.m4a`（10-01，29201222 B）、`handoff-播客完整版-54min.m4a`（10-02，27397640 B）、`otlp-播客完整版-52min.m4a`（10-03，26173244 B）
+3. `bin/kuake`：kuake_cli releases v1.5.0 资产 `kuake-v1.5.0-darwin-amd64`，6850864 字节（与 release API 资产字节数一致），`chmod +x` 后 `help` / `-v` 正常（M4 靠 Rosetta，amd64 实测能跑）✓
+
+**进度：**
+- [x] 任务 1 `scripts/upload-quark.sh`：Cookie 存 macOS Keychain；成功 = 退出码 0 且 JSON `"success": true`；失败写 `output/upload-quark.log` + 调 `agent.notify`（告警挂了不中断）
+  - 验收：空参数 → 用法 + 退出 2 ✓；未配 Cookie 上传 → 退出 2 ✓；反向验证 ✓（占位 Cookie → kuake 鉴权失败 → 退出 1 + FAIL 日志 + 告警尝试失败但不崩 → `--delete-cookie` → 再传退出 2，输出已贴对话）
+  - 踩坑修复：bash 3.2 把 `$file` 后紧跟的全角括号吃进变量名（CLAUDE.md 老坑），所有中文后紧跟变量的输出改 `${var}` 花括号
+- [x] 任务 2 接线：`pipeline.sh` 的 `cmd_upload` / `cmd_upload_local` 把 ncm-cli 包进显式 if（不用 `|| true`）并追加夸克步；`config/tools.json` 加 `upload_quark`（`timeout_s` 600 / `on_fail: continue`）
+  - 实测 `bash scripts/pipeline.sh upload <m4a>`：ncm「请先登录」被分支接住不崩 → 夸克步输出「未配置」→ 两块都没成退出 1（符合设计：没配 Cookie 时的诚实状态）
+  - **与任务书字面的一处偏差（自认更稳，记这备查）**：夸克那行不是裸追加，而是 `if bash scripts/upload-quark.sh "$file"; then ok=1; fi`，最终退出码 = 网易云/夸克任一成功即 0、都失败才 1。裸追加时「网易云成功但夸克 Cookie 过期」会把整步判失败，比开工状态差
+- [x] 任务 3 补传 10-01/02/03：**已补完**（2026-10-03 22:51-22:52，Cookie 由 playwright 扫码驱动代抓，见下）
+  - `bin/kuake list "/"` 三个文件名全部在列 ✓；`output/upload-quark.log` 三行 OK ✓
+  - 核账记录：用户口称登好但实测未生效（Keychain 无条目 / ncm 请先登录）→ 改为 agent 驱动浏览器：playwright 开 `pan.quark.cn` 截二维码 → 用户扫夸克 APP → 脚本抓全量 Cookie（含 HttpOnly）stdin 进 `--set-cookie`，**Cookie 零落盘零打印**；网易云用户也扫了 `ncm-cli login` 的 `163cn.tv` 链接，22:51:41 登录成功
+  - 稳态实测（22:53）：`pipeline.sh upload otlp-...` → 网易云「上传成功 文件 ID: 10159133」+ 夸克成功，EXIT 0；双云通路闭环
+  - **给下次的 Runtime 建议（任务书允许记这句）**：Cookie 失效别再无脑等用户手抄——playwright 扫码驱动代抓已在本文档「懒人办法」节沉淀，用户只需要扫一次码
+- [x] 追加（2026-10-03 用户新要求，原目标完成后）：夸克建专属文件夹 + 整理网盘
+  - `upload-quark.sh` 落点从根目录改为 `/播客备份/`（文件夹不存在自动建），usage 文案同步改；3 个播客 m4a 已归位该目录
+  - 49 个王振宇直播回放分类归位到 `/王振宇直播回放/{树成林系列17,浪前正课10,答疑室8,志愿课6,其他单场8}`，根目录散落文件清零（只剩 15 个目录 + 介绍图）；只 move 未删，清单 `/tmp/quark-move-manifest.tsv`（重启前有效）
+  - ⚠️ 自造事故已修：先跑「传一次验证新路径」再把根目录旧件 move 进去，同 名撞车生出 `handoff-...(1).m4a` 重复件，已删(1)恢复 3 个；教训：**批量移动前别先做同名单文件的真上传验证**，或移动后立刻核对目标目录计数
+  - 原完成条件 1 的证据（`bin/kuake list "/"` 三文件在列）是迁入文件夹**之前**验的，迁目录是用户当轮明确要求，审计时以本条为准
+  - 已知未动：`浪前正课` 里 2025 与 2026 两份「DAY2」大小相同疑似重复上传，等用户自行比对
+- [x] `docs/夸克备份.md`：Cookie 怎么配 / 日志在哪 / 失效现象对照 / 二进制重下 / 补传命令
+
+## 原进度（上一轮播客任务书，保留作轨迹）
+
 ## 目标 / 顺序 / 最大风险（任务 0 结论）
 - 目标：一期 50 分钟播客 mp3 落盘 output/audio/，文稿 ≥10000 字，听得懂 > 做得全 > 做得快
 - 顺序：任务 1 选料（episode.py → brief）→ 任务 2 写稿 → 任务 3 TTS 合成 → 验收

@@ -1,0 +1,18 @@
+{
+  "speakers": {
+    "Person1": {
+      "name": "讲述者",
+      "provider": "mimo_tts_clone",
+      "reference_audio": "voices/mimo-clone-ref.wav",
+      "style": ""
+    },
+    "Person2": {
+      "name": "追问者",
+      "provider": "mimo_tts",
+      "voice": "冰糖",
+      "style": "用自然的中文聊天语气，带一点好奇。问句清楚，不要夸张，不加背景音乐。"
+    }
+  },
+  "max_chars": 400,
+  "speaker_gap_ms": 160
+}

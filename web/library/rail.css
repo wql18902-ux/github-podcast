@@ -1,0 +1,336 @@
+/* 侧边栏图标栏 · 画幅构成 / 纯黑模式
+   默认收起成 72px 图标栏；悬停、点击切换或键盘聚焦时展开成 248px。
+   颜色全部走 neon-tokens.css 的语义 token；这里不写色值。
+   矩形一律直角，只用 1px 线与字色建立层级，不用阴影/发光/渐变。 */
+
+:root { --rail-collapsed: 72px; --rail-expanded: 248px; }
+
+/* 收起态由 <html> 上的 .rail-open / .rail-pinned 驱动（rail.js 负责） */
+html { --rail-w: var(--rail-collapsed); }
+html.rail-open { --rail-w: var(--rail-expanded); }
+
+/* ── 栏体 ─────────────────────────────────────────────────── */
+.sidebar#rail {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: var(--z-sidebar);
+  display: flex;
+  flex-direction: column;
+  width: var(--rail-w);
+  padding: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--rule);
+  background: var(--paper);
+  transition: width 260ms cubic-bezier(.22, 1, .36, 1);
+}
+/* 展开时不把内容推走，而是盖在内容上 —— 避免整页 reflow */
+html.rail-open .sidebar#rail { box-shadow: none; }
+
+.rail-inner {
+  display: flex;
+  flex-direction: column;
+  width: var(--rail-expanded);
+  height: 100%;
+  padding: 18px 0 16px;
+}
+
+/* ── 收起 / 展开共用的"槽位"：图标永远对准同一条竖轴 ─────── */
+.rail-gutter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--rail-collapsed);
+  width: var(--rail-collapsed);
+  height: 20px;
+}
+
+/* 文字部分：收起时完全退出可读与可点范围 */
+.rail-label {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-4px);
+  transition: opacity 160ms ease, transform 200ms ease, visibility 160ms;
+  white-space: nowrap;
+}
+html.rail-open .rail-label {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+/* ── 顶部：品牌 + 展开按钮 ────────────────────────────────── */
+.rail-head {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 18px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.sidebar#rail .studio-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  height: 40px;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+.sidebar#rail .brand-gutter { height: 40px; }
+.sidebar#rail .brand-symbol { height: 17px; gap: 2px; }
+.sidebar#rail .brand-symbol i { width: 2px; height: 9px; background: var(--ink); border-radius: 0; }
+.sidebar#rail .brand-symbol i:nth-child(2) { height: 17px; }
+.sidebar#rail .brand-symbol i:nth-child(3) { height: 13px; }
+.sidebar#rail .brand-symbol i:nth-child(4) { height: 6px; }
+.sidebar#rail .brand-name { display: flex; align-items: baseline; gap: 8px; }
+.sidebar#rail .brand-english {
+  font-family: var(--font-ui);
+  font-size: 8px;
+  letter-spacing: .18em;
+  color: var(--ink-3);
+}
+
+/* 展开按钮：三横线，收起态就是「菜单」语义 */
+.rail-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  font-size: 11px;
+  text-align: left;
+}
+.rail-toggle:hover { color: var(--ink); }
+.rail-toggle-icon {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 9px;
+}
+.rail-toggle-icon::before,
+.rail-toggle-icon::after,
+.rail-toggle-icon { border-top: 1px solid currentColor; }
+.rail-toggle-icon::before,
+.rail-toggle-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+.rail-toggle-icon::before { top: 4px; }
+.rail-toggle-icon::after { top: 8px; }
+.rail-toggle-icon { height: 9px; border-top: 0; }
+.rail-toggle-icon::before,
+.rail-toggle-icon::after,
+.rail-toggle-icon { transition: width 200ms cubic-bezier(.22,1,.36,1); }
+.rail-toggle-icon { border-top: 1px solid currentColor; }
+
+/* ── 导航 ─────────────────────────────────────────────────── */
+.sidebar#rail .nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.sidebar#rail .nav::-webkit-scrollbar { width: 0; }
+
+.sidebar#rail .nav-label {
+  margin: 14px 0 5px;
+  padding-left: 0;
+  width: var(--rail-collapsed);
+  font-family: var(--font-ui);
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: var(--ink-4);
+  text-align: center;
+  text-transform: uppercase;
+  opacity: 1;
+  transition: opacity 160ms ease;
+}
+/* 展开后分组标题改回左对齐，并显示中文组名 */
+html.rail-open .sidebar#rail .nav-label {
+  width: var(--rail-expanded);
+  padding-left: 16px;
+  text-align: left;
+}
+.sidebar#rail .nav-label--group { border-top: 1px solid var(--rule-soft); padding-top: 12px; }
+
+.sidebar#rail .nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: var(--rail-expanded);
+  min-height: 42px;
+  padding: 0;
+  gap: 10px;
+  border-radius: 0;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  transition: color 160ms ease, background-color 160ms ease;
+}
+.sidebar#rail .nav a:hover { background: var(--paper-2); color: var(--ink); }
+.sidebar#rail .nav a.is-active { color: var(--ink); font-weight: 400; }
+/* 选中态：1px 竖线，不用填充色块 */
+.sidebar#rail .nav a.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  height: auto;
+  background: var(--ink);
+  transform: none;
+  border-radius: 0;
+}
+.sidebar#rail .nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rail-collapsed);
+  height: 42px;
+  color: currentColor;
+  flex: 0 0 var(--rail-collapsed);
+}
+.sidebar#rail .nav-icon .ui-icon { width: 17px; height: 17px; }
+.sidebar#rail .nav a::after { display: none; }
+
+/* ── 底部 ─────────────────────────────────────────────────── */
+.sidebar#rail .sidebar-bottom {
+  margin-top: auto;
+  padding: 0;
+  border-top: 1px solid var(--rule-soft);
+  padding-top: 12px;
+}
+.sidebar#rail .local-note {
+  display: flex;
+  align-items: center;
+  width: var(--rail-expanded);
+  height: 30px;
+  font-size: 10px;
+  color: var(--ink-4);
+  white-space: nowrap;
+}
+.sidebar#rail .local-note .status-dot {
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+html.rail-open .sidebar#rail .local-note .status-dot { margin: 0 auto 0 calc(var(--rail-collapsed) / 2 - 3px); }
+
+.sidebar#rail .sidebar-utility { display: grid; gap: 1px; }
+.sidebar#rail .source-link,
+.sidebar#rail .theme-switch {
+  display: flex;
+  align-items: center;
+  width: var(--rail-expanded);
+  min-height: 36px;
+  padding: 0;
+  gap: 10px;
+  border: 0;
+  background: none;
+  font-size: 11px;
+  color: var(--ink-3);
+  text-align: left;
+}
+.sidebar#rail .source-link:hover,
+.sidebar#rail .theme-switch:hover { color: var(--ink); }
+.sidebar#rail .source-link > .rail-gutter,
+.sidebar#rail .theme-switch > .rail-gutter { height: 36px; font-size: 12px; }
+.sidebar#rail .rail-arrow { display: none; }
+html.rail-open .sidebar#rail .rail-arrow { display: inline; margin-left: auto; padding-right: 14px; font-size: 10px; }
+
+/* 展开时内容不被遮挡：给 main / 顶栏留出收起态的宽度 */
+main#top { margin-left: var(--rail-collapsed); }
+#topbar.workspace-bar { margin-left: var(--rail-collapsed); }
+.listening-dock { left: var(--rail-collapsed); }
+
+/* 展开时把内容一起推开：覆盖会盖住标题和按钮，宁可 reflow 也不要遮内容。
+   margin 与 sidebar 用同一条 260ms 曲线，两边同步滑动，看不出跳动。 */
+main#top,
+#topbar.workspace-bar,
+.listening-dock { transition: margin-left 260ms cubic-bezier(.22,1,.36,1); }
+html.rail-open main#top,
+html.rail-open #topbar.workspace-bar { margin-left: var(--rail-expanded); }
+html.rail-open .listening-dock { left: var(--rail-expanded); transition: left 260ms cubic-bezier(.22,1,.36,1); }
+
+/* 介绍页不要侧边栏 —— 它是展示页，不是工作台。侧栏只在工作室内部出现。
+   这一条必须放在 rail.css 末尾附近，才能压过上面基于 :root 的 margin 规则。 */
+html[data-sourcecast="neon"] .is-welcome .sidebar,
+.is-welcome .sidebar#rail { display: none !important; }
+html[data-sourcecast="neon"] .is-welcome main#top,
+.is-welcome main#top { margin-left: 0 !important; padding: 0; }
+html[data-sourcecast="neon"] .is-welcome .skip-link { left: 20px; }
+
+/* ── 窄屏：回到原来的横向导航条 ───────────────────────────── */
+@media (max-width: 760px) {
+  html, html.rail-open { --rail-w: 100%; --rail-collapsed: auto; }
+  .sidebar#rail,
+  html.rail-open .sidebar#rail {
+    position: sticky;
+    inset: auto;
+    width: 100% !important;
+    max-width: 100%;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+    overflow: visible;
+    transition: none;
+  }
+  .rail-inner { width: 100%; height: auto; padding: 0 18px; }
+  .rail-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    padding: 0;
+    margin: 0;
+    border-bottom: 0;
+  }
+  .sidebar#rail .studio-brand { height: 58px; font-size: 19px; }
+  .sidebar#rail .rail-gutter,
+  .sidebar#rail .brand-gutter { flex: 0 0 auto; width: auto; height: auto; margin-right: 0; }
+  .rail-toggle { display: none; }
+  .rail-label { opacity: 1; visibility: visible; transform: none; }
+  .sidebar#rail .nav {
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    padding: 0 2px 0;
+    overflow-x: auto;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .sidebar#rail .nav a { width: auto; flex: 0 0 auto; min-height: 44px; gap: 7px; font-size: 11.5px; }
+  .sidebar#rail .nav-icon { width: 15px; height: 15px; flex: 0 0 15px; }
+  .sidebar#rail .nav-icon .ui-icon { width: 15px; height: 15px; }
+  .sidebar#rail .nav a.is-active::before { display: none; }
+  .sidebar#rail .nav a.is-active { border-bottom: 1px solid var(--ink); }
+  .sidebar#rail .nav-label,
+  .sidebar#rail .sidebar-bottom { display: none; }
+  main#top,
+  html.rail-open main#top { margin-left: 0 !important; }
+  #topbar.workspace-bar { margin-left: 0; }
+  .listening-dock { left: 0; }
+}
+
+/* 减少动态：宽度与透明度直接跳变 */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar#rail { transition: none; }
+  .rail-label, .rail-toggle-icon::before, .rail-toggle-icon::after { transition: none; }
+}
+
+/* A visible return path after entering a demo on a phone. */
+.sidebar#rail .nav a.mobile-intro-link { display:none; }
+@media(max-width:760px) {
+  .sidebar#rail .nav a.mobile-intro-link { display:flex; }
+}

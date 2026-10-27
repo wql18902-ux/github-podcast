@@ -1,0 +1,70 @@
+{
+  "purpose": "Redistributable self-hosted display fonts for the Griffin-inspired Sourcecast introduction page. No Griffin proprietary font files are included.",
+  "captured_at_utc": "2026-10-25T12:20:28.217546+00:00",
+  "source_authority": "Google Fonts official CSS API / gstatic font delivery; licenses from google/fonts.",
+  "fonts": [
+    {
+      "family": "Instrument Serif",
+      "style": "normal",
+      "weight": 400,
+      "format": "woff2",
+      "filename": "instrument-serif-regular-latin.woff2",
+      "bytes": 15040,
+      "sha256": "60c06664b5a95c7de6cc3e00d1f9034d78bd1e40b564016b241674449a067d4d",
+      "font_url": "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjnTLgNs.woff2",
+      "google_fonts_css_url": "https://fonts.googleapis.com/css2?family=Instrument+Serif%3Awght%40400&display=swap",
+      "source_css_file": "instrument-serif-regular-latin.source.css",
+      "source_css_sha256": "374f2ac9e70632d47fa885a28e4700dfee3f25a4ec0436d085c5eb0500e5129c",
+      "font_repository": "https://github.com/google/fonts/tree/main/ofl/instrumentserif",
+      "license": "SIL Open Font License 1.1",
+      "license_file": "Instrument-Serif-OFL.txt",
+      "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/instrumentserif/OFL.txt",
+      "license_sha256": "129ed7618959716959f2941fdd5b49e0ad6e6c1d78726761786a00253d865521",
+      "subset": {
+        "kind": "Google Fonts latin subset",
+        "unicode_range": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+        "characters": "",
+        "requested_heading_text": null,
+        "note": "Official regular latin WOFF2 from Google Fonts; latin-ext intentionally excluded."
+      },
+      "content_type": "font/woff2",
+      "verification": {
+        "actual_cmap_glyphs": 206,
+        "requested_text_missing_codepoints": [],
+        "method": "fontTools.ttLib.TTFont parsed local WOFF2 successfully."
+      }
+    },
+    {
+      "family": "Noto Serif SC",
+      "style": "normal",
+      "weight": 400,
+      "format": "woff2",
+      "filename": "noto-serif-sc-regular-subset.woff2",
+      "bytes": 19024,
+      "sha256": "707b01ad72babd77e1be4112b756f2b9406babbce0993ed95b592b88a8cd2e33",
+      "font_url": "https://fonts.gstatic.com/l/font?kit=H4cyBXePl9DZ0Xe7gG9cyOj7uK2-n-D2rd4FY7SCqyWq847hdT2Cc_LIQuwpVXNm4y2LIsurzfLwaULp-4CQ_kPcMJkzgiNsY2KGUnqB5Nu0N4MBDNhOqTB_56yBvSEWQoL1jOFThyCgoN3xlmzcn4sh6oXlQsBqf2LvZH8QVtoTx3VxGEtPWHBVp4nW8M9O6Fy9RyJNpVOIUFH5wwEFY8k04lb-8eU6pwGxU4gSKKODg5e2u8OQkE1-DPfbr0iPyQQoYkiFDmRRgpwDuUU0jxtL74UwEqkleOvmPfuORJxdbFgGZlQbDEfZ64LZPjHl4Fdc2ShAv792sqO_ye0nfYj_YyvjfjsnVJEhX3HKWgl-dmoiKqPf29K_LQEAotpZDY6pYkbYtxduN2i2lEbObzY7A3nMOswyeQBBjHqgjWC0zk5mv0C02jo_3Ul8j3O0b3nVLu6hyecsfvPmfuU&skey=37fe335b8fd815cc&v=v36",
+      "google_fonts_css_url": "https://fonts.googleapis.com/css2?family=Noto+Serif+SC%3Awght%40400&display=swap&text=%E8%AE%A9%E5%A5%BD%E5%A5%87%E6%88%90%E4%B8%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E7%9F%A5%E8%AF%86%E4%BB%8E%E9%98%85%E8%AF%BB%E5%88%B0%E7%90%86%E8%A7%A3%E6%AF%8F%E4%B8%80%E6%AD%A5%E9%83%BD%E6%9C%89%E8%BF%B9%E5%8F%AF%E5%BE%AA%E4%BD%A0%E6%83%B3%E6%80%8E%E6%A0%B7%E6%87%82%E6%9C%AC%E4%B9%A6%E5%90%AC%E8%A7%81%E5%8F%A6%E7%A7%8D%E6%AC%A1%E7%95%99%E4%B8%8B%E5%9B%9E%E5%A3%B0%E8%BF%99%E9%87%8C%E5%BC%80%E5%A7%8B%E7%B1%8D%E8%AE%BA%E6%96%87%E6%BA%90%E9%A1%B9%E7%9B%AE%E9%97%AE%E9%A2%98%E5%AF%B9%E8%AF%9D%E7%AC%94%E8%AE%B0%E8%BF%9E%E6%8E%A5%E6%9D%90%E6%96%99%E5%B7%A5%E4%BD%9C%E5%AE%A4%E6%A0%88%EF%BC%8C%E3%80%82%EF%BC%9F%EF%BC%81%E3%80%81%EF%BC%9A%EF%BC%9B%E2%80%9C%E2%80%9D%E2%80%98%E2%80%99%EF%BC%88%EF%BC%89%E3%80%8A%E3%80%8B%E2%80%94%C2%B7%E6%9C%80%E8%BF%91%E4%BA%86%E5%AE%8C%E7%84%B6%E5%90%8E%E5%91%A2%E4%B8%89%E4%BB%B6%E5%B0%8F%E4%BA%8B%E6%8A%8A%E6%80%9D%E8%B7%AF%E6%85%A2%E5%B1%95%E5%8E%9F%E6%9D%A5%E5%AE%83%E4%BB%AC%E6%98%AF%E7%9D%80",
+      "source_css_file": "noto-serif-sc-regular-subset.source.css",
+      "source_css_sha256": "53c9350a2f22b21b9656cd222632bf3910a85eec51771e093c1925055e2162e7",
+      "font_repository": "https://github.com/google/fonts/tree/main/ofl/notoserifsc",
+      "license": "SIL Open Font License 1.1",
+      "license_file": "Noto-Serif-SC-OFL.txt",
+      "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifsc/OFL.txt",
+      "license_sha256": "5e0da210fb04058a8c0087985d2d456b931c2579811a49655721d3cf0c36b6d6",
+      "subset": {
+        "kind": "Google Fonts text subset",
+        "unicode_range": "U+b7, U+2014, U+2018-2019, U+201c-201d, U+3001-3002, U+300a-300b, U+4e00, U+4e09, U+4e0b, U+4e3a, U+4e66, U+4e86, U+4e8b, U+4ece, U+4eec, U+4ef6, U+4f5c, U+4f60, U+5230, U+539f, U+53e6, U+53ef, U+540e, U+542c, U+5462, U+56de, U+58f0, U+5947, U+597d, U+59cb, U+5b83, U+5b8c, U+5ba4, U+5bf9, U+5c0f, U+5c55, U+5de5, U+5df1, U+5f00, U+5faa, U+600e, U+601d, U+60f3, U+6162, U+61c2, U+6210, U+628a, U+63a5, U+6587, U+6599, U+662f, U+6700, U+6709, U+672c, U+6750, U+6765, U+6808, U+6837, U+6b21, U+6b65, U+6bcf, U+6e90, U+7136, U+7406, U+7559, U+7684, U+76ee, U+7740, U+77e5, U+79cd, U+7b14, U+7c4d, U+81ea, U+89c1, U+89e3, U+8ba9, U+8bb0, U+8bba, U+8bc6, U+8bdd, U+8bfb, U+8def, U+8fd1, U+8fd9, U+8fde, U+8ff9, U+90fd, U+91cc, U+95ee, U+9605, U+9879, U+9898, U+ff01, U+ff08-ff09, U+ff0c, U+ff1a-ff1b, U+ff1f",
+        "characters": "让好奇成为自己的知识从阅读到理解每一步都有迹可循你想怎样懂本书听见另种次留下回声这里开始籍论文源项目问题对话笔记连接材料工作室栈，。？！、：；“”‘’（）《》—·最近了完然后呢三件小事把思路慢展原来它们是着",
+        "requested_heading_text": "让好奇成为自己的知识从阅读到理解每一步都有迹可循你想怎样读懂一本书听见另一种理解每一次阅读都留下回声下一次理解从这里开始书籍论文开源项目问题对话笔记连接材料知识工作室页声让好奇，成为自己的知识。从阅读到理解，每一步都有迹可循。你想怎样，读懂一本书。每一次阅读，都留下回声。最近，读到了这里。听见，另一种理解。下一次理解，从这里开始。读完一本书，然后呢？阅读后的三件小事。把思路，慢慢展开。原来，它们是连着的。",
+        "note": "Official Google Fonts response; text subset requested from Google Fonts, without local font modification. Covers initial requested copy plus actual frontend/griffin-landing.tsx display headings.",
+        "additional_page_headings": "让好奇，成为自己的知识。从阅读到理解，每一步都有迹可循。你想怎样，读懂一本书。每一次阅读，都留下回声。最近，读到了这里。听见，另一种理解。下一次理解，从这里开始。读完一本书，然后呢？阅读后的三件小事。把思路，慢慢展开。原来，它们是连着的。"
+      },
+      "content_type": "font/woff2",
+      "verification": {
+        "actual_cmap_glyphs": 104,
+        "requested_text_missing_codepoints": [],
+        "method": "fontTools.ttLib.TTFont parsed local WOFF2 cmap; all requested subset codepoints exist."
+      }
+    }
+  ]
+}

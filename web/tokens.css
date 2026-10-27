@@ -1,0 +1,202 @@
+/* 知栈 Sourcecast · Design Tokens
+   Art direction: Paper & Sound（纸与声）
+   Canonical source: design-system/tokens.css
+   Runtime copy:     web/library/tokens.css (must stay byte-identical; see scripts/check_design_tokens.py)
+   Load order:       styles.css → workspace.css → tokens.css → workspace-v3.css */
+
+:root {
+  color-scheme: light;
+
+  /* ── Surface ───────────────────────────────── */
+  --paper: #f5f2ea;
+  --paper-2: #ece8dd;
+  --paper-3: #e2dccd;
+  --surface: #fbf9f3;
+  --surface-2: #f0ece1;
+  --stage: #141715;
+  --stage-2: #1a1e19;
+  --stage-3: #22271f;
+
+  /* ── Text ──────────────────────────────────── */
+  --ink: #1a1b18;
+  --ink-page: #1a1b18;
+  --ink-2: #3f423b;
+  --ink-3: #63675d;
+  --ink-4: #85897d;
+  --stage-ink: #f3efe3;
+  --stage-ink-2: #c2c0b2;
+  --stage-ink-3: #8e9287;
+
+  /* ── Brand & state ─────────────────────────── */
+  --accent: #1f4d3d;
+  --accent-hover: #173b2f;
+  --accent-soft: #e3ebe3;
+  --accent-ink: #f5f2ea;
+  --signal: #a8442c;
+  --signal-soft: #f3e3dc;
+  --brass: #b08a55;
+  --clay: #b08a55;
+  --stage-accent: #c9a26c;
+  --stage-signal: #d98b6b;
+  --vinyl: #22261f;
+  --vinyl-2: #2c3028;
+  --vinyl-line: #3a3f35;
+  --vinyl-edge: #141714;
+  --vinyl-label: #d8c3a0;
+  --vinyl-label-ink: #3a332a;
+  --stage-glow: rgba(201, 162, 108, 0.22);
+  --stage-glow-soft: rgba(201, 162, 108, 0.06);
+  --ok: #2f6b4f;
+  --warn: #8a5a1f;
+  --error: #a8442c;
+
+  /* ── Lines & scrim ─────────────────────────── */
+  --rule: #dad4c5;
+  --rule-strong: #c4beac;
+  --rule-soft: #e8e3d6;
+  --stage-rule: rgba(243, 239, 227, 0.14);
+  --stage-rule-soft: rgba(243, 239, 227, 0.07);
+  --scrim: rgba(20, 23, 21, 0.46);
+  --focus: #2a6b54;
+
+  /* ── Type families ─────────────────────────── */
+  --font-display: "Songti SC", "STSong", "Source Han Serif SC", "Noto Serif SC", "Times New Roman", serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-mono: "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --serif: var(--font-display);
+  --sans: var(--font-ui);
+  --mono: var(--font-mono);
+
+  /* ── Type scale ────────────────────────────── */
+  --text-display: clamp(44px, 5.2vw, 72px);
+  --text-h1: clamp(34px, 3.4vw, 48px);
+  --text-h2: clamp(26px, 2.4vw, 34px);
+  --text-h3: 23px;
+  --text-h4: 17px;
+  --text-lead: 17px;
+  --text-body: 15px;
+  --text-small: 13px;
+  --text-meta: 11px;
+  --text-micro: 12px;
+  --leading-display: 1.22;
+  --leading-heading: 1.38;
+  --leading-body: 1.78;
+  --leading-tight: 1.5;
+  --tracking-display: -0.022em;
+  --tracking-heading: -0.012em;
+  --tracking-meta: 0.08em;
+
+  /* ── Space (4px base) ──────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --space-xs: var(--space-2);
+  --space-sm: var(--space-4);
+  --space-md: var(--space-5);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-7);
+
+  /* ── Radius ────────────────────────────────── */
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-round: 999px;
+  --r: var(--radius-md);
+
+  /* ── Layout ────────────────────────────────── */
+  --sidebar: 232px;
+  --topbar: 64px;
+  --page-gutter: clamp(24px, 3.6vw, 64px);
+  --content-max: 1240px;
+  --grid-gap: clamp(24px, 3vw, 48px);
+  --w: 1240px;
+
+  /* ── Motion ────────────────────────────────── */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease: var(--ease-out);
+  --dur-1: 120ms;
+  --dur-2: 220ms;
+  --dur-3: 420ms;
+  --dur-4: 900ms;
+  --vinyl-turn: 72s;
+
+  /* ── Depth ─────────────────────────────────── */
+  --shadow-stage: 0 24px 70px -28px rgba(20, 23, 21, 0.55);
+  --shadow-dock: 0 18px 48px -18px rgba(20, 23, 21, 0.45);
+  --shadow-pop: 0 18px 50px -22px rgba(20, 23, 21, 0.38);
+
+  /* ── Layers ────────────────────────────────── */
+  --z-base: 1;
+  --z-sticky: 200;
+  --z-sidebar: 210;
+  --z-dock: 300;
+  --z-drawer: 400;
+  --z-toast: 500;
+}
+
+[data-theme="night"] {
+  color-scheme: dark;
+
+  --paper: #121512;
+  --paper-2: #191d18;
+  --paper-3: #232821;
+  --surface: #181c17;
+  --surface-2: #222821;
+  --stage: #0c0f0d;
+  --stage-2: #131712;
+  --stage-3: #1b2019;
+
+  --ink: #ede9de;
+  --ink-page: #ede9de;
+  --ink-2: #c6c6b9;
+  --ink-3: #a2a598;
+  --ink-4: #7e8276;
+  --stage-ink: #f3efe3;
+  --stage-ink-2: #c2c0b2;
+  --stage-ink-3: #8e9287;
+
+  --accent: #9cc7ac;
+  --accent-hover: #b7d8c3;
+  --accent-soft: #1e2c23;
+  --accent-ink: #101310;
+  --signal: #de9274;
+  --signal-soft: #2e2019;
+  --brass: #d2ab78;
+  --clay: #d2ab78;
+  --stage-accent: #d2ab78;
+  --stage-signal: #de9274;
+  --ok: #8fc3a6;
+  --warn: #d5aa72;
+  --error: #de9274;
+
+  --rule: #333a31;
+  --rule-strong: #47503f;
+  --rule-soft: #262c25;
+  --stage-rule: rgba(243, 239, 227, 0.16);
+  --stage-rule-soft: rgba(243, 239, 227, 0.08);
+  --scrim: rgba(6, 8, 6, 0.66);
+  --focus: #a9cdb6;
+
+  --shadow-stage: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+  --shadow-dock: 0 20px 50px -18px rgba(0, 0, 0, 0.7);
+  --shadow-pop: 0 20px 56px -24px rgba(0, 0, 0, 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 0ms;
+    --dur-2: 0ms;
+    --dur-3: 0ms;
+    --dur-4: 0ms;
+  }
+}

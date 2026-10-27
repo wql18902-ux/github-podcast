@@ -70,6 +70,29 @@ def _episodes_log_lines() -> list[str]:
     ]
 
 
+def _fresh_repos(before: list[str], after: list[str]) -> list[str]:
+    """episodes.log 新增行里，哪些真是「本轮新选的仓」。
+
+    两种不是仓的行必须滤掉/保留，分开说：
+
+      - `# …` 注释行：**必须滤**。2026-09-28 log 第 50 行就是
+        `# 2026-09-28 换模型三层抽象（手动选料，prepare 自动选的 vllm 未讲）`。
+        不过滤它，这行会被 state.ensure_episode(repos=[注释行]) 记成本期项目——
+        DB 存一个假仓名，page.md 骨架、request.json 的 brief 全带着它跑。
+
+      - `topic:` 回馈行：**故意保留**。ep5 的条目就是 `topic:AI-Agents(Claude-Code)`
+        这种形式，删了它是回归。
+
+    log 比快照还短（被截断/回滚）时返回空——diff 不成立，不发明仓。
+    只剩注释行也返回空：让 prepare 走「选料没产出」的明确失败分支，
+    把「静默记错项目」换成「明确失败」，方向正确。
+    """
+    if len(after) < len(before):
+        return []
+    fresh = after[len(before):]
+    return [ln for ln in fresh if ln.strip() and not ln.strip().startswith("#")]
+
+
 # ---------------------------------------------------------------- prepare
 
 
@@ -104,8 +127,7 @@ def prepare(ctx: Context) -> state.StageOutcome:
         ctx.log(f"   [工具] 退出码非 0（sandbox 的 EEXIST 是已知常态，先看有没有新增仓）\n{res.stdout_tail[-1500:]}")
 
     after = _episodes_log_lines()
-    fresh = after[len(before):] if len(after) >= len(before) else []
-    repos = [r for r in fresh if not r.startswith("topic:")] or fresh
+    repos = _fresh_repos(before, after)
 
     if ctx.dry_run:
         repos = repos or ["（dry-run 未真跑选料）"]
@@ -115,7 +137,10 @@ def prepare(ctx: Context) -> state.StageOutcome:
             "prepare",
             False,
             "prepare_failed",
-            detail="选料没产出任何仓库（episodes.log 没有新增行）。fetch 全失败或 clone 全挂，当日清单不可信，不许硬写。",
+            detail=(
+                "选料没产出任何仓库（episodes.log 没有新增行，或新增的只有注释行）。"
+                "fetch 全失败或 clone 全挂，当日清单不可信，不许硬写。"
+            ),
         )
 
     ctx.ep = state.ensure_episode(
@@ -535,7 +560,12 @@ def _synth_deadline(ctx: Context):
 
 
 def fallback(ctx: Context) -> state.StageOutcome:
-    """本地 VoxCPM2 兜底（设计稿 §4.1 的 fallback 行）。
+    """降级合成（设计稿 §4.1 的 fallback 行）。
+
+    路线由 config/agent.json 的 synth.fallback 选，登记表在 synth.routes 里：
+      - local_voxcpm2   本地 VoxCPM2（默认，需要 llama-tts-server 起得来）
+      - mimo_voiceclone MiMo-V2.5-TTS-VoiceClone 云合成（克隆音色，不占 GPU）
+    两条路的产物文件名不同（routes[].out_name），所以混着跑也不会互相盖。
 
     人工触发本步：`python3 -m agent.cli fallback --date YYYY-MM-DD`
     （正常路径是 await_synth 判超期后自动进来）。
@@ -545,10 +575,22 @@ def fallback(ctx: Context) -> state.StageOutcome:
     if bad:
         reason = "；".join(r.detail for r in bad)
         state.fail(ctx.conn, ctx.date, reason, status="no_audio", stage="fallback")
-        _alert(ctx, "本期没法本地兜底", reason)
+        _alert(ctx, "本期没法降级合成", reason)
         return _out("fallback", False, None, detail=reason)
 
-    out = paths.AUDIO_DIR / f"{ctx.date}-ep-local-fallback.m4a"
+    route = str(ctx.cfg["synth"].get("fallback") or "local_voxcpm2")
+    routes = ctx.cfg["synth"].get("routes") or {}
+    if route not in routes:
+        # 配置写错路线名时明确失败，不静默退回本地——静默退回会让
+        # 「我改了配置」变成假象（DB 里记的 synth_route 也不是真跑的那条）。
+        reason = (f"synth.fallback 配的路线 {route!r} 没登记在 synth.routes 里"
+                  f"（现有：{sorted(routes) or '空'}）")
+        state.fail(ctx.conn, ctx.date, reason, status="no_audio", stage="fallback")
+        _alert(ctx, "合成路线配置错", reason)
+        return _out("fallback", False, None, detail=reason)
+    spec = routes[route]
+    tool = str(spec["tool"])
+    out = paths.AUDIO_DIR / str(spec["out_name"]).format(date=ctx.date)
 
     # 先看是不是已经有成品了——**这一步是修 bug 加的**。
     # scripts/local-fallback.sh 第 39 行用 `ls output/audio/${TODAY}*.m4a` 判「今天有没有成品」，
@@ -571,44 +613,51 @@ def fallback(ctx: Context) -> state.StageOutcome:
         ctx.refresh()
         return _out("fallback", True, "publish", detail=f"已有成品 {existing.name}，跳过本地合成")
 
-    attempts = sum(1 for e in state.events(ctx.conn, ctx.date) if e["event"] == "tool_fail:tts_local")
+    attempts = sum(1 for e in state.events(ctx.conn, ctx.date)
+                   if e["event"] == f"tool_fail:{tool}")
     if attempts >= ctx.cfg["budget"]["max_synth_attempts"]:
-        reason = f"本地合成已失败 {attempts} 次（max_synth_attempts={ctx.cfg['budget']['max_synth_attempts']}），不再重试"
+        reason = (f"降级合成（{route}）已失败 {attempts} 次"
+                  f"（max_synth_attempts={ctx.cfg['budget']['max_synth_attempts']}），不再重试")
         state.fail(ctx.conn, ctx.date, reason, status="no_audio", stage="fallback")
         _alert(ctx, "本期没有音频", reason)
         return _out("fallback", False, None, detail=reason)
 
-    res = ctx.call(
-        "tts_local",
-        (
-            "--input", str(paths.LATEST_SCRIPT),
-            "--output", str(out),
-            "--denoise", ctx.cfg["synth"]["denoise"],
-            # 刻意**不传 --voice-ref**：tts_local.py 会在默认位置
-            # （voices/podcast-voice.wav）自动启用克隆模式，跟 scripts/local-fallback.sh
-            # 那条已验证的调用保持一致。多传一个相对路径只是多一个失败点。
-            # 不传参考音频会每段换人（见 voices/README.md），所以这依赖那个文件在位。
-        ),
-        stage="fallback",
-    )
+    tool_args = ["--input", str(paths.LATEST_SCRIPT), "--output", str(out)]
+    if tool == "tts_local":
+        tool_args += ["--denoise", ctx.cfg["synth"]["denoise"]]
+        # 刻意**不传 --voice-ref**：tts_local.py 会在默认位置
+        # （voices/podcast-voice.wav）自动启用克隆模式，跟 scripts/local-fallback.sh
+        # 那条已验证的调用保持一致。多传一个相对路径只是多一个失败点。
+        # 不传参考音频会每段换人（见 voices/README.md），所以这依赖那个文件在位。
+    else:
+        tool_args += ["--han-per-min", str(ctx.cfg["synth"].get("mimo_han_per_min") or 0)]
+    res = ctx.call(tool, tuple(tool_args), stage="fallback")
     ctx.log(f"   [工具] {res}")
 
     if not res.ok:
-        state.log_event(ctx.conn, ctx.date, "degraded", f"本地合成失败（第 {attempts + 1} 次）", stage="fallback")
+        state.log_event(ctx.conn, ctx.date, "degraded",
+                        f"降级合成失败（{route}，第 {attempts + 1} 次）", stage="fallback")
         if attempts + 1 >= ctx.cfg["budget"]["max_synth_attempts"]:
-            state.fail(ctx.conn, ctx.date, "本地合成连续失败", status="no_audio", stage="fallback")
-            _alert(ctx, "本期没有音频", f"本地 VoxCPM2 连续失败 {attempts + 1} 次，见 output/ 日志")
-            return _out("fallback", False, None, detail="本地合成连续失败，判 no_audio")
-        return _out("fallback", False, "fallback", retryable=True, detail="本地合成失败，还有一次机会")
+            state.fail(ctx.conn, ctx.date, f"降级合成（{route}）连续失败",
+                       status="no_audio", stage="fallback")
+            _alert(ctx, "本期没有音频",
+                   f"{route} 连续失败 {attempts + 1} 次，见 output/ 日志")
+            return _out("fallback", False, None,
+                        detail=f"降级合成（{route}）连续失败，判 no_audio")
+        return _out("fallback", False, "fallback", retryable=True,
+                    detail=f"降级合成失败（{route}），还有一次机会")
 
     minutes = tools.probe_duration(out)
     state.set_metrics(
         ctx.conn, ctx.date,
-        audio_path=paths.rel(out), actual_minutes=minutes, synth_route="local_voxcpm2",
+        audio_path=paths.rel(out), actual_minutes=minutes,
+        synth_route=str(spec.get("synth_route") or route),
     )
-    state.advance(ctx.conn, ctx.date, "publish", "本地兜底合成完成")
+    state.advance(ctx.conn, ctx.date, "publish", f"降级合成完成（{route}）")
     ctx.refresh()
-    return _out("fallback", True, "publish", detail=f"本地合成完成 {paths.rel(out)}", metrics={"audio": paths.rel(out)})
+    return _out("fallback", True, "publish",
+                detail=f"降级合成完成（{route}）{paths.rel(out)}",
+                metrics={"audio": paths.rel(out)})
 
 
 # ---------------------------------------------------------------- publish

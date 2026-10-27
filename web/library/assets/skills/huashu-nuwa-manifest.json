@@ -1,0 +1,97 @@
+{
+  "schema": "sourcecast.skill-package/1",
+  "name": "huashu-nuwa",
+  "packaged_date": "2026-10-25",
+  "source": {
+    "type": "current-local-skill-snapshot",
+    "library": "Magpie shared skill library",
+    "relative_directory": "huashu-nuwa/",
+    "upstream_repository": "https://github.com/alchaincyf/nuwa-skill",
+    "local_repository_head": "e293723e6d5c20c7bf9d8ef00ffebcda416eb31e",
+    "working_tree_modifications": [
+      "SKILL.md"
+    ],
+    "note": "Source skill files are byte-for-byte copies of the current local installation; SKILL.md includes existing local adaptations and is not claimed to match upstream HEAD."
+  },
+  "license": {
+    "identifier": "MIT",
+    "copyright": "Copyright (c) 2026 Huashu (花叔)",
+    "archive_path": "huashu-nuwa/LICENSE",
+    "sha256": "d0952e801d7484cc5344f41cc0378567d20a3c996b784eb97460287adde9ab37",
+    "redistribution_condition": "Retain the copyright and permission notice."
+  },
+  "archive": {
+    "filename": "huashu-nuwa.zip",
+    "sha256": "f8289249dc486cb9bb0710608731cec7d23f999165a773d7955c33cbc1f61d93",
+    "bytes": 17743,
+    "entries": [
+      "huashu-nuwa/",
+      "huashu-nuwa/references/",
+      "huashu-nuwa/SKILL.md",
+      "huashu-nuwa/references/extraction-framework.md",
+      "huashu-nuwa/references/skill-template.md",
+      "huashu-nuwa/LICENSE",
+      "huashu-nuwa/INSTALL.md"
+    ]
+  },
+  "files": [
+    {
+      "archive_path": "huashu-nuwa/SKILL.md",
+      "source": "local-skill:huashu-nuwa/SKILL.md",
+      "unchanged_source_copy": true,
+      "sha256": "1fc355653c20820abb3238b01509638f95d9da91649a9a01c686fd5a9267acd1",
+      "bytes": 24677
+    },
+    {
+      "archive_path": "huashu-nuwa/references/extraction-framework.md",
+      "source": "local-skill:huashu-nuwa/references/extraction-framework.md",
+      "unchanged_source_copy": true,
+      "sha256": "71ba03c80f86141a5adaec1690e510d821ecfc30eca5dcf7b455ec6df2339e81",
+      "bytes": 4969
+    },
+    {
+      "archive_path": "huashu-nuwa/references/skill-template.md",
+      "source": "local-skill:huashu-nuwa/references/skill-template.md",
+      "unchanged_source_copy": true,
+      "sha256": "bd7f59cfae7b7f6f2b169542acb917088a21816a0da75c1207c48f7f65a9fd97",
+      "bytes": 3412
+    },
+    {
+      "archive_path": "huashu-nuwa/LICENSE",
+      "source": "local-skill:huashu-nuwa/LICENSE",
+      "unchanged_source_copy": true,
+      "sha256": "d0952e801d7484cc5344f41cc0378567d20a3c996b784eb97460287adde9ab37",
+      "bytes": 1072
+    },
+    {
+      "archive_path": "huashu-nuwa/INSTALL.md",
+      "source": "Sourcecast packaging documentation",
+      "unchanged_source_copy": false,
+      "sha256": "4814e64f5f5ac31b5e7a8b47e1d1c1524d96438c86f2648b305f1901bb3a1284",
+      "bytes": 1085
+    }
+  ],
+  "validation": {
+    "zip_integrity": "passed",
+    "single_top_level_directory": "huashu-nuwa/",
+    "source_bytes_unchanged": true,
+    "required_static_references": [
+      "references/extraction-framework.md",
+      "references/skill-template.md"
+    ],
+    "all_required_static_references_present": true,
+    "runtime_generated_paths_not_dependencies": [
+      "references/research/",
+      "references/sources/"
+    ],
+    "excluded": [
+      ".git/",
+      ".DS_Store",
+      "examples/",
+      "translated READMEs",
+      "user materials",
+      "credentials"
+    ],
+    "personal_machine_paths_in_archive": false
+  }
+}

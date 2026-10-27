@@ -1470,10 +1470,24 @@ def _synthesize_mimo(
 
 
 def synthesize(provider: str, text: str, output: Path | None = None) -> Path:
+    return synthesize_with_config(provider, get_provider_config(provider), text, output)
+
+
+def synthesize_with_config(
+    provider: str,
+    cfg: dict[str, Any],
+    text: str,
+    output: Path | None = None,
+) -> Path:
+    """拿一份（可能被临时改过的）配置合成，不读盘上的保存值。
+
+    整期合成（scripts/tts_mimo.py）要能临时换克隆参考音频——换一把嗓子试听时
+    不该把覆盖值写回 provider 配置，写回去会污染控制台里保存的状态。
+    cfg 由 get_provider_config() 给出（deepcopy），调用方随便改不会影响别人。
+    """
     text = text.strip()
     if not text:
         raise CloudTTSError("文本为空")
-    cfg = get_provider_config(provider)
     secret = get_provider_secret(provider)
     if not secret:
         raise CloudTTSError(f"{provider} 还没有保存 API Key")
