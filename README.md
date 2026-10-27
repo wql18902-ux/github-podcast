@@ -68,6 +68,10 @@ fetch.py ──► scripts/episode.py ──► 写稿会话 ──► verify-ep
 
 ![工作台](docs/screenshots/04-workshop.png)
 
+手机上也是同一套（390 宽，单列）：
+
+<p><img src="docs/screenshots/05-mobile.png" width="300" alt="手机首屏"></p>
+
 本地跑：
 
 ```bash
