@@ -69,7 +69,7 @@ rsync -a --delete \
     --exclude='.DS_Store' \
     --exclude='README.md' \
     --exclude='DESIGN.md' \
-    --exclude='*.zip' \
+    --exclude='sourcecast-*.zip' \
     --exclude='dist/' \
     --exclude='output/' \
     --exclude='.wbapp_*' \
