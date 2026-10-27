@@ -88,12 +88,14 @@ fi
 
 cd "$STAGE/repo"
 git add -A
+COMMITTED=0
 if git diff --cached --quiet; then
     echo "    [skip] 内容没有变化"
 else
     git -c user.name="wql18902-ux" -c user.email="noreply@github-podcast.local" \
         commit -q -m "$MSG"
     echo "    提交：$(git rev-parse --short HEAD) ${MSG}"
+    COMMITTED=1
 fi
 
 if [ "$DRY" -eq 1 ]; then
@@ -101,8 +103,15 @@ if [ "$DRY" -eq 1 ]; then
     exit 0
 fi
 
-$NET git -c http.proxy= -c https.proxy= push -q origin HEAD:main
-echo "    已推送 → https://github.com/${REPO}"
+if [ "$COMMITTED" -eq 1 ]; then
+    $NET git -c http.proxy= -c https.proxy= -c http.sslVerify=true push -q origin HEAD:main || {
+        echo "[✗] 推送失败（网络/SSL）。内容已在暂存目录，重跑本脚本即可重试。" >&2
+        exit 1
+    }
+    echo "    已推送 → https://github.com/${REPO}"
+else
+    echo "    [skip] 线上已是最新，不需要推送"
+fi
 
 # ── 4. 线上自检（Pages 构建有延迟，轮询到新版本） ───────────────────
 echo "==> [4/4] 线上自检"
@@ -124,15 +133,17 @@ fi
 
 fail=0
 for f in app.js data.js studio.js experience.js knowledge.js personal.js rail.js vendor/lwq/components.js; do
-    code=$($NET curl -s -o /dev/null -w '%{http_code}' --http1.1 -m 20 "${BASE}${f}?c=$(date +%s)")
+    code=$($NET curl -s -o /dev/null -w '%{http_code}' --http1.1 --retry 2 -m 25 "${BASE}${f}?c=$(date +%s)" || true)
+    code=${code:-000}
     [ "$code" = "200" ] || { echo "    [✗] ${f} → HTTP ${code}" >&2; fail=1; }
 done
 [ "$fail" -eq 0 ] && echo "    ✓ 关键 JS 全部 200"
 
-AUDIO=$($NET curl -s --http1.1 -m 20 "${BASE}data/finished-audio.js?c=$(date +%s)" \
-    | grep -oE '"src": *"[^"]+"' | head -1 | sed -E 's/.*"([^"]+)"$/\1/')
+AUDIO=$($NET curl -s --http1.1 --retry 2 -m 25 "${BASE}data/finished-audio.js?c=$(date +%s)" \
+    | grep -oE '"src": *"[^"]+"' | head -1 | sed -E 's/.*"([^"]+)"$/\1/' || true)
 if [ -n "$AUDIO" ]; then
-    code=$($NET curl -s -o /dev/null -w '%{http_code}' -r 0-99 --http1.1 -m 20 "${BASE}${AUDIO}")
+    code=$($NET curl -s -o /dev/null -w '%{http_code}' -r 0-99 --http1.1 --retry 2 -m 25 "${BASE}${AUDIO}" || true)
+    code=${code:-000}
     if [ "$code" = "206" ]; then
         echo "    ✓ 音频 Range 请求 → 206（${AUDIO}）"
     else
@@ -143,7 +154,7 @@ fi
 
 # 旧构建包不该还能下载
 for gone in sourcecast-workbuddy.zip; do
-    code=$($NET curl -s -o /dev/null -w '%{http_code}' --http1.1 -m 20 "${BASE}${gone}")
+    code=$($NET curl -s -o /dev/null -w '%{http_code}' --http1.1 --retry 2 -m 25 "${BASE}${gone}" || true)
     [ "$code" = "404" ] || echo "    [!] ${gone} 仍可访问（HTTP ${code}），确认是否有意保留"
 done
 

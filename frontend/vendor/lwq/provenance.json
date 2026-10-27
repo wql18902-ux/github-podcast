@@ -1,0 +1,38 @@
+{
+  "source": "LWQ Design",
+  "catalog": "registry/components.json",
+  "components": [
+    {
+      "file": "Button.tsx",
+      "source": "libraries/react-playground/src/components/ui/button.tsx",
+      "sha256": "08e5f87833c5db8436e89337ebde0f776bcdbf649d3de69fb89be6441ca2e366",
+      "adaptation": "原件保留，样式在项目适配；Field/Feedback 的 Button 导入由本地适配层承接"
+    },
+    {
+      "file": "SplitText.jsx",
+      "source": "libraries/react-playground/src/components/SplitText.jsx",
+      "sha256": "f3b9433ce28aa703f4ea6c4e7a7d023aa91de3f4b21002fc99477ea095c932b1",
+      "adaptation": "原件保留，样式在项目适配；Field/Feedback 的 Button 导入由本地适配层承接"
+    },
+    {
+      "file": "useReducedMotion.ts",
+      "source": "src/preview/useReducedMotion.ts",
+      "sha256": "0a44474ea42c8df653da9cf116064aa3c264a48487c32a7814b48f0f01f2eba3",
+      "adaptation": "原件保留，样式在项目适配；Field/Feedback 的 Button 导入由本地适配层承接"
+    },
+    {
+      "file": "Field.tsx",
+      "source": "src/preview/components/Field.tsx",
+      "sha256": "4572870ac7dbde1d559b77ce1cf586f4cba6ad0b7ed336b1d0c09d635259d8be",
+      "adaptation": "原件保留，样式在项目适配；Field/Feedback 的 Button 导入由本地适配层承接"
+    },
+    {
+      "file": "Feedback.tsx",
+      "source": "src/preview/components/Feedback.tsx",
+      "sha256": "bf1aca5fc29addb431bac5498008469b762dab484f43dfdffce46115a7f824f6",
+      "adaptation": "原件保留，样式在项目适配；Field/Feedback 的 Button 导入由本地适配层承接"
+    }
+  ],
+  "userVisualApproval": "unrecorded",
+  "sourceWorkspace": "设计系统"
+}

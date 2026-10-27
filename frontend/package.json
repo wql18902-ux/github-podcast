@@ -1,0 +1,18 @@
+{
+  "name": "sourcecast-design-adapter",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node ../scripts/build_library_components.mjs" },
+  "dependencies": {
+    "@gsap/react": "2.1.2",
+    "class-variance-authority": "0.7.1",
+    "cn": "0.4.0",
+    "gsap": "3.15.0",
+    "lucide-react": "1.59.0",
+    "motion": "14.6.0",
+    "radix-ui": "1.8.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": { "vite": "8.3.4", "@vitejs/plugin-react": "6.1.2" }
+}

@@ -1,0 +1,37 @@
+{
+  "provider": "Aceternity UI",
+  "components": [
+    {
+      "name": "3d-marquee",
+      "url": "https://ui.aceternity.com/registry/3d-marquee.json",
+      "original": "originals/3d-marquee.tsx",
+      "sha256": "49265fb39272e876a3ff8ce5a1b4b8b5921ad5b266ad74bf270a74c6b8332886"
+    },
+    {
+      "name": "google-gemini-effect",
+      "url": "https://ui.aceternity.com/registry/google-gemini-effect.json",
+      "original": "originals/google-gemini-effect.tsx",
+      "sha256": "168631363d80f7c7654391273753594bcf1eb735cc9ea37909a394f3193eafe4"
+    },
+    {
+      "name": "text-hover-effect",
+      "url": "https://ui.aceternity.com/registry/text-hover-effect.json",
+      "original": "originals/text-hover-effect.tsx",
+      "sha256": "6921dc858bc64ac90e791720660ceac965df94986867e82d28a6eb2d8fe53518"
+    }
+  ],
+  "use": "Sourcecast project adapters; upstream files retained unchanged.",
+  "adapters": [
+    "frontend/components/text-hover-effect.tsx",
+    "frontend/components/google-gemini-effect.tsx",
+    "frontend/components/gemini-paths.ts",
+    "frontend/components/3d-marquee.tsx"
+  ],
+  "adaptations": [
+    "local semantic CSS instead of Tailwind skin",
+    "unique SVG IDs",
+    "reduced motion and touch handling",
+    "explicit, offscreen and background pause",
+    "project labels and local original showcase artwork"
+  ]
+}

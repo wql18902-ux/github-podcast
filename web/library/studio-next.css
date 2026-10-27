@@ -787,3 +787,6 @@ body.has-player main { padding-bottom: 132px; }
   .tonearm, .record-object .tonearm { transition: none !important; }
   * { scroll-behavior: auto; }
 }
+
+/* 2026-10-27 · 页脚致谢：链接跟页脚同色，别跳成浏览器蓝 */
+.foot__in a{color:inherit;text-decoration:underline;text-underline-offset:2px}
